@@ -1,8 +1,14 @@
 import type { NextConfig } from "next";
 
-// Importing env at config-load forces fail-fast validation at build/dev start
-// (Plan 02 will create src/lib/env.ts; until then, this import is commented).
-// import "@/lib/env";
+/**
+ * Side-effect import — triggers Zod validation of every required env var at
+ * config-load time. If any required var is missing/malformed, Next.js fails
+ * to start with a clear error message, satisfying Success Criterion 4.
+ *
+ * Relative path (not @/* alias) because next.config.ts runs in Node before
+ * tsconfig path aliases are wired into the module resolver.
+ */
+import "./src/lib/env";
 
 const nextConfig: NextConfig = {
   experimental: {},
