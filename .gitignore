@@ -1,21 +1,56 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+#
+# Planning artifacts kept local-only (per commit 852dd12).
 .planning/
 
-node_modules/
+# next
 .next/
-.vercel/
-dist/
-build/
 out/
+build/
+dist/
+
+# node
+node_modules/
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+*.tsbuildinfo
+next-env.d.ts
+
+# env
 .env
 .env.local
 .env.*.local
+.env*.local
 
-.DS_Store
-Thumbs.db
+# supabase
+supabase/.branches/
+supabase/.temp/
 
-*.log
+# vitest / coverage
+coverage/
 .cache/
 .tmp/
 
-.vscode/
+# vercel
+.vercel/
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# misc
+*.pem
+
+# IDE
+.DS_Store
+Thumbs.db
 .idea/
+.vscode/
