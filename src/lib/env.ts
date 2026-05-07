@@ -17,9 +17,16 @@ export const env = createEnv({
     SUPABASE_URL: z.string().url(),
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(20),
     GEMINI_API_KEY: z.string().min(20),
-    NODE_ENV: z
-      .enum(["development", "test", "production"])
-      .default("development"),
+    /**
+     * Shared secret for cron + server `after()` to call internal parse-batch.
+     * Min 32 chars; set in Vercel env. Never `NEXT_PUBLIC_*`.
+     */
+    INTERNAL_PARSE_SECRET: z.string().min(32),
+    NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+    /** Dev-only: auto-advance document_status for Phase 2 UI testing */
+    STUB_PIPELINE_TICK: z.string().optional(),
+    /** Optional public site URL for server-side fetch (else VERCEL_URL, localhost) */
+    CLARIFIN_APP_URL: z.string().url().optional(),
   },
 
   client: {
@@ -35,9 +42,12 @@ export const env = createEnv({
     SUPABASE_URL: process.env.SUPABASE_URL,
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
     GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+    INTERNAL_PARSE_SECRET: process.env.INTERNAL_PARSE_SECRET,
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    STUB_PIPELINE_TICK: process.env.STUB_PIPELINE_TICK,
+    CLARIFIN_APP_URL: process.env.CLARIFIN_APP_URL,
   },
 
   /**
