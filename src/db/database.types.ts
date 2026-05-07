@@ -176,9 +176,12 @@ export type Database = {
         Row: {
           created_at: string
           error_message: string | null
+          extraction_source: string | null
           failed_at: string | null
           filename: string
+          gemini_file_resource_name: string | null
           id: string
+          parse_next_page: number
           session_id: string | null
           size_bytes: number
           status: Database["public"]["Enums"]["document_status"]
@@ -190,9 +193,12 @@ export type Database = {
         Insert: {
           created_at?: string
           error_message?: string | null
+          extraction_source?: string | null
           failed_at?: string | null
           filename: string
+          gemini_file_resource_name?: string | null
           id?: string
+          parse_next_page?: number
           session_id?: string | null
           size_bytes: number
           status?: Database["public"]["Enums"]["document_status"]
@@ -204,9 +210,12 @@ export type Database = {
         Update: {
           created_at?: string
           error_message?: string | null
+          extraction_source?: string | null
           failed_at?: string | null
           filename?: string
+          gemini_file_resource_name?: string | null
           id?: string
+          parse_next_page?: number
           session_id?: string | null
           size_bytes?: number
           status?: Database["public"]["Enums"]["document_status"]
