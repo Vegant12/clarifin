@@ -80,7 +80,7 @@ port = 54324
 [storage]
 enabled = true
 # The maximum file size allowed (e.g. "5MB", "500KB").
-file_size_limit = "50MiB"
+file_size_limit = "20MiB"
 
 [storage.image_transformation]
 enabled = true
@@ -95,7 +95,7 @@ enabled = true
 # Phase 1 / INFRA-01: PDF upload bucket (private, signed URLs in Phase 2).
 [storage.buckets.pdfs]
 public = false
-file_size_limit = "50MiB"
+file_size_limit = "20MiB"
 allowed_mime_types = ["application/pdf"]
 
 [auth]

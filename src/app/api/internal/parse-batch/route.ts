@@ -6,11 +6,15 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/db/client";
 import { env } from "@/lib/env";
 import { runParseBatch } from "@/lib/ingest/parse-document-batch";
+import { scheduleParseBatchesForDoc } from "@/lib/ingest/trigger-parse-batch";
 
 /**
  * Internal ingestion worker. Authenticated via `INTERNAL_PARSE_SECRET` using either:
  * - `Authorization: Bearer <secret>` (server `after()`), or
  * - `?secret=<secret>` (Vercel Cron — GET by default, cannot send custom headers).
+ *
+ * When parsing is partial (`done: false`), schedules another batch via `after()` so
+ * local dev (no cron) and large PDFs advance without waiting for the next cron tick.
  */
 
 function timingSafeStringEq(a: string, b: string): boolean {
@@ -75,6 +79,9 @@ async function handleParseBatch(request: Request): Promise<Response> {
   }
 
   const result = await runParseBatch({ docId });
+  if (!result.done) {
+    scheduleParseBatchesForDoc(docId);
+  }
   return NextResponse.json({ ok: true, doc_id: docId, done: result.done });
 }
 

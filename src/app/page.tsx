@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { PdfDropzone } from "@/components/upload/pdf-dropzone";
 
 const HERO_HEADLINE = "Read IDX financial reports in plain English.";
 const HERO_SUBCOPY =
@@ -58,20 +58,9 @@ export default function HomePage() {
         ))}
       </section>
 
-      {/* Disabled dropzone stub (D-17 — DOM placement contract for Phase 2) */}
-      <section data-testid="dropzone-stub" aria-label="PDF upload (coming soon)">
-        <Card
-          aria-disabled="true"
-          className="cursor-not-allowed border-2 border-dashed bg-muted/30 p-12"
-        >
-          <CardContent className="flex flex-col items-center gap-3 p-0 text-center">
-            <p className="font-semibold text-base">Drop your IDX PDF here</p>
-            <p className="text-muted-foreground text-sm">Upload coming in the next release.</p>
-            <Button disabled variant="outline">
-              Choose file
-            </Button>
-          </CardContent>
-        </Card>
+      {/* PDF upload (Phase 2) */}
+      <section aria-label="PDF upload">
+        <PdfDropzone />
       </section>
 
       <Separator />

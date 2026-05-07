@@ -3,6 +3,7 @@ import "server-only";
 import { createPartFromUri, GoogleGenAI } from "@google/genai";
 
 import { env } from "@/lib/env";
+import { clonePdfBytes } from "@/lib/pdf/clone-pdf-bytes";
 
 export type GeminiPageText = { page: number; text: string };
 
@@ -63,7 +64,10 @@ export async function extractPagesWithGemini(params: {
     uri = ready.uri;
     mimeType = ready.mimeType;
   } else {
-    const blob = new Blob([Buffer.from(params.pdfBytes)], { type: "application/pdf" });
+    const bytes = clonePdfBytes(params.pdfBytes);
+    const ab = new ArrayBuffer(bytes.byteLength);
+    new Uint8Array(ab).set(bytes);
+    const blob = new Blob([ab], { type: "application/pdf" });
     const uploaded = await ai.files.upload({
       file: blob,
       config: {

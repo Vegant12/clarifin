@@ -9,15 +9,15 @@ import {
 } from "@/lib/upload-validation";
 
 describe("validatePdfUpload (metadata-level INFRA-01 check)", () => {
-  it("rejects files larger than MAX_PDF_BYTES (50 MB)", () => {
+  it("rejects files larger than MAX_PDF_BYTES (20 MB)", () => {
     const result = validatePdfUpload({
-      size: 60 * 1024 * 1024,
+      size: 25 * 1024 * 1024,
       type: PDF_MIME_TYPE,
       name: "big.pdf",
     });
     expect(result.ok).toBe(false);
     if (!result.ok) {
-      expect(result.reason).toMatch(/50 MB|Maximum/i);
+      expect(result.reason).toMatch(/20 MB|Maximum/i);
     }
   });
 
@@ -45,9 +45,9 @@ describe("validatePdfUpload (metadata-level INFRA-01 check)", () => {
     }
   });
 
-  it("accepts a valid 30 MB application/pdf with .pdf extension", () => {
+  it("accepts a valid 15 MB application/pdf with .pdf extension", () => {
     const result = validatePdfUpload({
-      size: 30 * 1024 * 1024,
+      size: 15 * 1024 * 1024,
       type: PDF_MIME_TYPE,
       name: "report.pdf",
     });
@@ -56,7 +56,7 @@ describe("validatePdfUpload (metadata-level INFRA-01 check)", () => {
 
   it("accepts mismatched MIME when filename ends in .pdf (extension fallback per D-24)", () => {
     const result = validatePdfUpload({
-      size: 30 * 1024 * 1024,
+      size: 15 * 1024 * 1024,
       type: "text/plain",
       name: "report.pdf",
     });
@@ -121,9 +121,9 @@ describe("validatePdfMagicBytes (defense-in-depth post-upload check)", () => {
 });
 
 describe("module exports", () => {
-  it("exports MAX_PDF_BYTES = 52428800 (50 MB)", () => {
-    expect(MAX_PDF_BYTES).toBe(50 * 1024 * 1024);
-    expect(MAX_PDF_BYTES).toBe(52428800);
+  it("exports MAX_PDF_BYTES = 20971520 (20 MB)", () => {
+    expect(MAX_PDF_BYTES).toBe(20 * 1024 * 1024);
+    expect(MAX_PDF_BYTES).toBe(20971520);
   });
 
   it("PDF_MAGIC_BYTES is the 5-byte sequence %PDF-", () => {

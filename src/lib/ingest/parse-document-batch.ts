@@ -1,14 +1,37 @@
 import "server-only";
 
+import type { StructuredTextItem } from "unpdf";
+
 import { supabaseAdmin } from "@/db/client";
 import { chunkSinglePage } from "@/lib/pdf/chunk-page";
 import { classifyExtractionSource } from "@/lib/pdf/classify-extraction-source";
 import { deleteGeminiFileResource, extractPagesWithGemini } from "@/lib/pdf/gemini-pdf-pages";
+import { clonePdfBytes } from "@/lib/pdf/clone-pdf-bytes";
 import { extractPdfTextItemsPerPage, extractPdfTextPerPage } from "@/lib/pdf/unpdf-extract";
 
 /** Gemini / OCR path uses page-level text only → usually one prose chunk per page; table-atomic heuristics apply to unpdf + text items. */
 export const MAX_PAGES_PER_BATCH = 8;
 export const MAX_BATCH_WALL_MS = 45_000;
+
+function itemsGridForTextPages(items: StructuredTextItem[][], totalPages: number): StructuredTextItem[][] {
+  const grid: StructuredTextItem[][] = [];
+  for (let p = 0; p < totalPages; p++) {
+    grid.push(items[p] ?? []);
+  }
+  return grid;
+}
+
+function parseFailureUserMessage(err: unknown): string {
+  const dev = process.env.NODE_ENV === "development";
+  if (dev && err instanceof Error && err.message) {
+    const m = err.message.trim();
+    if (m.length > 400) {
+      return `Parsing failed: ${m.slice(0, 400)}…`;
+    }
+    return `Parsing failed: ${m}`;
+  }
+  return "Parsing failed. Try uploading again or use a different file.";
+}
 
 async function failDocument(docId: string, message: string): Promise<void> {
   await supabaseAdmin.from("chunks").delete().eq("doc_id", docId);
@@ -48,7 +71,8 @@ export async function runParseBatch({ docId }: { docId: string }): Promise<{ don
     return { done: false };
   }
 
-  const pdfBytes = new Uint8Array(await download.data.arrayBuffer());
+  /** Own buffer for each `getDocument` call — pdf.js may detach the buffer after load. */
+  const pdfMaster = new Uint8Array(await download.data.arrayBuffer());
 
   let extractionSource = doc.extraction_source;
   let totalPages = doc.total_pages ?? 0;
@@ -56,7 +80,19 @@ export async function runParseBatch({ docId }: { docId: string }): Promise<{ don
   const parseStart = doc.parse_next_page;
 
   if (extractionSource == null) {
-    const extracted = await extractPdfTextPerPage(pdfBytes);
+    let extracted: Awaited<ReturnType<typeof extractPdfTextPerPage>>;
+    try {
+      extracted = await extractPdfTextPerPage(clonePdfBytes(pdfMaster));
+    } catch (err) {
+      console.error("[runParseBatch] bootstrap extractPdfTextPerPage", docId, err);
+      await failDocument(
+        docId,
+        process.env.NODE_ENV === "development" && err instanceof Error
+          ? `Could not read this PDF: ${err.message}`
+          : "Could not read this PDF. It may be corrupted or password-protected.",
+      );
+      return { done: false };
+    }
     totalPages = extracted.totalPages;
     const sample = extracted.texts.slice(0, Math.min(5, extracted.texts.length));
     extractionSource = classifyExtractionSource(sample);
@@ -93,15 +129,29 @@ export async function runParseBatch({ docId }: { docId: string }): Promise<{ don
 
   try {
     if (extractionSource === "unpdf") {
-      const textsR = await extractPdfTextPerPage(pdfBytes);
-      const itemsR = await extractPdfTextItemsPerPage(pdfBytes);
+      const textsR = await extractPdfTextPerPage(clonePdfBytes(pdfMaster));
+      let itemsByPage: StructuredTextItem[][];
+      try {
+        const itemsR = await extractPdfTextItemsPerPage(clonePdfBytes(pdfMaster));
+        if (itemsR.totalPages !== textsR.totalPages) {
+          console.warn("[runParseBatch] text vs textItems page count mismatch", {
+            docId,
+            textPages: textsR.totalPages,
+            itemPages: itemsR.totalPages,
+          });
+        }
+        itemsByPage = itemsGridForTextPages(itemsR.items, textsR.totalPages);
+      } catch (err) {
+        console.error("[runParseBatch] extractPdfTextItemsPerPage failed; prose-only chunking", docId, err);
+        itemsByPage = textsR.texts.map(() => []);
+      }
 
       for (let page = parseStart; page <= windowEnd; page++) {
         if (Date.now() > deadline) {
           break;
         }
         const plain = textsR.texts[page - 1] ?? "";
-        const items = itemsR.items[page - 1] ?? [];
+        const items = itemsByPage[page - 1] ?? [];
         const rows = chunkSinglePage({ pageNumber: page, plainText: plain, items });
 
         const del = await supabaseAdmin
@@ -137,7 +187,7 @@ export async function runParseBatch({ docId }: { docId: string }): Promise<{ don
       const pageStart = parseStart;
       const pageEnd = windowEnd;
       const gem = await extractPagesWithGemini({
-        pdfBytes,
+        pdfBytes: clonePdfBytes(pdfMaster),
         filename: doc.filename || "document.pdf",
         pageStart,
         pageEnd,
@@ -192,8 +242,9 @@ export async function runParseBatch({ docId }: { docId: string }): Promise<{ don
         lastInclusive = pageNum;
       }
     }
-  } catch {
-    await failDocument(docId, "Parsing failed. Try uploading again or use a different file.");
+  } catch (err) {
+    console.error("[runParseBatch] batch error", docId, err);
+    await failDocument(docId, parseFailureUserMessage(err));
     return { done: false };
   }
 
