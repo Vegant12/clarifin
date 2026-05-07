@@ -9,7 +9,10 @@ export default defineConfig({
     coverage: { provider: "v8", reporter: ["text", "lcov"] },
   },
   resolve: {
-    alias: { "@": path.resolve(__dirname, "./src") },
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+      "server-only": path.resolve(__dirname, "./vitest.server-only-stub.ts"),
+    },
   },
   css: {
     postcss: { plugins: [] },
