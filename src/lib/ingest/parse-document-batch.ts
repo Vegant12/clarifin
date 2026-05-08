@@ -3,6 +3,7 @@ import "server-only";
 import type { StructuredTextItem } from "unpdf";
 
 import { supabaseAdmin } from "@/db/client";
+import { scheduleEmbedBatchesForDoc } from "@/lib/ingest/trigger-parse-batch";
 import { chunkSinglePage } from "@/lib/pdf/chunk-page";
 import { classifyExtractionSource } from "@/lib/pdf/classify-extraction-source";
 import { deleteGeminiFileResource, extractPagesWithGemini } from "@/lib/pdf/gemini-pdf-pages";
@@ -264,6 +265,7 @@ export async function runParseBatch({ docId }: { docId: string }): Promise<{ don
         .from("documents")
         .update({ gemini_file_resource_name: null, status: "embedding" })
         .eq("id", docId);
+      scheduleEmbedBatchesForDoc(docId);
       return { done: true };
     }
   }

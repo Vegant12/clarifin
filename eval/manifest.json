@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "documents": [
+    {
+      "id": "bbca-ar-bilingual-large-cap-digital",
+      "label": "Large-cap bilingual annual · digital PDF",
+      "relativePdf": "pdfs/bbca-ar-bilingual-large-cap-digital.pdf",
+      "relativeGroundTruth": "fixtures/bbca-ar-bilingual-large-cap-digital.json"
+    },
+    {
+      "id": "tlkm-ar-id-only-mid-cap-digital",
+      "label": "Mid-cap ID-language annual · digital PDF",
+      "relativePdf": "pdfs/tlkm-ar-id-only-mid-cap-digital.pdf",
+      "relativeGroundTruth": "fixtures/tlkm-ar-id-only-mid-cap-digital.json"
+    },
+    {
+      "id": "small-cap-scanned-annual",
+      "label": "Small-cap · scanned-heavy annual",
+      "relativePdf": "pdfs/small-cap-scanned-annual.pdf",
+      "relativeGroundTruth": "fixtures/small-cap-scanned-annual.json"
+    },
+    {
+      "id": "mid-cap-quarterly-filing-id",
+      "label": "Mid-cap quarterly / interim Indonesian filing",
+      "relativePdf": "pdfs/mid-cap-quarterly-filing-id.pdf",
+      "relativeGroundTruth": "fixtures/mid-cap-quarterly-filing-id.json"
+    },
+    {
+      "id": "long-form-annual-200p-plus",
+      "label": "Long-form annual (>200 equivalent pages indicator)",
+      "relativePdf": "pdfs/long-form-annual-200p-plus.pdf",
+      "relativeGroundTruth": "fixtures/long-form-annual-200p-plus.json"
+    },
+    {
+      "id": "bbcj-ar-variant-bilingual-large-cap-digital-b",
+      "label": "Second large-cap bilingual digital variant",
+      "relativePdf": "pdfs/bbcj-ar-variant-bilingual-large-cap-digital-b.pdf",
+      "relativeGroundTruth": "fixtures/bbcj-ar-variant-bilingual-large-cap-digital-b.json"
+    },
+    {
+      "id": "mid-cap-annual-manufacturing-id-digital",
+      "label": "Mid-cap ID-only manufacturing-sector annual",
+      "relativePdf": "pdfs/mid-cap-annual-manufacturing-id-digital.pdf",
+      "relativeGroundTruth": "fixtures/mid-cap-annual-manufacturing-id-digital.json"
+    },
+    {
+      "id": "goto-class-small-cap-quarterly-pack",
+      "label": "Small-cap digitally-native quarterly filing pack",
+      "relativePdf": "pdfs/goto-class-small-cap-quarterly-pack.pdf",
+      "relativeGroundTruth": "fixtures/goto-class-small-cap-quarterly-pack.json"
+    },
+    {
+      "id": "idx-mining-annual-heavy-tables-id",
+      "label": "Heavy-table mining annual ID-language",
+      "relativePdf": "pdfs/idx-mining-annual-heavy-tables-id.pdf",
+      "relativeGroundTruth": "fixtures/idx-mining-annual-heavy-tables-id.json"
+    }
+  ]
+}

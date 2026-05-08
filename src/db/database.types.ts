@@ -239,7 +239,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      match_document_chunks: {
+        Args: {
+          p_doc_id: string
+          p_match_count?: number
+          p_query_embedding: string
+        }
+        Returns: {
+          chunk_type: Database["public"]["Enums"]["chunk_type_enum"]
+          content: string
+          distance: number
+          id: string
+          page_number: number
+          section: string
+          source_page_end: number
+          source_page_start: number
+        }[]
+      }
     }
     Enums: {
       chunk_type_enum: "prose" | "table" | "heading" | "list"

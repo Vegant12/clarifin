@@ -10,8 +10,23 @@ export type DocStatusPayload = {
   error_message: string | null;
 };
 
-const INITIAL_INTERVAL_MS = 2500;
-const MAX_INTERVAL_MS = 10000;
+const FAST_INITIAL_MS = 2500;
+const FAST_MAX_MS = 10000;
+
+/** Backend-heavy phases: poll less aggressively to avoid noisy GET /api/status. */
+const HEAVY_PHASE_INITIAL_MS = 6000;
+const HEAVY_PHASE_MAX_MS = 30000;
+const POLL_WHEN_TAB_HIDDEN_MS = 60_000;
+
+function backoffForStatus(status: PipelineDocumentStatus): {
+  initialMs: number;
+  maxMs: number;
+} {
+  if (status === "embedding" || status === "analyzing") {
+    return { initialMs: HEAVY_PHASE_INITIAL_MS, maxMs: HEAVY_PHASE_MAX_MS };
+  }
+  return { initialMs: FAST_INITIAL_MS, maxMs: FAST_MAX_MS };
+}
 
 export function useDocumentStatus(opts: {
   docId: string;
@@ -29,14 +44,28 @@ export function useDocumentStatus(opts: {
 
     let cancelled = false;
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
-    let intervalMs = INITIAL_INTERVAL_MS;
-    let lastStatus: string | null = null;
+    /** Current poll spacing; bumped with stagnation backoff up to phase max. */
+    let intervalMs = FAST_INITIAL_MS;
+    let lastStatus: PipelineDocumentStatus | null = null;
+    /** Upper bound per phase updates when status changes. */
+    let phaseMaxMs = FAST_MAX_MS;
 
     const clearTimer = () => {
       if (timeoutId !== null) {
         clearTimeout(timeoutId);
         timeoutId = null;
       }
+    };
+
+    const schedulePoll = () => {
+      if (cancelled) {
+        return;
+      }
+      const hidden =
+        typeof document !== "undefined" && document.visibilityState === "hidden";
+      const delay = hidden ? POLL_WHEN_TAB_HIDDEN_MS : intervalMs;
+      clearTimer();
+      timeoutId = setTimeout(() => void poll(), delay);
     };
 
     const poll = async () => {
@@ -66,11 +95,14 @@ export function useDocumentStatus(opts: {
         setData(json);
         setError(null);
 
-        if (lastStatus !== null && lastStatus === json.status) {
-          intervalMs = Math.min(Math.round(intervalMs * 1.45), MAX_INTERVAL_MS);
-        } else {
-          intervalMs = INITIAL_INTERVAL_MS;
+        const { initialMs: nextInitial, maxMs: nextMax } = backoffForStatus(json.status);
+        phaseMaxMs = nextMax;
+
+        if (lastStatus === null || lastStatus !== json.status) {
+          intervalMs = nextInitial;
           lastStatus = json.status;
+        } else {
+          intervalMs = Math.min(Math.round(intervalMs * 1.45), phaseMaxMs);
         }
 
         if (json.status === "ready" || json.status === "failed") {
@@ -78,21 +110,32 @@ export function useDocumentStatus(opts: {
           return;
         }
 
-        timeoutId = setTimeout(poll, intervalMs);
+        schedulePoll();
       } catch {
         if (cancelled) {
           return;
         }
         setError("We couldn't reach the server. Check your connection and try again.");
-        timeoutId = setTimeout(poll, intervalMs);
+        schedulePoll();
       }
+    };
+
+    const onVisibility = () => {
+      if (cancelled || document.visibilityState !== "visible") {
+        return;
+      }
+      clearTimer();
+      void poll();
     };
 
     void poll();
 
+    document.addEventListener("visibilitychange", onVisibility);
+
     return () => {
       cancelled = true;
       clearTimer();
+      document.removeEventListener("visibilitychange", onVisibility);
     };
   }, [docId, sessionToken, enabled]);
 

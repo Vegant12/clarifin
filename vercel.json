@@ -3,6 +3,10 @@
     {
       "path": "/api/internal/parse-batch",
       "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/internal/embed-batch",
+      "schedule": "* * * * *"
     }
   ]
 }

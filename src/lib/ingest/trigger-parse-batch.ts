@@ -40,3 +40,25 @@ export function scheduleParseBatchesForDoc(docId: string): void {
     }
   });
 }
+
+/** Chain embedding batches after parsing → embedding (Phase 4). */
+export function scheduleEmbedBatchesForDoc(docId: string): void {
+  if (process.env.NODE_ENV === "test") {
+    return;
+  }
+  after(async () => {
+    try {
+      const base = getInternalAppBaseUrl();
+      await fetch(`${base}/api/internal/embed-batch`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${env.INTERNAL_PARSE_SECRET}`,
+        },
+        body: JSON.stringify({ doc_id: docId }),
+      });
+    } catch (e) {
+      console.error("scheduleEmbedBatchesForDoc", e);
+    }
+  });
+}

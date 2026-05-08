@@ -15,7 +15,7 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
 - [x] **Phase 1: Project Setup & Foundation** — Next.js 15 + Supabase skeleton, DB schema with citation metadata, landing page
 - [x] **Phase 2: PDF Upload & Storage** — Browser-direct upload to Supabase Storage, async ingestion pattern, progress polling
 - [x] **Phase 3: PDF Parsing & Chunking** — unpdf page-by-page extraction, scanned PDF detection, table-atomic chunking (completed 2026-05-08; UAT `03-UAT.md` complete)
-- [ ] **Phase 4: Embeddings & Vector Store** — text-embedding-004, pgvector with HNSW index, similarity retriever
+- [x] **Phase 4: Embeddings & Vector Store** — text-embedding-004, pgvector with HNSW index, similarity retriever
 - [ ] **Phase 5: Indonesian Eval Harness** — 9-document eval set, numeric + citation accuracy harness, Phase 6 gate
 - [ ] **Phase 6: AI Explanation Generation** — Gemini Files API, 5-section plain-English output, inline citations, Bahasa handling, streaming + caching
 - [ ] **Phase 7: Citation UI & PDF Viewer** — Split-pane desktop viewer, click-to-jump, hover popover, jargon tooltips, mobile tab fallback
@@ -105,11 +105,11 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
   2. A similarity search query (e.g., "What was the net income in 2023?") returns the top-5 most relevant chunks with page numbers intact and readable
   3. HNSW index is active; similarity search on a 10,000-vector test set returns results in under 500ms
 **Plans**: 5 plans
-- [ ] 04-01-PLAN.md (04-embeddings-vector-store) — HNSW + match_document_chunks RPC + [BLOCKING] db push + db:types (Wave 1)
-- [ ] 04-02-PLAN.md — gemini text-embedding-004 helper + Vitest mocks (Wave 1, parallel 01)
-- [ ] 04-03-PLAN.md — embed-document-batch + /api/internal/embed-batch (Wave 2)
-- [ ] 04-04-PLAN.md — scheduleEmbedBatchesForDoc, parse→embedding hook, Vercel Cron embed (Wave 3)
-- [ ] 04-05-PLAN.md — match-document-chunks RAG wrapper, perf smoke script, 04-UAT sign-off (Wave 4)
+- [x] 04-01-PLAN.md (04-embeddings-vector-store) — HNSW + match_document_chunks RPC + [BLOCKING] db push + db:types (Wave 1)
+- [x] 04-02-PLAN.md — gemini text-embedding-004 helper + Vitest mocks (Wave 1, parallel 01)
+- [x] 04-03-PLAN.md — embed-document-batch + /api/internal/embed-batch (Wave 2)
+- [x] 04-04-PLAN.md — scheduleEmbedBatchesForDoc, parse→embedding hook, Vercel Cron embed (Wave 3)
+- [x] 04-05-PLAN.md — match-document-chunks RAG wrapper, perf smoke script, 04-UAT sign-off (Wave 4)
 **UI hint**: no
 **AI hint**: no
 **Research flag**: no — text-embedding-004 API + Supabase pgvector HNSW index creation is well-documented
@@ -125,7 +125,8 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
   2. The report shows numeric accuracy (key figures from ground truth match AI-extracted values) and citation accuracy (cited page number contains the claimed fact) as separate percentages
   3. Deliberately misconfiguring the Gemini prompt causes the harness to score below threshold and report specific failures — proving the gate is live, not decorative
   4. The harness can be re-run on demand with a single command and produces consistent, comparable results across runs
-**Plans**: TBD
+**Plans**: 1 plan
+- [x] 05-01-PLAN.md (05-01-eval-harness-implementation) — manifest + Gemini eval extract + `pnpm eval` + Vitest scorer (Wave 1; **corpus curation still open** — see `05-VERIFICATION.md`)
 **UI hint**: no
 **AI hint**: yes
 **Research flag**: yes — RAGAS evaluation framework integration; custom numeric verifier design for IDR-scale figures; bilingual ground-truth comparison methodology for BBCA/TLKM documents
@@ -262,8 +263,8 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
 | 1. Project Setup & Foundation | 6/6 | UAT complete (2026-05-06) | 2026-05-06 |
 | 2. PDF Upload & Storage | 6/6 | Implemented (UAT pending) | 2026-05-06 |
 | 3. PDF Parsing & Chunking | 6/6 | Complete    | 2026-05-08 |
-| 4. Embeddings & Vector Store | 0/5 | Not started | - |
-| 5. Indonesian Eval Harness | 0/TBD | Not started | - |
+| 4. Embeddings & Vector Store | 5/5 | Implemented (remote `db push`: link required) — see `04-UAT.md` | 2026-05-08 |
+| 5. Indonesian Eval Harness | 1/1 harness | Implemented · **9 PDFs + ready fixtures required** — see `eval/README`, `05-VERIFICATION.md` | - |
 | 6. AI Explanation Generation | 0/TBD | Not started | - |
 | 7. Citation UI & PDF Viewer | 0/TBD | Not started | - |
 | 8. AI Score & Drill-Down | 0/TBD | Not started | - |
@@ -276,4 +277,4 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
 
 *Roadmap created: 2026-05-02*
 *Requirements mapped: 60/60*
-*Next: `.planning/phases/04-CONTEXT.md` ready — run `/gsd-plan-phase 4`.*
+*Next: Curate nine IDX PDFs + `ready` fixtures, then re-run `pnpm eval` to close Phase 5; then Phase 6 — AI Explanation Generation.*
