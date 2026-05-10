@@ -1,7 +1,10 @@
 allowBuilds:
   '@biomejs/biome': true
+  '@google/genai': true
   '@tailwindcss/oxide': true
   esbuild: true
+  msw: true
+  protobufjs: true
   sharp: true
   supabase: true
   unrs-resolver: true
