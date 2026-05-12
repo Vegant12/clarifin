@@ -20,10 +20,14 @@ import { scheduleParseBatchesForDoc } from "@/lib/ingest/trigger-parse-batch";
 function timingSafeStringEq(a: string, b: string): boolean {
   const ba = Buffer.from(a, "utf8");
   const bb = Buffer.from(b, "utf8");
-  if (ba.length !== bb.length) {
-    return false;
-  }
-  return timingSafeEqual(ba, bb);
+  // Pad both to the same length so the timingSafeEqual call always runs.
+  const len = Math.max(ba.length, bb.length);
+  const padA = Buffer.alloc(len);
+  const padB = Buffer.alloc(len);
+  ba.copy(padA);
+  bb.copy(padB);
+  // Still do explicit length check, but only AFTER constant-time compare.
+  return timingSafeEqual(padA, padB) && ba.length === bb.length;
 }
 
 function extractBearer(request: Request): string | null {
