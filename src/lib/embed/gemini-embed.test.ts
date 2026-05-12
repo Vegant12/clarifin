@@ -1,10 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  EMBEDDING_DIMENSIONS,
-  embedQueryText,
-  embedTextBatch,
-} from "@/lib/embed/gemini-embed";
+import { EMBEDDING_DIMENSIONS, embedQueryText, embedTextBatch } from "@/lib/embed/gemini-embed";
 
 function mockVec(seed: number): number[] {
   const v: number[] = [];
