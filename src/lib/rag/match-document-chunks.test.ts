@@ -7,7 +7,10 @@ const { embedQueryText, rpcMock } = vi.hoisted(() => ({
 
 vi.mock("@/lib/embed/gemini-embed", () => ({
   embedQueryText,
-  vectorToPgString: (v: number[]) => `[${v.join(",")}]`,
+  vectorToPgString: (v: number[]) => {
+    if (v.length !== 768) throw new Error(`Expected 768-dim vector, got ${v.length}`);
+    return `[${v.join(",")}]`;
+  },
 }));
 
 vi.mock("@/db/client", () => ({
