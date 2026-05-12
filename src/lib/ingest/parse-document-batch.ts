@@ -80,10 +80,12 @@ export async function runParseBatch({ docId }: { docId: string }): Promise<{ don
   let geminiName = doc.gemini_file_resource_name;
   const parseStart = doc.parse_next_page;
 
+  // Captured during bootstrap so the unpdf branch can reuse it without a second download.
+  let bootstrapTexts: Awaited<ReturnType<typeof extractPdfTextPerPage>> | null = null;
+
   if (extractionSource == null) {
-    let extracted: Awaited<ReturnType<typeof extractPdfTextPerPage>>;
     try {
-      extracted = await extractPdfTextPerPage(clonePdfBytes(pdfMaster));
+      bootstrapTexts = await extractPdfTextPerPage(clonePdfBytes(pdfMaster));
     } catch (err) {
       console.error("[runParseBatch] bootstrap extractPdfTextPerPage", docId, err);
       await failDocument(
@@ -94,8 +96,8 @@ export async function runParseBatch({ docId }: { docId: string }): Promise<{ don
       );
       return { done: false };
     }
-    totalPages = extracted.totalPages;
-    const sample = extracted.texts.slice(0, Math.min(5, extracted.texts.length));
+    totalPages = bootstrapTexts.totalPages;
+    const sample = bootstrapTexts.texts.slice(0, Math.min(5, bootstrapTexts.texts.length));
     extractionSource = classifyExtractionSource(sample);
     const up = await supabaseAdmin
       .from("documents")
@@ -130,7 +132,8 @@ export async function runParseBatch({ docId }: { docId: string }): Promise<{ don
 
   try {
     if (extractionSource === "unpdf") {
-      const textsR = await extractPdfTextPerPage(clonePdfBytes(pdfMaster));
+      // Reuse bootstrap extraction result when available (first batch); otherwise re-extract.
+      const textsR = bootstrapTexts ?? await extractPdfTextPerPage(clonePdfBytes(pdfMaster));
       let itemsByPage: StructuredTextItem[][];
       try {
         const itemsR = await extractPdfTextItemsPerPage(clonePdfBytes(pdfMaster));
