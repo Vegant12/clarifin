@@ -27,11 +27,7 @@ function isRetryableStatus(status: number): boolean {
   return status === 429 || (status >= 500 && status <= 599);
 }
 
-async function fetchWithBackoff(
-  url: string,
-  init: RequestInit,
-  attempt = 0,
-): Promise<Response> {
+async function fetchWithBackoff(url: string, init: RequestInit, attempt = 0): Promise<Response> {
   const maxRetries = 4;
   const res = await fetch(url, init);
   if (!isRetryableStatus(res.status) || attempt >= maxRetries) {
@@ -79,9 +75,7 @@ export async function embedTextBatch(texts: string[]): Promise<number[][]> {
 
     if (!res.ok) {
       const errText = await res.text().catch(() => "");
-      throw new Error(
-        `Gemini batchEmbedContents failed: ${res.status} ${errText.slice(0, 500)}`,
-      );
+      throw new Error(`Gemini batchEmbedContents failed: ${res.status} ${errText.slice(0, 500)}`);
     }
 
     const json = (await res.json()) as BatchEmbedApiResponse;
