@@ -14,7 +14,7 @@ A web app where English-fluent Indonesian retail investors upload an IDX-listed 
 
 <!-- Shipped and confirmed valuable. -->
 
-(None yet — ship to validate)
+- [x] System parses the PDF preserving page boundaries so every claim can be cited back to a specific page — Phase 3 (unpdf per-page extraction) + Phase 4 (chunks embedded with page_number, source_page_start/end metadata confirmed non-null in live test, 2026-05-12)
 
 ### Active
 
@@ -87,6 +87,9 @@ A web app where English-fluent Indonesian retail investors upload an IDX-listed 
 | Page-level citations are mandatory, not optional | Trust is the moat; users will not believe AI-generated financial commentary without verifiable source links | — Pending |
 | Chat with document is in scope for v1 | Users will have follow-up questions after the initial explanation; one-shot output is incomplete | — Pending |
 | No buy/sell recommendations | Regulatory caution + ethical responsibility; "explain and contextualize" is the line | — Pending |
+| Use `gemini-embedding-001` (not `text-embedding-004`) | `text-embedding-004` returns 404 on `v1beta/batchEmbedContents`; `gemini-embedding-001` is the stable production endpoint with identical 768-dim output | — Phase 4 (2026-05-12) |
+| HNSW over IVFFlat for pgvector index | At ≤100K vectors HNSW gives consistent low latency (~107ms measured) without the IVFFlat list-tuning overhead; simpler to operate | — Phase 4 (2026-05-12) |
+| `match_document_chunks` RPC restricted to service_role only | Public anon key must never be able to call the RPC directly; REVOKE from public + GRANT to service_role enforced at migration level | — Phase 4 (2026-05-12) |
 
 ## Evolution
 
@@ -106,4 +109,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-02 after initialization*
+*Last updated: 2026-05-12 after Phase 4 complete (embeddings & vector store)*
