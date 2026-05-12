@@ -3,7 +3,7 @@ status: complete
 phase: 04-embeddings-vector-store
 source: [04-01-PLAN.md, 04-02-PLAN.md, 04-03-PLAN.md, 04-04-PLAN.md, 04-05-PLAN.md]
 started: 2026-05-10T00:00:00Z
-updated: 2026-05-10T11:38:00Z
+updated: 2026-05-12T10:15:00Z
 ---
 
 ## Current Test
@@ -32,9 +32,9 @@ result: pass
 expected: `src/lib/rag/match-document-chunks.ts` starts with `import "server-only"` and exports `matchDocumentChunks(docId, query, matchCount?)`. Running `pnpm typecheck` confirms the type signature matches the `match_document_chunks` RPC.
 result: pass
 
-### 6. Perf smoke script exists
-expected: `scripts/smoke-vector-perf.ts` exists and contains instructions / code for seeding vectors and timing similarity search. The file is runnable (no compile errors via `pnpm typecheck`).
-result: pass
+### 6. Perf smoke script — live HNSW timing (2026-05-12)
+expected: `scripts/smoke-vector-perf.ts` seeds 10k vectors in remote Supabase and times `match_document_chunks`. Target: < 500ms.
+result: pass — match_document_chunks_ms=107.42, insert_wall_ms=111817, rows_returned=5 (remote Supabase ap-southeast-1, project vedzschlklbsumvtasgv)
 
 ### 7. Embed pipeline wires into parse completion
 expected: After `parse-batch` completes for a document, `scheduleEmbedBatchesForDoc` is called and the document status transitions to `embedding`. This is verifiable by code inspection — `src/lib/ingest/embed-document-batch.ts` or the parse orchestrator references `scheduleEmbedBatchesForDoc`.
