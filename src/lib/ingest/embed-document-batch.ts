@@ -83,7 +83,13 @@ export async function runEmbedBatch({ docId }: { docId: string }): Promise<{ don
         await failDocumentEmbed(docId, "Could not verify embedding progress.");
         return { done: false };
       }
-      return { done: true };
+      // remaining > 0 but no rows returned — likely a race; signal not done so caller retries.
+      return { done: false };
+    }
+
+    // Check deadline BEFORE issuing the batch, not inside it.
+    if (Date.now() > deadline) {
+      return { done: false };
     }
 
     let vectors: number[][];
@@ -99,10 +105,8 @@ export async function runEmbedBatch({ docId }: { docId: string }): Promise<{ don
       return { done: false };
     }
 
+    // Update all vectors — deadline is already checked above so no mid-batch exit.
     for (let i = 0; i < rows.length; i++) {
-      if (Date.now() > deadline) {
-        return { done: false };
-      }
       const row = rows[i] as NonNullable<(typeof rows)[number]>;
       const vec = vectors[i] as number[];
       const up = await supabaseAdmin
