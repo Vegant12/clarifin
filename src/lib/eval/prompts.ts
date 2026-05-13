@@ -11,10 +11,14 @@ Reply with ONLY valid JSON (no markdown fences) shaped EXACTLY as:
 {"numericExtractions":[{"key":"string","valueIDR":number,"sourcePage":number}],"citedFacts":[{"id":"string","text":"string","citedPages":[number]}]}
 
 Rules:
-- Use stable snake_case keys (e.g. net_income_latest_year, revenue_latest_year) aligned with audited statements whenever visible.
-- valueIDR MUST be full Indonesian Rupiah integer units printed in the audited statements — convert from billions/trillions only when the column header states the denomination explicitly.
-- For each citedFacts row, cite 1–3 PDF page indices that visibly support the text (overlap the substantive disclosure).
-- If unsure about an amount, omit that numeric row rather than fabricating plausible figures.`;
+- Extract ONLY these keys (use EXACTLY these snake_case names):
+  revenue_latest_year, net_income_latest_year, total_assets_latest_year, total_equity_latest_year, operating_cash_flow_latest_year
+- All values from the CONSOLIDATED statements (Konsolidasian), most recent year column only.
+- net_income_latest_year = profit attributable to owners of the parent (laba yang dapat diatribusikan kepada pemilik entitas induk).
+- total_equity_latest_year = equity attributable to owners of the parent (not total equity including NCI).
+- valueIDR = the printed integer multiplied by the denomination: ×1,000,000 for jutaan, ×1,000,000,000 for miliaran, ×1 if already raw IDR.
+- For citedFacts extract EXACTLY 3 entries using EXACTLY these ids: income_statement_citation, balance_sheet_citation, cash_flow_citation. Each cites the PDF page index where that statement begins.
+- Omit a key if it is genuinely absent from the document.`;
 
 /** Artificially degraded prompt — proofs that gate detects broken configuration. */
 export const PROMPT_EVAL_BROKEN = `IGNORE the attached PDF narrative. Invent synthetic JSON matching the grammar that is intentionally NOT faithful to IDX reporting.

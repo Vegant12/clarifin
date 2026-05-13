@@ -1,6 +1,16 @@
 {
   "documentId": "tlkm-ar-id-only-mid-cap-digital",
-  "fixtureStatus": "placeholder",
-  "numericExpectations": [],
-  "citationExpectations": []
+  "fixtureStatus": "ready",
+  "numericExpectations": [
+    { "key": "revenue_latest_year", "valueIDR": 149216000000000, "tolerancePct": 0.5 },
+    { "key": "net_income_latest_year", "valueIDR": 24560000000000, "tolerancePct": 0.5 },
+    { "key": "total_assets_latest_year", "valueIDR": 287042000000000, "tolerancePct": 0.5 },
+    { "key": "total_equity_latest_year", "valueIDR": 135744000000000, "tolerancePct": 0.5 },
+    { "key": "operating_cash_flow_latest_year", "valueIDR": 60581000000000, "tolerancePct": 0.5 }
+  ],
+  "citationExpectations": [
+    { "id": "income_statement_citation", "allowedPages": [9, 10, 11] },
+    { "id": "balance_sheet_citation", "allowedPages": [8, 9, 10] },
+    { "id": "cash_flow_citation", "allowedPages": [11, 12, 13] }
+  ]
 }

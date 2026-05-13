@@ -1,6 +1,16 @@
 {
   "documentId": "small-cap-scanned-annual",
-  "fixtureStatus": "placeholder",
-  "numericExpectations": [],
-  "citationExpectations": []
+  "fixtureStatus": "ready",
+  "numericExpectations": [
+    { "key": "revenue_latest_year", "valueIDR": 2298131000000, "tolerancePct": 2.0 },
+    { "key": "net_income_latest_year", "valueIDR": 595629000000, "tolerancePct": 2.0 },
+    { "key": "total_assets_latest_year", "valueIDR": 3901820000000, "tolerancePct": 2.0 },
+    { "key": "total_equity_latest_year", "valueIDR": 3446696000000, "tolerancePct": 2.0 },
+    { "key": "operating_cash_flow_latest_year", "valueIDR": 42910000000, "tolerancePct": 2.0 }
+  ],
+  "citationExpectations": [
+    { "id": "income_statement_citation", "allowedPages": [83, 84, 85] },
+    { "id": "balance_sheet_citation", "allowedPages": [81, 82, 83] },
+    { "id": "cash_flow_citation", "allowedPages": [86, 87, 88] }
+  ]
 }

@@ -25,5 +25,8 @@ export function parseEvalExtractionResponse(body: string): EvalExtraction {
     .trim()
     .replace(/^```(?:json)?\s*/i, "")
     .replace(/\s*```$/i, "");
-  return extractionResultSchema.parse(JSON.parse(trimmed) as unknown);
+  const first = trimmed.indexOf("{");
+  const last = trimmed.lastIndexOf("}");
+  if (first === -1 || last === -1) throw new Error("No JSON object found in Gemini response.");
+  return extractionResultSchema.parse(JSON.parse(trimmed.slice(first, last + 1)) as unknown);
 }

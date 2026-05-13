@@ -1,6 +1,16 @@
 {
   "documentId": "bbca-ar-bilingual-large-cap-digital",
-  "fixtureStatus": "placeholder",
-  "numericExpectations": [],
-  "citationExpectations": []
+  "fixtureStatus": "ready",
+  "numericExpectations": [
+    { "key": "revenue_latest_year", "valueIDR": 87397774000000, "tolerancePct": 0.5 },
+    { "key": "net_income_latest_year", "valueIDR": 48639122000000, "tolerancePct": 0.5 },
+    { "key": "total_assets_latest_year", "valueIDR": 1408107010000000, "tolerancePct": 0.5 },
+    { "key": "total_equity_latest_year", "valueIDR": 242356256000000, "tolerancePct": 0.5 },
+    { "key": "operating_cash_flow_latest_year", "valueIDR": 58115466000000, "tolerancePct": 0.5 }
+  ],
+  "citationExpectations": [
+    { "id": "income_statement_citation", "allowedPages": [9, 10, 11] },
+    { "id": "balance_sheet_citation", "allowedPages": [7, 8, 9] },
+    { "id": "cash_flow_citation", "allowedPages": [13, 14, 15] }
+  ]
 }

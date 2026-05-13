@@ -12,7 +12,7 @@ export const extractionResultSchema = z.object({
   citedFacts: z.array(
     z.object({
       id: z.string().min(1),
-      text: z.string(),
+      text: z.string().optional(),
       citedPages: z.array(z.number().int().positive()).min(1),
     }),
   ),
