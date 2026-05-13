@@ -125,8 +125,11 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
   2. The report shows numeric accuracy (key figures from ground truth match AI-extracted values) and citation accuracy (cited page number contains the claimed fact) as separate percentages
   3. Deliberately misconfiguring the Gemini prompt causes the harness to score below threshold and report specific failures — proving the gate is live, not decorative
   4. The harness can be re-run on demand with a single command and produces consistent, comparable results across runs
-**Plans**: 1 plan
-- [x] 05-01-PLAN.md (05-01-eval-harness-implementation) — manifest + Gemini eval extract + `pnpm eval` + Vitest scorer (Wave 1; **corpus curation still open** — see `05-VERIFICATION.md`)
+**Plans**: 2 plans
+- [ ] 05-01-PLAN.md — Wave 1 corpus curation: BBCA + TLKM + BISI (3-document minimum gate per D-08, unblocks Phase 6 start) (Wave 1, has visual checkpoint)
+- [ ] 05-02-PLAN.md — Wave 2 corpus curation: SMGR + ASII + BJBR + INDF + GOTO + PTBA (full 9-doc gate + broken-prompt regression proof per D-09) (Wave 2, depends on 05-01, has visual checkpoint)
+
+> **Note:** The harness code (manifest + Gemini eval extract + `pnpm eval` + Vitest scorer) was completed in prior work and is already merged. The two plans above cover the remaining corpus curation only (PDFs + ground-truth fixtures). See `eval/README.md` and `.planning/phases/05-indonesian-eval-harness/05-VALIDATION.md` for historical harness implementation context.
 **UI hint**: no
 **AI hint**: yes
 **Research flag**: yes — RAGAS evaluation framework integration; custom numeric verifier design for IDR-scale figures; bilingual ground-truth comparison methodology for BBCA/TLKM documents
@@ -264,7 +267,7 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
 | 2. PDF Upload & Storage | 6/6 | Implemented (UAT pending) | 2026-05-06 |
 | 3. PDF Parsing & Chunking | 6/6 | Complete    | 2026-05-08 |
 | 4. Embeddings & Vector Store | 5/5 | Implemented (remote `db push`: link required) — see `04-UAT.md` | 2026-05-08 |
-| 5. Indonesian Eval Harness | 1/1 harness | Implemented · **9 PDFs + ready fixtures required** — see `eval/README`, `05-VERIFICATION.md` | - |
+| 5. Indonesian Eval Harness | 0/2 curation plans (harness code already merged) | Planned · curate 9 IDX PDFs + ready fixtures across Waves 1–2 | - |
 | 6. AI Explanation Generation | 0/TBD | Not started | - |
 | 7. Citation UI & PDF Viewer | 0/TBD | Not started | - |
 | 8. AI Score & Drill-Down | 0/TBD | Not started | - |
