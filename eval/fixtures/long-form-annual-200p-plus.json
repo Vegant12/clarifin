@@ -1,6 +1,16 @@
 {
   "documentId": "long-form-annual-200p-plus",
-  "fixtureStatus": "placeholder",
-  "numericExpectations": [],
-  "citationExpectations": []
+  "fixtureStatus": "ready",
+  "numericExpectations": [
+    { "key": "revenue_latest_year",             "valueIDR": 316565000000000, "tolerancePct": 0.5 },
+    { "key": "net_income_latest_year",          "valueIDR": 33839000000000,  "tolerancePct": 0.5 },
+    { "key": "total_assets_latest_year",        "valueIDR": 445679000000000, "tolerancePct": 0.5 },
+    { "key": "total_equity_latest_year",        "valueIDR": 198640000000000, "tolerancePct": 0.5 },
+    { "key": "operating_cash_flow_latest_year", "valueIDR": 33746000000000,  "tolerancePct": 0.5 }
+  ],
+  "citationExpectations": [
+    { "id": "income_statement_citation", "allowedPages": [476, 477, 478] },
+    { "id": "balance_sheet_citation",    "allowedPages": [474, 475, 476] },
+    { "id": "cash_flow_citation",        "allowedPages": [479, 480, 481] }
+  ]
 }

@@ -1,6 +1,16 @@
 {
   "documentId": "mid-cap-annual-manufacturing-id-digital",
-  "fixtureStatus": "placeholder",
-  "numericExpectations": [],
-  "citationExpectations": []
+  "fixtureStatus": "ready",
+  "numericExpectations": [
+    { "key": "revenue_latest_year",             "valueIDR": 111703611000000, "tolerancePct": 0.5 },
+    { "key": "net_income_latest_year",          "valueIDR": 8147019000000,   "tolerancePct": 0.5 },
+    { "key": "total_assets_latest_year",        "valueIDR": 186587957000000, "tolerancePct": 0.5 },
+    { "key": "total_equity_latest_year",        "valueIDR": 59193013000000,  "tolerancePct": 0.5 },
+    { "key": "operating_cash_flow_latest_year", "valueIDR": 18460624000000,  "tolerancePct": 0.5 }
+  ],
+  "citationExpectations": [
+    { "id": "income_statement_citation", "allowedPages": [16, 17, 18] },
+    { "id": "balance_sheet_citation",    "allowedPages": [13, 14, 15] },
+    { "id": "cash_flow_citation",        "allowedPages": [19, 20, 21] }
+  ]
 }

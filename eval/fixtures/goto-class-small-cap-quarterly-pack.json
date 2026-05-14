@@ -1,6 +1,16 @@
 {
   "documentId": "goto-class-small-cap-quarterly-pack",
-  "fixtureStatus": "placeholder",
-  "numericExpectations": [],
-  "citationExpectations": []
+  "fixtureStatus": "ready",
+  "numericExpectations": [
+    { "key": "revenue_latest_year",             "valueIDR": 14785492000000,   "tolerancePct": 0.5 },
+    { "key": "net_income_latest_year",          "valueIDR": -90395629000000,  "tolerancePct": 0.5 },
+    { "key": "total_assets_latest_year",        "valueIDR": 54097256000000,   "tolerancePct": 0.5 },
+    { "key": "total_equity_latest_year",        "valueIDR": 37930265000000,   "tolerancePct": 0.5 },
+    { "key": "operating_cash_flow_latest_year", "valueIDR": -4325308000000,   "tolerancePct": 0.5 }
+  ],
+  "citationExpectations": [
+    { "id": "income_statement_citation", "allowedPages": [16, 17, 18] },
+    { "id": "balance_sheet_citation",    "allowedPages": [14, 15, 16] },
+    { "id": "cash_flow_citation",        "allowedPages": [20, 21, 22] }
+  ]
 }
