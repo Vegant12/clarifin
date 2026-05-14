@@ -126,7 +126,7 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
   3. Deliberately misconfiguring the Gemini prompt causes the harness to score below threshold and report specific failures — proving the gate is live, not decorative
   4. The harness can be re-run on demand with a single command and produces consistent, comparable results across runs
 **Plans**: 2 plans
-- [ ] 05-01-PLAN.md — Wave 1 corpus curation: BBCA + TLKM + BISI (3-document minimum gate per D-08, unblocks Phase 6 start) (Wave 1, has visual checkpoint)
+- [x] 05-01-PLAN.md — Wave 1 corpus curation: BBCA + TLKM + BISI (3-document minimum gate per D-08, unblocks Phase 6 start) (Wave 1, has visual checkpoint)
 - [ ] 05-02-PLAN.md — Wave 2 corpus curation: SMGR + ASII + BJBR + INDF + GOTO + PTBA (full 9-doc gate + broken-prompt regression proof per D-09) (Wave 2, depends on 05-01, has visual checkpoint)
 
 > **Note:** The harness code (manifest + Gemini eval extract + `pnpm eval` + Vitest scorer) was completed in prior work and is already merged. The two plans above cover the remaining corpus curation only (PDFs + ground-truth fixtures). See `eval/README.md` and `.planning/phases/05-indonesian-eval-harness/05-VALIDATION.md` for historical harness implementation context.
