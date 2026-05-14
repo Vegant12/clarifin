@@ -1,6 +1,16 @@
 {
   "documentId": "bbcj-ar-variant-bilingual-large-cap-digital-b",
-  "fixtureStatus": "placeholder",
-  "numericExpectations": [],
-  "citationExpectations": []
+  "fixtureStatus": "ready",
+  "numericExpectations": [
+    { "key": "revenue_latest_year",             "valueIDR": 8985877000000,   "tolerancePct": 0.5 },
+    { "key": "net_income_latest_year",          "valueIDR": 1778395000000,   "tolerancePct": 0.5 },
+    { "key": "total_assets_latest_year",        "valueIDR": 188295488000000, "tolerancePct": 0.5 },
+    { "key": "total_equity_latest_year",        "valueIDR": 15559877000000,  "tolerancePct": 0.5 },
+    { "key": "operating_cash_flow_latest_year", "valueIDR": 612359000000,    "tolerancePct": 0.5 }
+  ],
+  "citationExpectations": [
+    { "id": "income_statement_citation", "allowedPages": [14, 15, 16] },
+    { "id": "balance_sheet_citation",    "allowedPages": [11, 12, 13] },
+    { "id": "cash_flow_citation",        "allowedPages": [17, 18, 19] }
+  ]
 }

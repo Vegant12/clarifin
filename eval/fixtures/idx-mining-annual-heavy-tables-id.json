@@ -1,6 +1,16 @@
 {
   "documentId": "idx-mining-annual-heavy-tables-id",
-  "fixtureStatus": "placeholder",
-  "numericExpectations": [],
-  "citationExpectations": []
+  "fixtureStatus": "ready",
+  "numericExpectations": [
+    { "key": "revenue_latest_year",             "valueIDR": 38488867000000, "tolerancePct": 0.5 },
+    { "key": "net_income_latest_year",          "valueIDR": 6105856000000,  "tolerancePct": 0.5 },
+    { "key": "total_assets_latest_year",        "valueIDR": 38765189000000, "tolerancePct": 0.5 },
+    { "key": "total_equity_latest_year",        "valueIDR": 21434538000000, "tolerancePct": 0.5 },
+    { "key": "operating_cash_flow_latest_year", "valueIDR": 3104707000000,  "tolerancePct": 0.5 }
+  ],
+  "citationExpectations": [
+    { "id": "income_statement_citation", "allowedPages": [573, 574, 575] },
+    { "id": "balance_sheet_citation",    "allowedPages": [570, 571, 572] },
+    { "id": "cash_flow_citation",        "allowedPages": [576, 577, 578] }
+  ]
 }
