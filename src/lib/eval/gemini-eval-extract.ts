@@ -75,7 +75,39 @@ export async function extractEvalClaims(params: ExtractEvalClaimsParams): Promis
     const response = await ai.models.generateContent({
       model: EVAL_MODEL_ID,
       contents: [createPartFromUri(uri, mimeType), { text: instruction }],
-      config: { responseMimeType: "application/json" },
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: "object",
+          properties: {
+            numericExtractions: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  key: { type: "string" },
+                  valueIDR: { type: "number" },
+                  sourcePage: { type: "number" },
+                },
+                required: ["key", "valueIDR"],
+              },
+            },
+            citedFacts: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  id: { type: "string" },
+                  text: { type: "string" },
+                  citedPages: { type: "array", items: { type: "integer" } },
+                },
+                required: ["id", "citedPages"],
+              },
+            },
+          },
+          required: ["numericExtractions", "citedFacts"],
+        },
+      },
     });
 
     const body = response.text;
