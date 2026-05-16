@@ -3,7 +3,7 @@
  * `PROMPT_EVAL_BROKEN` is for regression proofs only — never wired into ingestion.
  */
 
-export const EVAL_MODEL_ID = "gemini-2.5-flash" as const;
+export const EVAL_MODEL_ID = "gemini-2.0-flash" as const;
 
 export const PROMPT_EVAL_BASE = `You are validating an Indonesian-listed company financial PDF (IDX-style).
 Extract structured information for benchmarking.
