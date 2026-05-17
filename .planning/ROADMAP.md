@@ -146,7 +146,12 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
   3. The explanation streams progressively — the first section appears in the UI within 5 seconds of triggering generation
   4. Refreshing the page after explanation loads does not call the Gemini API again — the cached explanation renders instantly from `document_analysis`
   5. **[EVAL GATE — blocking]** The eval harness scores ≥90% numeric accuracy AND ≥90% citation accuracy on the 9-document eval set before this phase is signed off
-**Plans**: TBD
+**Plans**: 5 plans
+- [ ] 06-01-PLAN.md (06-01-schema-and-prompts) — Zod explanation schema + PSAK glossary + DISCLAIM-02 prompt builder + Wave 0 tests (Wave 1)
+- [ ] 06-02-PLAN.md (06-02-explain-jsonb-migration) — [BLOCKING] ALTER COLUMN explanation TYPE jsonb + db push + types regen (Wave 1, human-verify push)
+- [ ] 06-03-PLAN.md (06-03-generate-and-orchestrate) — generate-explanation.ts (Files API + stream) + analyze-document-batch.ts (cache gate + status machine) (Wave 2)
+- [ ] 06-04-PLAN.md (06-04-cron-trigger-and-route) — /api/internal/analyze-batch route + after() chain from embed (no new cron slot) + STUB_PIPELINE_TICK extension (Wave 3)
+- [ ] 06-05-PLAN.md (06-05-eval-gate-and-smoke) — pnpm eval ≥90/90 gate + end-to-end smoke (Wave 4, blocking human-verify)
 **UI hint**: no
 **AI hint**: yes
 **Research flag**: yes — Gemini Files API citation-forcing prompt engineering; glossary injection patterns; streaming with Vercel AI SDK + Next.js App Router; `document_analysis` caching schema
@@ -268,7 +273,7 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
 | 3. PDF Parsing & Chunking | 6/6 | Complete    | 2026-05-08 |
 | 4. Embeddings & Vector Store | 5/5 | Implemented (remote `db push`: link required) — see `04-UAT.md` | 2026-05-08 |
 | 5. Indonesian Eval Harness | 0/2 curation plans (harness code already merged) | Planned · curate 9 IDX PDFs + ready fixtures across Waves 1–2 | - |
-| 6. AI Explanation Generation | 0/TBD | Not started | - |
+| 6. AI Explanation Generation | 0/5 | Planned · schema+prompts (W1), jsonb migration (W1), generator+orchestrator (W2), cron route (W3), eval gate (W4) | - |
 | 7. Citation UI & PDF Viewer | 0/TBD | Not started | - |
 | 8. AI Score & Drill-Down | 0/TBD | Not started | - |
 | 9. Stock Data & Trend Chart | 0/TBD | Not started | - |
