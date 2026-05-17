@@ -16,7 +16,7 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
 - [x] **Phase 2: PDF Upload & Storage** — Browser-direct upload to Supabase Storage, async ingestion pattern, progress polling
 - [x] **Phase 3: PDF Parsing & Chunking** — unpdf page-by-page extraction, scanned PDF detection, table-atomic chunking (completed 2026-05-08; UAT `03-UAT.md` complete)
 - [x] **Phase 4: Embeddings & Vector Store** — text-embedding-004, pgvector with HNSW index, similarity retriever
-- [ ] **Phase 5: Indonesian Eval Harness** — 9-document eval set, numeric + citation accuracy harness, Phase 6 gate
+- [x] **Phase 5: Indonesian Eval Harness** — 9-document eval set, numeric + citation accuracy harness, Phase 6 gate
 - [ ] **Phase 6: AI Explanation Generation** — Gemini Files API, 5-section plain-English output, inline citations, Bahasa handling, streaming + caching
 - [ ] **Phase 7: Citation UI & PDF Viewer** — Split-pane desktop viewer, click-to-jump, hover popover, jargon tooltips, mobile tab fallback
 - [ ] **Phase 8: AI Score & Drill-Down** — Gemini generateObject, 1-10 assessment, 4-dimension breakdown, cited evidence drill-down
@@ -127,7 +127,7 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
   4. The harness can be re-run on demand with a single command and produces consistent, comparable results across runs
 **Plans**: 2 plans
 - [x] 05-01-PLAN.md — Wave 1 corpus curation: BBCA + TLKM + BISI (3-document minimum gate per D-08, unblocks Phase 6 start) (Wave 1, has visual checkpoint)
-- [ ] 05-02-PLAN.md — Wave 2 corpus curation: SMGR + ASII + BJBR + INDF + GOTO + PTBA (full 9-doc gate + broken-prompt regression proof per D-09) (Wave 2, depends on 05-01, has visual checkpoint)
+- [x] 05-02-PLAN.md — Wave 2 corpus curation: SMGR + ASII + BJBR + INDF + GOTO + PTBA (full 9-doc gate + broken-prompt regression proof per D-09) (Wave 2, depends on 05-01, has visual checkpoint)
 
 > **Note:** The harness code (manifest + Gemini eval extract + `pnpm eval` + Vitest scorer) was completed in prior work and is already merged. The two plans above cover the remaining corpus curation only (PDFs + ground-truth fixtures). See `eval/README.md` and `.planning/phases/05-indonesian-eval-harness/05-VALIDATION.md` for historical harness implementation context.
 **UI hint**: no
@@ -280,4 +280,4 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
 
 *Roadmap created: 2026-05-02*
 *Requirements mapped: 60/60*
-*Next: Curate nine IDX PDFs + `ready` fixtures, then re-run `pnpm eval` to close Phase 5; then Phase 6 — AI Explanation Generation.*
+*Next: Phase 6 — AI Explanation Generation (Gemini Files API, 5-section plain-English output, inline citations, streaming + caching).*

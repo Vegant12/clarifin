@@ -1,7 +1,5 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 #
-# Planning artifacts kept local-only (per commit 852dd12).
-.planning/
 
 # next
 .next/
