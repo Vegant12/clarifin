@@ -2,6 +2,7 @@ import "server-only";
 
 import { supabaseAdmin } from "@/db/client";
 import { embedTextBatch, vectorToPgString } from "@/lib/embed/gemini-embed";
+import { scheduleAnalyzeBatchForDoc } from "@/lib/ingest/trigger-parse-batch";
 
 /** Vercel Hobby wall clock — leave room for Gemini + DB (D4-03). */
 export const MAX_EMBED_BATCH_WALL_MS = 52_000;
@@ -77,6 +78,7 @@ export async function runEmbedBatch({ docId }: { docId: string }): Promise<{ don
       const remaining = await countNullEmbeddings(docId);
       if (remaining === 0) {
         await supabaseAdmin.from("documents").update({ status: "analyzing" }).eq("id", docId);
+        scheduleAnalyzeBatchForDoc(docId);
         return { done: true };
       }
       if (remaining < 0) {
@@ -123,6 +125,7 @@ export async function runEmbedBatch({ docId }: { docId: string }): Promise<{ don
     const afterCount = await countNullEmbeddings(docId);
     if (afterCount === 0) {
       await supabaseAdmin.from("documents").update({ status: "analyzing" }).eq("id", docId);
+      scheduleAnalyzeBatchForDoc(docId);
       return { done: true };
     }
     if (afterCount < 0) {
