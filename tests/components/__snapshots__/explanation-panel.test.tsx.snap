@@ -1,0 +1,104 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ExplanationPanel > Test 7: snapshot — citations and jargon interleaved with plain text 1`] = `
+<div>
+  <article
+    aria-label="Plain-English explanation"
+    class="flex flex-col gap-12 px-6 py-8"
+  >
+    <section
+      class="flex flex-col gap-4"
+    >
+      <h2
+        class="font-semibold text-foreground text-xl leading-tight"
+      >
+        Revenue
+      </h2>
+      <p
+        class="text-foreground text-base leading-relaxed"
+      >
+        <span
+          aria-describedby="«r27»"
+          class="cursor-help underline decoration-muted-foreground decoration-dotted underline-offset-2"
+          data-slot="tooltip-trigger"
+          data-state="closed"
+        >
+          Revenue
+        </span>
+         grew 
+        <span
+          aria-controls="radix-«r29»"
+          aria-expanded="false"
+          aria-haspopup="dialog"
+          aria-label="View source for page 1"
+          class="inline-flex cursor-pointer items-center rounded-full bg-primary px-1.5 py-0.5 text-primary-foreground text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 hover:shadow-sm"
+          data-slot="popover-trigger"
+          data-state="closed"
+          role="button"
+          tabindex="0"
+          type="button"
+        >
+          [p.1]
+        </span>
+        .
+      </p>
+    </section>
+    <section
+      class="flex flex-col gap-4"
+    >
+      <h2
+        class="font-semibold text-foreground text-xl leading-tight"
+      >
+        Profitability
+      </h2>
+      <p
+        class="text-foreground text-base leading-relaxed"
+      >
+        Plain text only.
+      </p>
+    </section>
+    <section
+      class="flex flex-col gap-4"
+    >
+      <h2
+        class="font-semibold text-foreground text-xl leading-tight"
+      >
+        Balance Sheet
+      </h2>
+      <p
+        class="text-foreground text-base leading-relaxed"
+      >
+        Plain.
+      </p>
+    </section>
+    <section
+      class="flex flex-col gap-4"
+    >
+      <h2
+        class="font-semibold text-foreground text-xl leading-tight"
+      >
+        Cash Flow
+      </h2>
+      <p
+        class="text-foreground text-base leading-relaxed"
+      >
+        Plain.
+      </p>
+    </section>
+    <section
+      class="flex flex-col gap-4"
+    >
+      <h2
+        class="font-semibold text-foreground text-xl leading-tight"
+      >
+        Key Risks
+      </h2>
+      <p
+        class="text-foreground text-base leading-relaxed"
+      >
+        Plain.
+      </p>
+    </section>
+  </article>
+</div>
+`;

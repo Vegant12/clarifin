@@ -2,9 +2,16 @@ import path from "node:path";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
+  esbuild: {
+    jsx: "automatic",
+  },
   test: {
     environment: "node",
-    setupFiles: ["./vitest.setup.ts"],
+    environmentMatchGlobs: [
+      ["tests/components/**", "jsdom"],
+      ["src/components/**/*.test.tsx", "jsdom"],
+    ],
+    setupFiles: ["./vitest.setup.ts", "./tests/setup-dom.ts"],
     include: ["src/**/*.test.ts", "src/**/*.test.tsx", "tests/**/*.test.ts", "tests/**/*.test.tsx"],
     passWithNoTests: true,
     coverage: { provider: "v8", reporter: ["text", "lcov"] },
