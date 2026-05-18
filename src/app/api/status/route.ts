@@ -85,7 +85,7 @@ export async function GET(request: Request): Promise<Response> {
         .from("documents")
         .select("status, updated_at, error_message")
         .eq("id", doc_id)
-        .single();
+        .maybeSingle();
       if (!docQuery.error && docQuery.data) {
         row = docQuery.data;
       }
@@ -95,7 +95,7 @@ export async function GET(request: Request): Promise<Response> {
         .from("documents")
         .select("status, updated_at, error_message")
         .eq("id", doc_id)
-        .single();
+        .maybeSingle();
       if (!docQuery.error && docQuery.data) {
         row = docQuery.data;
       }
@@ -105,7 +105,7 @@ export async function GET(request: Request): Promise<Response> {
         .from("documents")
         .select("status, updated_at, error_message")
         .eq("id", doc_id)
-        .single();
+        .maybeSingle();
       if (!docQuery.error && docQuery.data) {
         row = docQuery.data;
       }
