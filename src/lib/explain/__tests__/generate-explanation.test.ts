@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // ---------------------------------------------------------------------------
 // Mocks — hoisted so they are available before imports are resolved
@@ -89,6 +89,10 @@ describe("isIndonesianDoc", () => {
 // ---------------------------------------------------------------------------
 
 describe("generateExplanation", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   const baseParams = {
     docId: "doc-1",
     pdfBytes: new Uint8Array([1, 2, 3]),
