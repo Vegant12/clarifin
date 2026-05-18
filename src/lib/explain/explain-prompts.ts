@@ -75,14 +75,7 @@ export function buildExplanationPrompt(
     ? `\n\nBAHASA INDONESIA VOCABULARY REFERENCE (use these English translations in your output):\n${PSAK_GLOSSARY}`
     : "";
 
-  return `You are a financial analyst explaining an IDX-listed company's financial document to a non-finance retail investor.
-
-IMPORTANT RULES:
-- Write for a smart adult who does NOT understand accounting. Use plain English, grade 9 reading level.
-- Do NOT make buy/sell recommendations. Frame ALL output as explanation and analysis only.
-- Every factual claim (a number, a ratio, a trend) MUST include an inline citation: [p.N] where N is the PDF page index (1-indexed) where that fact appears. The document has ${totalPages} total pages; every [p.N] must be a valid page in that range.
-- If you quote a Bahasa Indonesia financial term, immediately follow it with its English translation in parentheses.
-- No jargon without an inline plain-English definition on first use.${glossaryBlock}
+  return `${EXPLAIN_SYSTEM_PROMPT} The document has ${totalPages} total pages; every [p.N] must be a valid page in that range.${glossaryBlock}
 
 Produce a JSON object with EXACTLY these five string keys. Each value is a paragraph (or two) of plain-English analysis with inline [p.N] citations woven into the prose:
 - revenue: Explain what the company earns, revenue growth or decline, and what drove it.
