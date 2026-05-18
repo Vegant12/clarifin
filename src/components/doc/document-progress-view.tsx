@@ -3,19 +3,24 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { z } from "zod";
-
+import { DocumentReaderLayout } from "@/components/doc/document-reader-layout";
+import { useSessionReady } from "@/components/session-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { useSessionReady } from "@/components/session-provider";
 import { PipelineStepper } from "@/components/upload/pipeline-stepper";
+import type { ExplanationResult } from "@/lib/explain/explanation-schema";
 import { useDocumentStatus } from "@/lib/hooks/use-document-status";
 import { getBrowserSessionToken } from "@/lib/session-client";
 
 const uuidSchema = z.string().uuid();
 
-export function DocumentProgressView(props: { documentId: string }) {
-  const { documentId } = props;
+export function DocumentProgressView(props: {
+  documentId: string;
+  explanation: ExplanationResult | null;
+  pdfUrl: string | null;
+}) {
+  const { documentId, explanation, pdfUrl } = props;
   const { isSessionReady, sessionError } = useSessionReady();
 
   const [mounted, setMounted] = useState(false);
@@ -36,6 +41,12 @@ export function DocumentProgressView(props: { documentId: string }) {
   });
 
   const terminal = data?.status === "ready" || data?.status === "failed";
+
+  if (mounted && !sessionError && docIdValid && hasToken && data?.status === "ready") {
+    return (
+      <DocumentReaderLayout documentId={documentId} explanation={explanation} pdfUrl={pdfUrl} />
+    );
+  }
 
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-16 px-6 py-16">
@@ -64,8 +75,8 @@ export function DocumentProgressView(props: { documentId: string }) {
         <Card>
           <CardContent className="flex flex-col gap-4 pt-8">
             <p className="text-muted-foreground text-sm">
-              This document link is not valid. Open the link from your upload, or start again from the
-              homepage.
+              This document link is not valid. Open the link from your upload, or start again from
+              the homepage.
             </p>
             <Button asChild variant="outline" className="h-11">
               <Link href="/">Back to home</Link>
@@ -98,12 +109,6 @@ export function DocumentProgressView(props: { documentId: string }) {
               {!error && !terminal ? (
                 <p aria-live="polite" className="text-muted-foreground text-sm">
                   {!isSessionReady ? "Starting your session…" : "Checking progress…"}
-                </p>
-              ) : null}
-
-              {data?.status === "ready" ? (
-                <p className="text-muted-foreground text-sm">
-                  This stage is wired for later phases — your PDF is queued for analysis.
                 </p>
               ) : null}
             </CardContent>
