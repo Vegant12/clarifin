@@ -138,7 +138,7 @@ export async function runAnalyzeBatch({ docId }: { docId: string }): Promise<{ d
       docId,
       pdfBytes,
       filename: doc.filename ?? "document.pdf",
-      totalPages: doc.total_pages ?? 0,
+      totalPages: doc.total_pages ?? 200, // 200 is a conservative upper bound for IDX reports
       extractionSource: doc.extraction_source,
       fileResourceName: doc.gemini_file_resource_name,
       firstPageText,
