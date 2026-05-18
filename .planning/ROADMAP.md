@@ -168,7 +168,10 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
   3. Hovering over a `[p.N]` citation shows a popover with the verbatim quoted source text from that page
   4. On a 375px mobile screen, a tab switcher lets the user flip between the explanation view and the PDF viewer
   5. Hovering or tapping a recognized financial term (e.g., "Debt-to-Equity", "Free Cash Flow") surfaces a one-sentence plain-English definition
-**Plans**: TBD
+**Plans**: 3 plans
+- [ ] 07-01-PLAN.md (07-01-api-and-jargon-dict) — GET /api/page-text route + jargon-dictionary.json (≥60 terms, JARGON-02 coverage) (Wave 1)
+- [ ] 07-02-PLAN.md (07-02-citation-and-jargon-ui) — shadcn popover+tooltip, parseCitations parser, CitationInline + CitationPopover + JargonTooltip + PdfLoadingSkeleton + ExplanationPanel (Wave 2)
+- [ ] 07-03-PLAN.md (07-03-reader-layout-and-rsc) — react-pdf + react-resizable-panels + shadcn tabs, PdfViewerPanel, DocumentReaderLayout (desktop split), MobileTabView (≤768px), RSC fetch + DocumentProgressView ready-branch (Wave 3, blocking human-verify)
 **UI hint**: yes
 **AI hint**: no
 **Research flag**: no — React PDF viewer component selection; popover positioning; jargon dictionary is static JSON
@@ -274,7 +277,7 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
 | 4. Embeddings & Vector Store | 5/5 | Implemented (remote `db push`: link required) — see `04-UAT.md` | 2026-05-08 |
 | 5. Indonesian Eval Harness | 0/2 curation plans (harness code already merged) | Planned · curate 9 IDX PDFs + ready fixtures across Waves 1–2 | - |
 | 6. AI Explanation Generation | 0/5 | Planned · schema+prompts (W1), jsonb migration (W1), generator+orchestrator (W2), cron route (W3), eval gate (W4) | - |
-| 7. Citation UI & PDF Viewer | 0/TBD | Not started | - |
+| 7. Citation UI & PDF Viewer | 0/3 | Planned · API+jargon dict (W1), citation+jargon UI (W2), reader layout+RSC (W3, human-verify) | - |
 | 8. AI Score & Drill-Down | 0/TBD | Not started | - |
 | 9. Stock Data & Trend Chart | 0/TBD | Not started | - |
 | 10. Chat Interface | 0/TBD | Not started | - |
