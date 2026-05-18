@@ -62,3 +62,25 @@ export function scheduleEmbedBatchesForDoc(docId: string): void {
     }
   });
 }
+
+/** Chain analyze batch after embedding → analyzing (Phase 6). */
+export function scheduleAnalyzeBatchForDoc(docId: string): void {
+  if (process.env.NODE_ENV === "test") {
+    return;
+  }
+  after(async () => {
+    try {
+      const base = getInternalAppBaseUrl();
+      await fetch(`${base}/api/internal/analyze-batch`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${env.INTERNAL_PARSE_SECRET}`,
+        },
+        body: JSON.stringify({ doc_id: docId }),
+      });
+    } catch (e) {
+      console.error("scheduleAnalyzeBatchForDoc", e);
+    }
+  });
+}
