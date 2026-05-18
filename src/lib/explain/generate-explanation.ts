@@ -22,10 +22,18 @@ async function waitForFileReady(
   ai: GoogleGenAI,
   name: string,
 ): Promise<{ uri: string; mimeType: string }> {
+  const MAX_POLLS = 40; // 40 × 1500ms = 60s max wait
+  let polls = 0;
   let file = await ai.files.get({ name });
-  while (file.state === "PROCESSING") {
+  while (file.state === "PROCESSING" && polls < MAX_POLLS) {
     await new Promise((r) => setTimeout(r, 1500));
     file = await ai.files.get({ name });
+    polls++;
+  }
+  if (file.state === "PROCESSING") {
+    throw new Error(
+      `Gemini file ${name} still PROCESSING after ${MAX_POLLS} polls — aborting.`,
+    );
   }
   if (file.state === "FAILED") {
     throw new Error("Gemini file processing failed.");
