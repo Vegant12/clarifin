@@ -99,6 +99,16 @@ export async function GET(request: Request): Promise<Response> {
       if (!docQuery.error && docQuery.data) {
         row = docQuery.data;
       }
+    } else if (stale && row.status === "analyzing") {
+      await supabaseAdmin.from("documents").update({ status: "ready" }).eq("id", doc_id);
+      docQuery = await supabaseAdmin
+        .from("documents")
+        .select("status, updated_at, error_message")
+        .eq("id", doc_id)
+        .single();
+      if (!docQuery.error && docQuery.data) {
+        row = docQuery.data;
+      }
     }
   }
 
