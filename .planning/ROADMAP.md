@@ -151,7 +151,7 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
 - [x] 06-02-PLAN.md (06-02-explain-jsonb-migration) — [BLOCKING] ALTER COLUMN explanation TYPE jsonb + db push + types regen (Wave 1, human-verify push)
 - [x] 06-03-PLAN.md (06-03-generate-and-orchestrate) — generate-explanation.ts (Files API + stream) + analyze-document-batch.ts (cache gate + status machine) (Wave 2)
 - [x] 06-04-PLAN.md (06-04-cron-trigger-and-route) — /api/internal/analyze-batch route + after() chain from embed (no new cron slot) + STUB_PIPELINE_TICK extension (Wave 3)
-- [ ] 06-05-PLAN.md (06-05-eval-gate-and-smoke) — pnpm eval ≥90/90 gate + end-to-end smoke (Wave 4, blocking human-verify)
+- [x] 06-05-PLAN.md (06-05-eval-gate-and-smoke) — pnpm eval ≥90/90 gate + end-to-end smoke (Wave 4, blocking human-verify)
 **UI hint**: no
 **AI hint**: yes
 **Research flag**: yes — Gemini Files API citation-forcing prompt engineering; glossary injection patterns; streaming with Vercel AI SDK + Next.js App Router; `document_analysis` caching schema
