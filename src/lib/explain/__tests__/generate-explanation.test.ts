@@ -162,4 +162,21 @@ describe("generateExplanation", () => {
     expect(result.fileResourceName).toBe("files/fresh789");
     expect(result.result).toEqual(VALID_EXPLANATION);
   });
+
+  it("propagates error when re-upload (filesUpload) rejects in the catch-path", async () => {
+    // Cached resource exists but waitForFileReady throws (FAILED state)
+    filesGet.mockResolvedValueOnce({ state: "FAILED", uri: null, mimeType: "application/pdf" });
+    // Fresh upload itself also fails — error should propagate out of generateExplanation
+    filesUpload.mockRejectedValue(new Error("Gemini storage quota exceeded"));
+
+    await expect(
+      generateExplanation({
+        ...baseParams,
+        fileResourceName: "files/expired",
+      }),
+    ).rejects.toThrow("Gemini storage quota exceeded");
+
+    // generateContentStream must NOT have been called — we never reached the LLM call
+    expect(generateContentStream).not.toHaveBeenCalled();
+  });
 });
