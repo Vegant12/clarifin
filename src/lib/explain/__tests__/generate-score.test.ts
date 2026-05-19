@@ -50,15 +50,23 @@ describe("generateScore", () => {
     generateContentStream.mockReturnValue(makeStream(validJson));
     await generateScore({ ...baseParams });
     expect(generateContentStream).toHaveBeenCalledTimes(1);
-    const call = generateContentStream.mock.calls[0][0];
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const call = generateContentStream.mock.calls[0]?.[0];
+    expect(call).toBeDefined();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     expect(call.model).toBe("gemini-2.5-flash");
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     expect(call.config.responseMimeType).toBe("application/json");
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     expect(call.config.responseSchema).toBeDefined();
   });
   it("SCORE-01: sets thinkingConfig.thinkingBudget = 0 in config", async () => {
     generateContentStream.mockReturnValue(makeStream(validJson));
     await generateScore({ ...baseParams });
-    const call = generateContentStream.mock.calls[0][0];
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const call = generateContentStream.mock.calls[0]?.[0];
+    expect(call).toBeDefined();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     expect(call.config.thinkingConfig).toEqual({ thinkingBudget: 0 });
   });
   it("SCORE-01: returns parsed ScoreResult on happy path", async () => {
