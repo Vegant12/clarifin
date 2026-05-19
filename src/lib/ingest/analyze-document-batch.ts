@@ -2,6 +2,7 @@ import "server-only";
 
 import { supabaseAdmin } from "@/db/client";
 import { generateExplanation } from "@/lib/explain/generate-explanation";
+import { generateScore, type GenerateScoreResult } from "@/lib/explain/generate-score";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -172,6 +173,62 @@ export async function runAnalyzeBatch({ docId }: { docId: string }): Promise<{ d
       await failDocumentAnalyze(docId, "Could not save explanation. Try again later.");
       return { done: false };
     }
+
+    // -----------------------------------------------------------------------
+    // 8b. Score generation (D-01: same cron tick, sequential after explanation)
+    // -----------------------------------------------------------------------
+    // D-03: cache gate — skip if already scored.
+    const scoreCacheRes = await supabaseAdmin
+      .from("document_analysis")
+      .select("score")
+      .eq("doc_id", docId)
+      .maybeSingle();
+
+    if (!scoreCacheRes.error && scoreCacheRes.data?.score == null) {
+      // D-05: 1 retry on ZodError (2 total attempts). Other errors break immediately.
+      let scoreGenResult: GenerateScoreResult | null = null;
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try {
+          scoreGenResult = await generateScore({
+            docId,
+            pdfBytes,
+            filename: doc.filename ?? "document.pdf",
+            totalPages: doc.total_pages ?? 200,
+            extractionSource: doc.extraction_source,
+            fileResourceName: fileResourceName, // reuse explanation step's resource name (D-13 Phase 6 carry-over)
+            firstPageText,
+          });
+          break;
+        } catch (err) {
+          const isZodError = err instanceof Error && err.name === "ZodError";
+          if (!isZodError || attempt === 2) {
+            console.error(`[analyze-batch] score attempt ${attempt} failed:`, err);
+            break;
+          }
+          console.warn(`[analyze-batch] score Zod parse failed attempt ${attempt}, retrying…`);
+        }
+      }
+
+      // D-02: soft-fail — upsert only if we got a result; document still transitions to ready below.
+      if (scoreGenResult) {
+        const scoreUpsert = await supabaseAdmin
+          .from("document_analysis")
+          .upsert(
+            {
+              doc_id: docId,
+              score: scoreGenResult.result.overall_score,
+              score_breakdown: scoreGenResult.result,
+              score_at: new Date().toISOString(),
+            },
+            { onConflict: "doc_id" },
+          );
+        if (scoreUpsert.error) {
+          console.error(`[analyze-batch] score upsert failed:`, scoreUpsert.error);
+          // D-02: do not hard-fail; score column simply stays null
+        }
+      }
+    }
+    // ---- End Step 8b ----
 
     // -----------------------------------------------------------------------
     // 9. Transition to ready
