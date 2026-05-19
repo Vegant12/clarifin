@@ -1,10 +1,11 @@
 ---
 phase: 8
 slug: ai-score-drill-down
-status: draft
+status: approved
 shadcn_initialized: true
 preset: new-york
 created: 2026-05-19
+reviewed_at: 2026-05-19
 ---
 
 # Phase 8 — UI Design Contract
