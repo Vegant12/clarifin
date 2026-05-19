@@ -44,18 +44,16 @@ export function ScoreCard(props: {
         {score.dimensions.map((dim) => (
           <AccordionItem key={dim.name} value={dim.name}>
             <AccordionTrigger aria-label={`Expand ${dim.name} details`}>
-              <div className="flex w-full items-center justify-between gap-2 pr-2">
-                <span className="text-sm font-semibold text-foreground">{dim.name}</span>
+              <div className="flex w-full items-center gap-2 pr-2">
+                <span className="text-sm font-semibold text-foreground flex-1">{dim.name}</span>
                 <span className="rounded-full bg-primary px-2 py-1 text-primary-foreground text-xs font-semibold">
                   {`[${dim.score}/10]`}
-                </span>
-                <span className="flex-1 text-sm text-foreground text-left leading-snug line-clamp-2 ml-2">
-                  {dim.reasoning}
                 </span>
               </div>
             </AccordionTrigger>
             <AccordionContent>
               <div className="flex flex-col gap-2 pt-1">
+                <p className="text-sm text-foreground mb-2">{dim.reasoning}</p>
                 {dim.snippets.map((snip, i) => (
                   <div
                     key={`${dim.name}.snip.${i}`}
