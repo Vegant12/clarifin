@@ -4,7 +4,7 @@
  * No server-only import — pure strings/functions, importable in Vitest tests.
  */
 
-export const EXPLANATION_MODEL_ID = "gemini-2.5-flash" as const;
+export const EXPLANATION_MODEL_ID = "gemini-2.0-flash" as const;
 
 /**
  * PSAK/IFRS Financial Vocabulary (TRANSLATE-02).

@@ -1,12 +1,17 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useRef } from "react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { ExplanationResult } from "@/lib/explain/explanation-schema";
 
 import { ExplanationPanel } from "./explanation-panel";
-import { type PdfViewerHandle, PdfViewerPanel } from "./pdf-viewer-panel";
+import type { PdfViewerHandle } from "./pdf-viewer-panel";
+
+const PdfViewerPanel = dynamic(() => import("./pdf-viewer-panel").then((m) => m.PdfViewerPanel), {
+  ssr: false,
+});
 
 export function MobileTabView(props: {
   documentId: string;

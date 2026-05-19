@@ -17,8 +17,8 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
 - [x] **Phase 3: PDF Parsing & Chunking** — unpdf page-by-page extraction, scanned PDF detection, table-atomic chunking (completed 2026-05-08; UAT `03-UAT.md` complete)
 - [x] **Phase 4: Embeddings & Vector Store** — text-embedding-004, pgvector with HNSW index, similarity retriever
 - [x] **Phase 5: Indonesian Eval Harness** — 9-document eval set, numeric + citation accuracy harness, Phase 6 gate
-- [ ] **Phase 6: AI Explanation Generation** — Gemini Files API, 5-section plain-English output, inline citations, Bahasa handling, streaming + caching
-- [ ] **Phase 7: Citation UI & PDF Viewer** — Split-pane desktop viewer, click-to-jump, hover popover, jargon tooltips, mobile tab fallback
+- [x] **Phase 6: AI Explanation Generation** — Gemini Files API, 5-section plain-English output, inline citations, Bahasa handling, streaming + caching
+- [x] **Phase 7: Citation UI & PDF Viewer** — Split-pane desktop viewer, click-to-jump, hover popover, jargon tooltips, mobile tab fallback
 - [ ] **Phase 8: AI Score & Drill-Down** — Gemini generateObject, 1-10 assessment, 4-dimension breakdown, cited evidence drill-down
 - [ ] **Phase 9: Stock Data & Trend Chart** — Ticker auto-detection, yahoo-finance2, IDR formatting, Recharts multi-year trend chart
 - [ ] **Phase 10: Chat Interface** — RAG-grounded streaming chat, session persistence, seeded questions, buy/sell hard-block
@@ -169,9 +169,9 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
   4. On a 375px mobile screen, a tab switcher lets the user flip between the explanation view and the PDF viewer
   5. Hovering or tapping a recognized financial term (e.g., "Debt-to-Equity", "Free Cash Flow") surfaces a one-sentence plain-English definition
 **Plans**: 3 plans
-- [ ] 07-01-PLAN.md (07-01-api-and-jargon-dict) — GET /api/page-text route + jargon-dictionary.json (≥60 terms, JARGON-02 coverage) (Wave 1)
-- [ ] 07-02-PLAN.md (07-02-citation-and-jargon-ui) — shadcn popover+tooltip, parseCitations parser, CitationInline + CitationPopover + JargonTooltip + PdfLoadingSkeleton + ExplanationPanel (Wave 2)
-- [ ] 07-03-PLAN.md (07-03-reader-layout-and-rsc) — react-pdf + react-resizable-panels + shadcn tabs, PdfViewerPanel, DocumentReaderLayout (desktop split), MobileTabView (≤768px), RSC fetch + DocumentProgressView ready-branch (Wave 3, blocking human-verify)
+- [x] 07-01-PLAN.md (07-01-api-and-jargon-dict) — GET /api/page-text route + jargon-dictionary.json (≥60 terms, JARGON-02 coverage) (Wave 1)
+- [x] 07-02-PLAN.md (07-02-citation-and-jargon-ui) — shadcn popover+tooltip, parseCitations parser, CitationInline + CitationPopover + JargonTooltip + PdfLoadingSkeleton + ExplanationPanel (Wave 2)
+- [x] 07-03-PLAN.md (07-03-reader-layout-and-rsc) — react-pdf + react-resizable-panels + shadcn tabs, PdfViewerPanel, DocumentReaderLayout (desktop split), MobileTabView (≤768px), RSC fetch + DocumentProgressView ready-branch (Wave 3, blocking human-verify)
 **UI hint**: yes
 **AI hint**: no
 **Research flag**: no — React PDF viewer component selection; popover positioning; jargon dictionary is static JSON
