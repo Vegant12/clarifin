@@ -188,8 +188,8 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
   3. Clicking any dimension expands to show 2–3 quoted snippets from the document with page citations
   4. The score is generated via `generateObject` with a strict JSON schema — a schema validation failure triggers an automatic retry rather than displaying a broken UI state
 **Plans**: 4 plans
-- [ ] 08-01-PLAN.md (08-01-setup-and-test-stubs) — Install langfuse, add accordion shadcn, export helpers from generate-explanation, create 4 test stubs (Wave 0)
-- [ ] 08-02-PLAN.md (08-02-score-schema-prompts) — score-schema.ts (Zod + raw JSON Schema), score-prompts.ts (SCORE_MODEL_ID + buildScorePrompt + scanForInvestmentAdvice) with tests (Wave 1)
+- [x] 08-01-PLAN.md (08-01-setup-and-test-stubs) — Install langfuse, add accordion shadcn, export helpers from generate-explanation, create 4 test stubs (Wave 0)
+- [x] 08-02-PLAN.md (08-02-score-schema-prompts) — score-schema.ts (Zod + raw JSON Schema), score-prompts.ts (SCORE_MODEL_ID + buildScorePrompt + scanForInvestmentAdvice) with tests (Wave 1)
 - [ ] 08-03-PLAN.md (08-03-generate-and-orchestrate) — generate-score.ts (Gemini Files API + compliance guard) + analyze-document-batch.ts Step 8b wiring (Wave 2)
 - [ ] 08-04-PLAN.md (08-04-ui-and-prop-threading) — ScoreCard + ScoreLoadingSkeleton + ExplanationPanel/DocumentReaderLayout/MobileTabView/DocumentProgressView prop threading + page.tsx RSC fetch (Wave 3, blocking human-verify)
 **UI hint**: yes
