@@ -187,10 +187,14 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
   2. The score UI shows four sub-dimension scores (Profitability, Balance Sheet, Growth Trend, Valuation Context), each with a one-sentence reasoning summary
   3. Clicking any dimension expands to show 2–3 quoted snippets from the document with page citations
   4. The score is generated via `generateObject` with a strict JSON schema — a schema validation failure triggers an automatic retry rather than displaying a broken UI state
-**Plans**: TBD
+**Plans**: 4 plans
+- [ ] 08-01-PLAN.md (08-01-setup-and-test-stubs) — Install langfuse, add accordion shadcn, export helpers from generate-explanation, create 4 test stubs (Wave 0)
+- [ ] 08-02-PLAN.md (08-02-score-schema-prompts) — score-schema.ts (Zod + raw JSON Schema), score-prompts.ts (SCORE_MODEL_ID + buildScorePrompt + scanForInvestmentAdvice) with tests (Wave 1)
+- [ ] 08-03-PLAN.md (08-03-generate-and-orchestrate) — generate-score.ts (Gemini Files API + compliance guard) + analyze-document-batch.ts Step 8b wiring (Wave 2)
+- [ ] 08-04-PLAN.md (08-04-ui-and-prop-threading) — ScoreCard + ScoreLoadingSkeleton + ExplanationPanel/DocumentReaderLayout/MobileTabView/DocumentProgressView prop threading + page.tsx RSC fetch (Wave 3, blocking human-verify)
 **UI hint**: yes
 **AI hint**: yes
-**Research flag**: no — Vercel AI SDK `generateObject` + strict JSON schema is well-documented; scoring prompt patterns are standard
+**Research flag**: no — Vercel AI SDK `generateObject` superseded by @google/genai per D-04; scoring prompt patterns are standard
 
 ---
 
@@ -278,7 +282,7 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
 | 5. Indonesian Eval Harness | 0/2 curation plans (harness code already merged) | Planned · curate 9 IDX PDFs + ready fixtures across Waves 1–2 | - |
 | 6. AI Explanation Generation | 0/5 | Planned · schema+prompts (W1), jsonb migration (W1), generator+orchestrator (W2), cron route (W3), eval gate (W4) | - |
 | 7. Citation UI & PDF Viewer | 0/3 | Planned · API+jargon dict (W1), citation+jargon UI (W2), reader layout+RSC (W3, human-verify) | - |
-| 8. AI Score & Drill-Down | 0/TBD | Not started | - |
+| 8. AI Score & Drill-Down | 0/4 | Planned · setup+stubs (W0), schema+prompts (W1), generator+orchestrator (W2), UI+threading (W3, human-verify) | - |
 | 9. Stock Data & Trend Chart | 0/TBD | Not started | - |
 | 10. Chat Interface | 0/TBD | Not started | - |
 | 11. Observability & Reliability | 0/TBD | Not started | - |
