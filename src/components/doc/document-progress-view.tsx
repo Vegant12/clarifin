@@ -44,6 +44,15 @@ export function DocumentProgressView(props: {
 
   const terminal = data?.status === "ready" || data?.status === "failed";
 
+  // WR-04: fast-path — if the RSC parent already fetched the explanation (document is ready),
+  // render the reader immediately without waiting for the polling hook to resolve.
+  // Polling continues in the background and would only matter for stale SSR edge cases.
+  if (explanation) {
+    return (
+      <DocumentReaderLayout documentId={documentId} explanation={explanation} pdfUrl={pdfUrl} score={score} />
+    );
+  }
+
   if (mounted && !sessionError && docIdValid && hasToken && data?.status === "ready") {
     return (
       <DocumentReaderLayout documentId={documentId} explanation={explanation} pdfUrl={pdfUrl} score={score} />
