@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { afterEach, describe, it, expect, vi } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { ScoreCard } from "../score-card";
@@ -20,19 +20,22 @@ const fixture: ScoreResult = {
 };
 
 describe("ScoreCard", () => {
+  afterEach(() => {
+    cleanup();
+  });
   it("SCORE-06: renders 'AI Assessment · not financial advice' disclaimer", () => {
     render(<ScoreCard documentId="doc-1" score={fixture} onGoToPage={() => {}} />);
     expect(screen.getByText("AI Assessment · not financial advice")).toBeDefined();
   });
   it("SCORE-06: disclaimer is in the same parent block as the score number", () => {
     render(<ScoreCard documentId="doc-1" score={fixture} onGoToPage={() => {}} />);
-    const scoreEl = screen.getByText("7");
+    const scoreEl = screen.getByLabelText("Overall AI assessment score: 7 out of 10");
     const disclaimerEl = screen.getByText("AI Assessment · not financial advice");
     expect(scoreEl.parentElement).toBe(disclaimerEl.parentElement);
   });
   it("SCORE-01: renders overall_score number", () => {
     render(<ScoreCard documentId="doc-1" score={fixture} onGoToPage={() => {}} />);
-    expect(screen.getByText("7")).toBeDefined();
+    expect(screen.getByLabelText("Overall AI assessment score: 7 out of 10")).toBeDefined();
   });
   it("SCORE-02: renders all 4 dimension names", () => {
     render(<ScoreCard documentId="doc-1" score={fixture} onGoToPage={() => {}} />);
