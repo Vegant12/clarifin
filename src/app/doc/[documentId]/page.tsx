@@ -1,17 +1,19 @@
 import { DocumentProgressView } from "@/components/doc/document-progress-view";
 import { supabaseAdmin } from "@/db/client";
 import { type ExplanationResult, explanationSchema } from "@/lib/explain/explanation-schema";
+import { type ScoreResult, scoreSchema } from "@/lib/explain/score-schema";
 
 export default async function DocumentPage(props: { params: Promise<{ documentId: string }> }) {
   const { documentId } = await props.params;
 
   let explanation: ExplanationResult | null = null;
+  let score: ScoreResult | null = null;
   let pdfUrl: string | null = null;
 
-  // Fetch explanation JSON (may not exist yet if analysis is still in progress)
+  // Fetch explanation + score_breakdown in one query
   const analysisRes = await supabaseAdmin
     .from("document_analysis")
-    .select("explanation")
+    .select("explanation, score_breakdown")
     .eq("doc_id", documentId)
     .maybeSingle();
 
@@ -19,6 +21,13 @@ export default async function DocumentPage(props: { params: Promise<{ documentId
     const parsed = explanationSchema.safeParse(analysisRes.data.explanation);
     if (parsed.success) {
       explanation = parsed.data;
+    }
+  }
+
+  if (analysisRes.data?.score_breakdown) {
+    const parsed = scoreSchema.safeParse(analysisRes.data.score_breakdown);
+    if (parsed.success) {
+      score = parsed.data;
     }
   }
 
@@ -39,5 +48,5 @@ export default async function DocumentPage(props: { params: Promise<{ documentId
     }
   }
 
-  return <DocumentProgressView documentId={documentId} explanation={explanation} pdfUrl={pdfUrl} />;
+  return <DocumentProgressView documentId={documentId} explanation={explanation} pdfUrl={pdfUrl} score={score} />;
 }
