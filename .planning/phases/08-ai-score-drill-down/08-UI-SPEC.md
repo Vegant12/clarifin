@@ -62,9 +62,10 @@ Inherits Phase 7 approved type scale (Geist Sans, Tailwind v4 defaults). Phase 8
 |------|------|--------|-------------|-----------------|
 | Body | 16px | 400 | 1.5 | Dimension reasoning sentence; snippet pull-quote text |
 | Label | 14px | 400 | 1.25 | Dimension name, sub-score chip text, disclaimer label |
-| Heading | 20px | 600 | 1.25 | (Inherited — explanation section headings; not used in score card itself) |
 | Display | 48px | 600 | 1.0 | Overall score number (the "verdict at a glance" figure) |
 | Small | 12px | 400 | 1.5 | Citation `[p.N]` badge inside accordion snippets (reused from Phase 7) |
+
+Heading (20px / 600) — inherited from Phase 7; not redeclared in Phase 8.
 
 The 48px display weight for the score number is the only new type usage in Phase 8. All other sizes inherit Phase 7.
 
@@ -138,7 +139,7 @@ Layout within each `AccordionTrigger`:
 - Flex row, `justify-between`, `items-start`
 - **Left:** dimension name — `text-sm font-semibold text-foreground`
 - **Center-left:** one-sentence reasoning — `text-sm text-foreground leading-snug` (truncated to 1 line on mobile with `line-clamp-2` on desktop allowed)
-- **Right:** sub-score chip — `[N/10]` badge, same visual pattern as citation badge from Phase 7: `rounded-full bg-primary px-2 py-0.5 text-primary-foreground text-xs font-semibold`
+- **Right:** sub-score chip — `[N/10]` badge, same visual pattern as citation badge from Phase 7: `rounded-full bg-primary px-2 py-1 text-primary-foreground text-xs font-semibold`
 
 The chevron rotate animation from the default shadcn Accordion is retained (rotates 180° when open).
 
@@ -190,7 +191,8 @@ When document is `ready` but `score` is null (per CONTEXT.md D-02, D-07):
 │  (16px, weight 600, muted-foreground)          │
 │                                                │
 │  The AI assessment could not be generated      │
-│  for this document.                            │
+│  for this document. The explanation below      │
+│  is still available.                           │
 │  (14px, weight 400, muted-foreground)          │
 └────────────────────────────────────────────────┘
 ```
@@ -303,7 +305,7 @@ On mobile (375px+), the accordion is fully functional — tap to expand, tap aga
 |---------|------|
 | Disclaimer label | "AI Assessment · not financial advice" |
 | Score unavailable heading | "AI Assessment unavailable" |
-| Score unavailable body | "The AI assessment could not be generated for this document." |
+| Score unavailable body | "The AI assessment could not be generated for this document. The explanation below is still available." |
 | Score loading aria-label | "Loading AI assessment…" |
 | Dimension names (exact) | "Profitability" / "Balance Sheet" / "Growth Trend" / "Valuation Context" |
 | Sub-score chip format | "[N/10]" (e.g., "[8/10]") — brackets included, always |
