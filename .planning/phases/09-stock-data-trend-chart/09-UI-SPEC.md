@@ -1,7 +1,8 @@
 ---
 phase: 9
 slug: stock-data-trend-chart
-status: draft
+status: approved
+reviewed_at: 2026-05-19
 shadcn_initialized: true
 preset: "new-york / zinc / cssVariables"
 created: 2026-05-19
@@ -34,19 +35,26 @@ created: 2026-05-19
 ## Spacing Scale
 
 Uses the project-wide 8-point scale already in use across Phase 7–8 components.
-All values are Tailwind class equivalents; no custom token additions needed.
+All values are Tailwind class equivalents.
 
 | Token | px Value | Tailwind Class | Usage in Phase 9 |
 |-------|----------|----------------|-------------------|
 | xs | 4px | gap-1, p-1 | Icon-to-label gaps inside ticker badge |
 | sm | 8px | gap-2, p-2 | Metric label-to-value vertical spacing in 2×2 grid |
+| grid-cell | 12px | px-3 | 2×2 metric grid cell horizontal padding — tighter than md (16px) to fit two columns without crowding the metric values, larger than sm (8px) for comfortable reading. Used only on grid cells (not as a general layout token). |
 | md | 16px | gap-4, p-4 | Card internal padding (stock widget and chart card) |
 | lg | 24px | gap-6, px-6 | ExplanationPanel column gap between stock widget and chart |
 | xl | 32px | gap-8 | Gap between chart card and first explanation section |
 | 2xl | 48px | — | Existing ExplanationPanel inter-section gap (unchanged) |
 
-Exceptions: Chart Y-axis tick labels use 12px font (Recharts default tick size); this
-is a charting-library internal measurement, not a layout spacing value.
+Exceptions:
+- **Chart Y-axis tick labels** use 12px font (Recharts default tick size); this is a
+  charting-library internal measurement, not a layout spacing value.
+- **`gap-px` (1px) on the 2×2 grid container** (`grid gap-px bg-border`) is a hairline
+  visual-border simulation technique, not a layout spacing value. The 1px gap is filled
+  by the `bg-border` on the container, which shows through between the white `bg-card`
+  cells, producing a divider line. It is excluded from the spacing scale table because
+  it serves a visual-border purpose, not a layout-spacing purpose.
 
 ---
 
@@ -111,13 +119,19 @@ stroke (Recharts `strokeDasharray="4 2"`) to distinguish it from the bars at a g
 
 All components are shadcn official — no third-party registry additions in this phase.
 
+> **Visual Hierarchy note:** Primary visual anchor in the stock widget is the four metric
+> values rendered at text-xl/600 (price, P/E, P/B, dividend yield) — they are the
+> largest, heaviest elements in that card and draw the eye first. Primary visual anchor
+> in the trend card is the ComposedChart bar area (Revenue + Net Income bars at full
+> card width), which occupies the majority of the card's vertical space.
+
 ### StockWidget (new — `src/components/doc/stock-widget.tsx`)
 
 Container: shadcn `Card` with `p-4 gap-3` (override default `gap-6 py-6` via className).
 
 **Header row** (single flex row, `items-center gap-2`):
 - Ticker badge: `<span>` with `bg-primary text-primary-foreground text-xs font-semibold
-  px-2 py-0.5 rounded-full uppercase` — e.g., "BBCA"
+  px-2 py-1 rounded-full uppercase` — e.g., "BBCA"
 - IDX label: `<span class="text-xs text-muted-foreground">IDX</span>`
 - Timestamp: `<span class="text-xs text-muted-foreground ml-auto">as of {date}</span>`
   — right-aligned via `ml-auto`
@@ -136,8 +150,9 @@ Each grid cell layout: `flex flex-col gap-1`. Label: `text-xs text-muted-foregro
 Value: `text-xl font-semibold text-foreground`.
 
 Grid border pattern: `grid gap-px bg-border` creates 1px hairline dividers between
-cells without explicit border classes on individual cells. Outer card `border border-border
-rounded-lg overflow-hidden` clips the grid edges cleanly.
+cells without explicit border classes on individual cells — `gap-px` is a visual-border
+technique (see Spacing Scale Exceptions). Outer card `border border-border rounded-lg
+overflow-hidden` clips the grid edges cleanly.
 
 ### TrendChartCard (new — `src/components/doc/trend-chart-card.tsx`)
 
@@ -329,7 +344,7 @@ block. No `npx shadcn add` calls for third-party sources.
 | Design system (shadcn new-york / zinc / emerald) | components.json + globals.css | Yes |
 | Font: Geist Sans | globals.css | Yes |
 | Icon library: lucide-react | components.json | Yes |
-| Spacing scale (8-point) | Existing codebase pattern | Yes |
+| Spacing scale (8-point + grid-cell 12px exception) | Existing codebase pattern + checker fix | Yes |
 | Color tokens | globals.css @theme | Yes |
 | No destructive actions | Phase 9 scope (CONTEXT.md) | Yes |
 | Registry: shadcn official only | CONTEXT.md (no third-party declared) | Yes |
@@ -354,3 +369,5 @@ REQUIREMENTS.md, components.json, and globals.css.
 
 *Phase: 09-stock-data-trend-chart*
 *UI-SPEC created: 2026-05-19*
+*UI-SPEC revised: 2026-05-19 — fixed py-0.5 → py-1 in ticker badge; added Visual Hierarchy note*
+*UI-SPEC revised: 2026-05-19 — checker fix: added 12px grid-cell token to Spacing Scale (Option B); documented gap-px visual-border exception*
