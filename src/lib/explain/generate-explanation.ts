@@ -18,7 +18,7 @@ import {
 // Internal helpers
 // ---------------------------------------------------------------------------
 
-async function waitForFileReady(
+export async function waitForFileReady(
   ai: GoogleGenAI,
   name: string,
 ): Promise<{ uri: string; mimeType: string }> {
@@ -44,7 +44,7 @@ async function waitForFileReady(
   return { uri: file.uri, mimeType: file.mimeType ?? "application/pdf" };
 }
 
-async function uploadFresh(
+export async function uploadFresh(
   ai: GoogleGenAI,
   pdfBytes: Uint8Array,
   filename: string,
