@@ -7,6 +7,21 @@ exports[`ExplanationPanel > Test 7: snapshot — citations and jargon interleave
     class="flex flex-col gap-12 px-6 py-8"
   >
     <section
+      aria-label="AI Assessment unavailable"
+      class="rounded-lg border border-border bg-muted/30 px-4 py-4"
+    >
+      <p
+        class="text-base font-semibold text-muted-foreground"
+      >
+        AI Assessment unavailable
+      </p>
+      <p
+        class="text-sm text-muted-foreground mt-1"
+      >
+        The AI assessment could not be generated for this document. The explanation below is still available.
+      </p>
+    </section>
+    <section
       class="flex flex-col gap-4"
     >
       <h2
