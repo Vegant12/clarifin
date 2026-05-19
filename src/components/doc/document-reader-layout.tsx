@@ -8,6 +8,7 @@ import { Group, Panel, Separator, useDefaultLayout } from "react-resizable-panel
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { ExplanationResult } from "@/lib/explain/explanation-schema";
+import type { ScoreResult } from "@/lib/explain/score-schema";
 
 import { ExplanationPanel } from "./explanation-panel";
 import { MobileTabView } from "./mobile-tab-view";
@@ -28,8 +29,9 @@ function DesktopSplitPane(props: {
   explanation: ExplanationResult;
   pdfUrl: string | null;
   pdfRef: React.RefObject<PdfViewerHandle | null>;
+  score: ScoreResult | null;
 }) {
-  const { documentId, explanation, pdfUrl, pdfRef } = props;
+  const { documentId, explanation, pdfUrl, pdfRef, score } = props;
 
   // Persist panel ratio to localStorage via react-resizable-panels v4 useDefaultLayout.
   // autoSaveId equivalent: id="reader-panel-group" in the Group + localStorage storage.
@@ -58,6 +60,7 @@ function DesktopSplitPane(props: {
         <ExplanationPanel
           documentId={documentId}
           explanation={explanation}
+          score={score}
           onGoToPage={handleGoToPage}
         />
       </Panel>
@@ -77,8 +80,9 @@ export function DocumentReaderLayout(props: {
   documentId: string;
   explanation: ExplanationResult | null;
   pdfUrl: string | null;
+  score: ScoreResult | null;
 }) {
-  const { documentId, explanation, pdfUrl } = props;
+  const { documentId, explanation, pdfUrl, score } = props;
   const pdfRef = useRef<PdfViewerHandle>(null);
 
   if (!explanation) {
@@ -103,7 +107,7 @@ export function DocumentReaderLayout(props: {
     <main className="h-screen w-full overflow-hidden">
       {/* Mobile (≤768px): tab switcher */}
       <div className="flex h-full md:hidden">
-        <MobileTabView documentId={documentId} explanation={explanation} pdfUrl={pdfUrl} />
+        <MobileTabView documentId={documentId} explanation={explanation} pdfUrl={pdfUrl} score={score} />
       </div>
 
       {/* Desktop (≥769px): resizable split */}
@@ -113,6 +117,7 @@ export function DocumentReaderLayout(props: {
           explanation={explanation}
           pdfUrl={pdfUrl}
           pdfRef={pdfRef}
+          score={score}
         />
       </div>
     </main>

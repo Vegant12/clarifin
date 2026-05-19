@@ -5,6 +5,7 @@ import { useRef } from "react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { ExplanationResult } from "@/lib/explain/explanation-schema";
+import type { ScoreResult } from "@/lib/explain/score-schema";
 
 import { ExplanationPanel } from "./explanation-panel";
 import type { PdfViewerHandle } from "./pdf-viewer-panel";
@@ -17,8 +18,9 @@ export function MobileTabView(props: {
   documentId: string;
   explanation: ExplanationResult;
   pdfUrl: string | null;
+  score: ScoreResult | null;
 }) {
-  const { documentId, explanation, pdfUrl } = props;
+  const { documentId, explanation, pdfUrl, score } = props;
   const pdfRef = useRef<PdfViewerHandle>(null);
 
   const handleGoToPage = (page: number) => {
@@ -45,6 +47,7 @@ export function MobileTabView(props: {
         <ExplanationPanel
           documentId={documentId}
           explanation={explanation}
+          score={score}
           onGoToPage={handleGoToPage}
         />
       </TabsContent>

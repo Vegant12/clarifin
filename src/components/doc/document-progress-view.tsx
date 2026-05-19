@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { PipelineStepper } from "@/components/upload/pipeline-stepper";
 import type { ExplanationResult } from "@/lib/explain/explanation-schema";
+import type { ScoreResult } from "@/lib/explain/score-schema";
 import { useDocumentStatus } from "@/lib/hooks/use-document-status";
 import { getBrowserSessionToken } from "@/lib/session-client";
 
@@ -19,8 +20,9 @@ export function DocumentProgressView(props: {
   documentId: string;
   explanation: ExplanationResult | null;
   pdfUrl: string | null;
+  score: ScoreResult | null;
 }) {
-  const { documentId, explanation, pdfUrl } = props;
+  const { documentId, explanation, pdfUrl, score } = props;
   const { isSessionReady, sessionError } = useSessionReady();
 
   const [mounted, setMounted] = useState(false);
@@ -44,7 +46,7 @@ export function DocumentProgressView(props: {
 
   if (mounted && !sessionError && docIdValid && hasToken && data?.status === "ready") {
     return (
-      <DocumentReaderLayout documentId={documentId} explanation={explanation} pdfUrl={pdfUrl} />
+      <DocumentReaderLayout documentId={documentId} explanation={explanation} pdfUrl={pdfUrl} score={score} />
     );
   }
 

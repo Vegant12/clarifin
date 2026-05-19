@@ -4,11 +4,13 @@ import { Fragment } from "react";
 
 import { parseCitations } from "@/lib/citations/parse-citations";
 import type { ExplanationResult } from "@/lib/explain/explanation-schema";
+import type { ScoreResult } from "@/lib/explain/score-schema";
 import { jargonDictionary } from "@/lib/jargon";
 import { cn } from "@/lib/utils";
 
 import { CitationInline } from "./citation-inline";
 import { JargonTooltip } from "./jargon-tooltip";
+import { ScoreCard } from "./score-card";
 
 const SECTION_LABELS: Record<keyof ExplanationResult, string> = {
   revenue: "Revenue",
@@ -77,16 +79,32 @@ function wrapJargon(text: string, keyPrefix: string): React.ReactNode[] {
 export function ExplanationPanel(props: {
   documentId: string;
   explanation: ExplanationResult;
+  score: ScoreResult | null;
   onGoToPage: (page: number) => void;
   className?: string;
 }) {
-  const { documentId, explanation, onGoToPage, className } = props;
+  const { documentId, explanation, score, onGoToPage, className } = props;
 
   return (
     <article
       className={cn("flex flex-col gap-12 px-6 py-8", className)}
       aria-label="Plain-English explanation"
     >
+      {score ? (
+        <ScoreCard documentId={documentId} score={score} onGoToPage={onGoToPage} />
+      ) : (
+        <section
+          aria-label="AI Assessment unavailable"
+          className="rounded-lg border border-border bg-muted/30 px-4 py-4"
+        >
+          <p className="text-base font-semibold text-muted-foreground">
+            AI Assessment unavailable
+          </p>
+          <p className="text-sm text-muted-foreground mt-1">
+            The AI assessment could not be generated for this document. The explanation below is still available.
+          </p>
+        </section>
+      )}
       {SECTION_ORDER.map((sectionKey) => {
         const sectionText = explanation[sectionKey];
         const tokens = parseCitations(sectionText);
