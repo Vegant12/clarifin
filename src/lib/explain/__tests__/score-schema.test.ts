@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { scoreSchema, SCORE_RESPONSE_SCHEMA, type ScoreResult } from "../score-schema";
+// Note: scanForInvestmentAdvice tests live in score-prompts.test.ts (function is in score-prompts.ts)
 
 const validDim = (name: string, score = 7) => ({
   name,
