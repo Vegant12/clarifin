@@ -178,13 +178,15 @@ export async function runAnalyzeBatch({ docId }: { docId: string }): Promise<{ d
     // 8b. Score generation (D-01: same cron tick, sequential after explanation)
     // -----------------------------------------------------------------------
     // D-03: cache gate — skip if already scored.
+    // Select score_breakdown (not score) so the gate correctly detects a partial write
+    // where score was persisted but score_breakdown was not (e.g. earlier schema migration).
     const scoreCacheRes = await supabaseAdmin
       .from("document_analysis")
-      .select("score")
+      .select("score_breakdown")
       .eq("doc_id", docId)
       .maybeSingle();
 
-    if (!scoreCacheRes.error && scoreCacheRes.data?.score == null) {
+    if (!scoreCacheRes.error && scoreCacheRes.data?.score_breakdown == null) {
       // D-05: 1 retry on ZodError (2 total attempts). Other errors break immediately.
       let scoreGenResult: GenerateScoreResult | null = null;
       for (let attempt = 1; attempt <= 2; attempt++) {
@@ -211,6 +213,15 @@ export async function runAnalyzeBatch({ docId }: { docId: string }): Promise<{ d
 
       // D-02: soft-fail — upsert only if we got a result; document still transitions to ready below.
       if (scoreGenResult) {
+        // WR-02: persist the score step's fileResourceName if it differs from the explanation
+        // step's resource name (happens when the FAILED/expired resource was re-uploaded).
+        if (scoreGenResult.fileResourceName !== fileResourceName) {
+          await supabaseAdmin
+            .from("documents")
+            .update({ gemini_file_resource_name: scoreGenResult.fileResourceName })
+            .eq("id", docId);
+        }
+
         const scoreUpsert = await supabaseAdmin
           .from("document_analysis")
           .upsert(
