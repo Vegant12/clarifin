@@ -53,7 +53,7 @@ async function withBackoff<T>(fn: () => Promise<T>): Promise<T | null> {
       return await fn();
     } catch (err) {
       if (!isRateLimitError(err) || attempt === RETRY_DELAYS_MS.length) {
-        console.error("[fetchStockData/withBackoff] giving up", err);
+        console.warn("[fetchStockData] no data available:", err instanceof Error ? err.message : err);
         return null;
       }
       const delay = RETRY_DELAYS_MS[attempt] ?? 2000;
