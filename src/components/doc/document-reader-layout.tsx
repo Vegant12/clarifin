@@ -38,19 +38,20 @@ function DesktopSplitPane(props: {
 }) {
   const { documentId, explanation, pdfUrl, pdfRef, score, ticker, stockData, chartData, stockError } = props;
 
-  // Persist panel ratio to localStorage via react-resizable-panels v4 useDefaultLayout.
-  // autoSaveId equivalent: id="reader-panel-group" in the Group + localStorage storage.
-  // DesktopSplitPane is only mounted in the browser (inside md:flex div), so localStorage
-  // is always available here. The conditional satisfies exactOptionalPropertyTypes.
-  const storage = typeof window !== "undefined" ? localStorage : null;
-  // Do NOT pass `id` when storage is null — useDefaultLayout reads localStorage
-  // internally when given an id, even with no explicit storage option, which
-  // throws "localStorage is not defined" during SSR.
-  const { defaultLayout, onLayoutChanged } = useDefaultLayout(
-    storage !== null
-      ? { id: "reader-panel-group", panelIds: [...PANEL_IDS], storage }
-      : { panelIds: [...PANEL_IDS] },
-  );
+  // SSR-safe storage shim: react-resizable-panels calls storage.getItem/setItem
+  // synchronously; providing a no-op on the server avoids "localStorage is not defined".
+  const safeStorage = {
+    getItem: (key: string) =>
+      typeof window !== "undefined" ? localStorage.getItem(key) : null,
+    setItem: (key: string, value: string) => {
+      if (typeof window !== "undefined") localStorage.setItem(key, value);
+    },
+  };
+  const { defaultLayout, onLayoutChanged } = useDefaultLayout({
+    id: "reader-panel-group",
+    panelIds: [...PANEL_IDS],
+    storage: safeStorage,
+  });
 
   const handleGoToPage = (page: number) => {
     pdfRef.current?.scrollToPage(page);
