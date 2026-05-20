@@ -99,10 +99,12 @@ describe("ExplanationPanel — Phase 9 stock + chart slots", () => {
 
   it("still renders all 5 explanation section headings (regression guard)", () => {
     renderPanel();
-    expect(screen.getByText("Revenue")).toBeInTheDocument();
-    expect(screen.getByText("Profitability")).toBeInTheDocument();
-    expect(screen.getByText("Balance Sheet")).toBeInTheDocument();
-    expect(screen.getByText("Cash Flow")).toBeInTheDocument();
-    expect(screen.getByText("Key Risks")).toBeInTheDocument();
+    // Use heading role queries to avoid ambiguity with jargon tooltip triggers
+    // that may also contain the same word (e.g. "revenue" in explanation text)
+    expect(screen.getByRole("heading", { name: "Revenue" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Profitability" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Balance Sheet" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Cash Flow" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Key Risks" })).toBeInTheDocument();
   });
 });

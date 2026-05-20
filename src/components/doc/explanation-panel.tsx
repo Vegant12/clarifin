@@ -8,9 +8,13 @@ import type { ScoreResult } from "@/lib/explain/score-schema";
 import { jargonDictionary } from "@/lib/jargon";
 import { cn } from "@/lib/utils";
 
+import type { ChartDataPoint, StockData } from "@/lib/stock/stock-schema";
+
 import { CitationInline } from "./citation-inline";
 import { JargonTooltip } from "./jargon-tooltip";
 import { ScoreCard } from "./score-card";
+import { StockWidget } from "./stock-widget";
+import { TrendChartCard } from "./trend-chart-card";
 
 const SECTION_LABELS: Record<keyof ExplanationResult, string> = {
   revenue: "Revenue",
@@ -82,8 +86,23 @@ export function ExplanationPanel(props: {
   score: ScoreResult | null;
   onGoToPage: (page: number) => void;
   className?: string;
+  // Phase 9 additions
+  ticker: string | null;
+  stockData: StockData | null;
+  chartData: ChartDataPoint[] | null;
+  stockError: boolean;
 }) {
-  const { documentId, explanation, score, onGoToPage, className } = props;
+  const {
+    documentId,
+    explanation,
+    score,
+    onGoToPage,
+    className,
+    ticker,
+    stockData,
+    chartData,
+    stockError,
+  } = props;
 
   return (
     <article
@@ -105,6 +124,25 @@ export function ExplanationPanel(props: {
           </p>
         </section>
       )}
+      {/* Phase 9 stock widget slot (D-08 order, D-10 fallback) */}
+      {ticker !== null ? (
+        stockError ? (
+          <p
+            aria-label="Market data unavailable"
+            className="text-sm text-muted-foreground"
+          >
+            Market data temporarily unavailable.
+          </p>
+        ) : stockData !== null ? (
+          <StockWidget ticker={ticker} data={stockData} />
+        ) : null
+      ) : null}
+
+      {/* Phase 9 trend chart slot — hidden entirely when chartData empty (D-02) */}
+      {ticker !== null && chartData !== null && chartData.length > 0 ? (
+        <TrendChartCard ticker={ticker} data={chartData} />
+      ) : null}
+
       {SECTION_ORDER.map((sectionKey) => {
         const sectionText = explanation[sectionKey];
         const tokens = parseCitations(sectionText);
