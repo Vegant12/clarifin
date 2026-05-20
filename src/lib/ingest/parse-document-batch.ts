@@ -7,6 +7,7 @@ import { scheduleEmbedBatchesForDoc } from "@/lib/ingest/trigger-parse-batch";
 import { chunkSinglePage } from "@/lib/pdf/chunk-page";
 import { classifyExtractionSource } from "@/lib/pdf/classify-extraction-source";
 import { deleteGeminiFileResource, extractPagesWithGemini } from "@/lib/pdf/gemini-pdf-pages";
+import { detectTicker } from "@/lib/stock/detect-ticker";
 import { clonePdfBytes } from "@/lib/pdf/clone-pdf-bytes";
 import { extractPdfTextItemsPerPage, extractPdfTextPerPage } from "@/lib/pdf/unpdf-extract";
 
@@ -99,11 +100,23 @@ export async function runParseBatch({ docId }: { docId: string }): Promise<{ don
     totalPages = bootstrapTexts.totalPages;
     const sample = bootstrapTexts.texts.slice(0, Math.min(5, bootstrapTexts.texts.length));
     extractionSource = classifyExtractionSource(sample);
+
+    // Phase 9 TICKER-01: detect IDX ticker from first 5 pages. Pure regex, no LLM.
+    // Soft-fail: any internal exception falls back to null and is logged.
+    let detectedTicker: string | null = null;
+    try {
+      detectedTicker = detectTicker(bootstrapTexts.texts);
+    } catch (err) {
+      console.error("[runParseBatch] detectTicker threw", docId, err);
+      detectedTicker = null;
+    }
+
     const up = await supabaseAdmin
       .from("documents")
       .update({
         total_pages: totalPages,
         extraction_source: extractionSource,
+        ticker: detectedTicker,
       })
       .eq("id", docId);
     if (up.error) {
