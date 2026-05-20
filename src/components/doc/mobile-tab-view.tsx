@@ -6,6 +6,7 @@ import { useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { ExplanationResult } from "@/lib/explain/explanation-schema";
 import type { ScoreResult } from "@/lib/explain/score-schema";
+import type { ChartDataPoint, StockData } from "@/lib/stock/stock-schema";
 
 import { ExplanationPanel } from "./explanation-panel";
 import type { PdfViewerHandle } from "./pdf-viewer-panel";
@@ -19,8 +20,12 @@ export function MobileTabView(props: {
   explanation: ExplanationResult;
   pdfUrl: string | null;
   score: ScoreResult | null;
+  ticker: string | null;
+  stockData: StockData | null;
+  chartData: ChartDataPoint[] | null;
+  stockError: boolean;
 }) {
-  const { documentId, explanation, pdfUrl, score } = props;
+  const { documentId, explanation, pdfUrl, score, ticker, stockData, chartData, stockError } = props;
   const pdfRef = useRef<PdfViewerHandle>(null);
 
   const handleGoToPage = (page: number) => {
@@ -49,6 +54,10 @@ export function MobileTabView(props: {
           explanation={explanation}
           score={score}
           onGoToPage={handleGoToPage}
+          ticker={ticker}
+          stockData={stockData}
+          chartData={chartData}
+          stockError={stockError}
         />
       </TabsContent>
       <TabsContent value="pdf" className="flex-1 overflow-hidden">

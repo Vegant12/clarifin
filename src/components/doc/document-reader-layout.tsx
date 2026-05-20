@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { ExplanationResult } from "@/lib/explain/explanation-schema";
 import type { ScoreResult } from "@/lib/explain/score-schema";
+import type { ChartDataPoint, StockData } from "@/lib/stock/stock-schema";
 
 import { ExplanationPanel } from "./explanation-panel";
 import { MobileTabView } from "./mobile-tab-view";
@@ -30,8 +31,12 @@ function DesktopSplitPane(props: {
   pdfUrl: string | null;
   pdfRef: React.RefObject<PdfViewerHandle | null>;
   score: ScoreResult | null;
+  ticker: string | null;
+  stockData: StockData | null;
+  chartData: ChartDataPoint[] | null;
+  stockError: boolean;
 }) {
-  const { documentId, explanation, pdfUrl, pdfRef, score } = props;
+  const { documentId, explanation, pdfUrl, pdfRef, score, ticker, stockData, chartData, stockError } = props;
 
   // Persist panel ratio to localStorage via react-resizable-panels v4 useDefaultLayout.
   // autoSaveId equivalent: id="reader-panel-group" in the Group + localStorage storage.
@@ -62,6 +67,10 @@ function DesktopSplitPane(props: {
           explanation={explanation}
           score={score}
           onGoToPage={handleGoToPage}
+          ticker={ticker}
+          stockData={stockData}
+          chartData={chartData}
+          stockError={stockError}
         />
       </Panel>
       <Separator
@@ -81,8 +90,12 @@ export function DocumentReaderLayout(props: {
   explanation: ExplanationResult | null;
   pdfUrl: string | null;
   score: ScoreResult | null;
+  ticker: string | null;
+  stockData: StockData | null;
+  chartData: ChartDataPoint[] | null;
+  stockError: boolean;
 }) {
-  const { documentId, explanation, pdfUrl, score } = props;
+  const { documentId, explanation, pdfUrl, score, ticker, stockData, chartData, stockError } = props;
   const pdfRef = useRef<PdfViewerHandle>(null);
 
   if (!explanation) {
@@ -107,7 +120,7 @@ export function DocumentReaderLayout(props: {
     <main className="h-screen w-full overflow-hidden">
       {/* Mobile (≤768px): tab switcher */}
       <div className="flex h-full md:hidden">
-        <MobileTabView documentId={documentId} explanation={explanation} pdfUrl={pdfUrl} score={score} />
+        <MobileTabView documentId={documentId} explanation={explanation} pdfUrl={pdfUrl} score={score} ticker={ticker} stockData={stockData} chartData={chartData} stockError={stockError} />
       </div>
 
       {/* Desktop (≥769px): resizable split */}
@@ -118,6 +131,10 @@ export function DocumentReaderLayout(props: {
           pdfUrl={pdfUrl}
           pdfRef={pdfRef}
           score={score}
+          ticker={ticker}
+          stockData={stockData}
+          chartData={chartData}
+          stockError={stockError}
         />
       </div>
     </main>

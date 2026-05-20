@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { DocumentReaderLayout } from "@/components/doc/document-reader-layout";
+import type { ChartDataPoint, StockData } from "@/lib/stock/stock-schema";
 import { useSessionReady } from "@/components/session-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,8 +22,12 @@ export function DocumentProgressView(props: {
   explanation: ExplanationResult | null;
   pdfUrl: string | null;
   score: ScoreResult | null;
+  ticker: string | null;
+  stockData: StockData | null;
+  chartData: ChartDataPoint[] | null;
+  stockError: boolean;
 }) {
-  const { documentId, explanation, pdfUrl, score } = props;
+  const { documentId, explanation, pdfUrl, score, ticker, stockData, chartData, stockError } = props;
   const { isSessionReady, sessionError } = useSessionReady();
 
   const [mounted, setMounted] = useState(false);
@@ -49,13 +54,13 @@ export function DocumentProgressView(props: {
   // Polling continues in the background and would only matter for stale SSR edge cases.
   if (explanation) {
     return (
-      <DocumentReaderLayout documentId={documentId} explanation={explanation} pdfUrl={pdfUrl} score={score} />
+      <DocumentReaderLayout documentId={documentId} explanation={explanation} pdfUrl={pdfUrl} score={score} ticker={ticker} stockData={stockData} chartData={chartData} stockError={stockError} />
     );
   }
 
   if (mounted && !sessionError && docIdValid && hasToken && data?.status === "ready") {
     return (
-      <DocumentReaderLayout documentId={documentId} explanation={explanation} pdfUrl={pdfUrl} score={score} />
+      <DocumentReaderLayout documentId={documentId} explanation={explanation} pdfUrl={pdfUrl} score={score} ticker={ticker} stockData={stockData} chartData={chartData} stockError={stockError} />
     );
   }
 
