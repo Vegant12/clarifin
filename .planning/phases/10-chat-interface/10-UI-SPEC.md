@@ -1,10 +1,11 @@
 ---
 phase: 10
 slug: chat-interface
-status: draft
+status: approved
 shadcn_initialized: true
 preset: new-york / zinc base / emerald accent
 created: 2026-05-20
+reviewed_at: 2026-05-20
 ---
 
 # Phase 10 — UI Design Contract
@@ -37,7 +38,7 @@ Declared values (must be multiples of 4):
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| xs | 4px | Icon gaps (`gap-1`), citation badge inner padding (`px-1.5 py-0.5`) |
+| xs | 4px | Icon gaps (`gap-1`) |
 | sm | 8px | Compact element spacing (`gap-2`), message bubble padding |
 | md | 16px | Default element spacing (`gap-4`), chat input horizontal padding |
 | lg | 24px | Section padding (`gap-6`), chat panel vertical padding |
@@ -49,6 +50,9 @@ Exceptions:
 - Chat input minimum touch target: 44px height (`min-h-[44px]`) to meet WCAG 2.5.5 for mobile — this is a 4px overshoot from the xl token. Use explicitly on the send button and textarea.
 - Starter question pill height: 36px (`h-9`) — standard shadcn Button sm variant, within 8-point grid.
 
+Component-level Tailwind overrides (not spacing scale tokens):
+- Citation badge inner padding: `px-1.5 py-0.5` — this is an **inherited Phase 7 CitationInline convention** applied at the component level. It is not a named spacing scale slot and should not be treated as one during execution. Apply it verbatim from `CitationInline`'s existing class list.
+
 ---
 
 ## Typography
@@ -56,15 +60,16 @@ Exceptions:
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
 | Body | 16px (text-base) | 400 (normal) | 1.625 (leading-relaxed) |
-| Label | 14px (text-sm) | 400 (normal) | 1.5 (leading-normal) |
+| Label / metadata | 14px (text-sm) | 400 (normal) | 1.5 (leading-normal) |
 | Heading | 20px (text-xl) | 600 (semibold) | 1.25 (leading-tight) |
-| Display | 14px (text-sm) | 600 (semibold) | 1.25 |
+| Label / metadata (semibold) | 14px (text-sm) | 600 (semibold) | 1.25 |
 
 Notes:
 - Message body text: 16px / 400 / leading-relaxed — matches `ExplanationPanel` prose style exactly.
-- Timestamps and metadata (session info, deflection disclaimer): 14px / 400.
+- Timestamps, metadata, and session info (deflection disclaimer, starter pill labels): 14px / 400 — "Label / metadata" row.
+- Guardrail deflection heading: 14px / 600 — "Label / metadata (semibold)" row.
 - Section label "Chat" or panel heading: 20px / 600 — matches existing section headings in ExplanationPanel (`text-xl font-semibold`).
-- Citation badges in chat messages: 12px (text-xs) / 600 — matches `CitationInline` (existing `px-1.5 py-0.5 text-xs`).
+- Citation badges in chat messages: `text-xs` (12px) applied as a **Tailwind component-level utility** on `ChatCitationBadge`, not a named type scale slot. This inherits the Phase 7 `CitationInline` class list (`px-1.5 py-0.5 text-xs`) verbatim. Do not promote to a scale slot.
 - Starter question pills: 14px (text-sm) / 400 — shadcn Button sm default.
 
 Source: Codebase analysis — `explanation-panel.tsx` uses `text-base leading-relaxed`, `text-xl font-semibold`, `text-sm text-muted-foreground`. This phase reuses those exact classes for visual consistency.
@@ -135,13 +140,16 @@ Left Panel (scrollable, overflow-auto)
 └── ChatPanel  ← NEW (Phase 10)
     ├── <h2> Chat (text-xl font-semibold)
     ├── StarterQuestions (shown only when messages.length === 0)
+    │   └── [FOCAL POINT — empty-session state]
+    │       Primary visual anchor: "Start with a question" heading + starter question pills.
+    │       The textarea is secondary — visible but not the first eye-stop.
     ├── Message list (scrollable, max-h not set — natural document scroll)
     │   ├── ChatMessage (user)
     │   ├── ChatMessage (assistant, with CitationBadges)
     │   └── ChatLoadingSkeleton (shown when isLoading)
     └── Chat input form
         ├── <textarea> (auto-grow, 1–4 rows)
-        └── Send button
+        └── Send Message button
 ```
 
 The chat panel is appended to the existing left-panel scroll context — no nested scroll within the chat list. This avoids scroll-within-scroll UX problems on desktop.
@@ -164,7 +172,7 @@ TabsContent value="chat"
     │   └── ChatLoadingSkeleton
     └── Chat input form (sticky bottom, border-t)
         ├── <textarea>
-        └── Send button
+        └── Send Message button
 ```
 
 On mobile, the chat input is sticky at the bottom of the tab content. The message list is `flex-1 overflow-auto` — this is the only tab where we use an inner scroll container, because the tab forces a fixed height context.
@@ -240,6 +248,8 @@ className="inline-flex cursor-pointer items-center rounded-full bg-primary px-1.
            hover:shadow-sm"
 ```
 
+The `px-1.5 py-0.5` padding and `text-xs` size are inherited verbatim from Phase 7 `CitationInline` — they are component-level Tailwind overrides, not spacing scale tokens.
+
 Label: `[p.{N}]` — same format as Phase 7. Clicking fires `onGoToPage(page)` to jump the PDF viewer to that page.
 
 ---
@@ -286,7 +296,7 @@ If the chat API route returns a non-streaming error:
 - Show an inline error below the input:
   ```
   <p className="text-sm text-destructive px-1">
-    Something went wrong. Please try again.
+    Connection error — please try again.
   </p>
   ```
 - The input and send button remain enabled (user can retry immediately).
@@ -333,7 +343,7 @@ If the chat API route returns a non-streaming error:
 
 | Element | Copy |
 |---------|------|
-| Primary CTA (send button) | "Send" |
+| Primary CTA (send button) | "Send Message" |
 | Chat section heading | "Chat" |
 | Textarea placeholder | "Ask anything about this document…" |
 | Empty state heading | "Start with a question" |
@@ -342,7 +352,7 @@ If the chat API route returns a non-streaming error:
 | Guardrail deflection heading | "I can't help with that" |
 | Guardrail deflection body | "I can help you understand what's in the document, but I'm not able to give buy/sell recommendations or investment advice." |
 | Empty retrieval error | "The document doesn't seem to contain information about that topic. Try asking about the company's financials, risks, or performance." |
-| API error | "Something went wrong. Please try again." |
+| API error | "Connection error — please try again." |
 | Session restore (no heading needed) | Messages render inline — no "session restored" toast |
 | Disclaimer line (every assistant message) | "This is not investment advice." |
 | Loading state aria-label | "Clarifin is thinking" |
@@ -350,8 +360,10 @@ If the chat API route returns a non-streaming error:
 
 Notes:
 - "Ask anything about this document…" uses "anything" deliberately — non-finance users may feel their questions are "too basic." The phrasing is welcoming.
+- "Send Message" (verb + noun) is more explicit than "Send" alone and consistent with the downstream consumer pattern for CTA labels.
 - The guardrail message does not apologize excessively — one clear explanation, then the user can ask something else.
 - "Clarifin" brand name is used in empty state to reinforce product voice.
+- "Connection error — please try again." gives a brief cause hint (connection, not an unspecified failure) without technical jargon.
 
 ---
 
@@ -368,7 +380,7 @@ No third-party registries are declared for this phase. All UI is composed from a
 ## Accessibility Contract
 
 - Textarea: `aria-label="Ask about this document"` + `aria-required="true"`.
-- Send button: `type="submit"`, disabled when `isLoading`. No icon-only button — text label "Send" is always visible.
+- Send button: `type="submit"`, disabled when `isLoading`. No icon-only button — text label "Send Message" is always visible.
 - Loading indicator: `role="status" aria-label="Clarifin is thinking"` on the three-dot animation container.
 - Message list: `role="log" aria-live="polite" aria-label="Chat messages"` on the scrollable container. Each `ChatMessage` is a `<article>` or `<div role="article">`.
 - Citation badges: inherit Phase 7 `CitationInline` accessibility — `role="button" tabIndex={0} aria-label="View source for page N"`.
