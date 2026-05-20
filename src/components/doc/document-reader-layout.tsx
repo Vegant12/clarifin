@@ -43,10 +43,13 @@ function DesktopSplitPane(props: {
   // DesktopSplitPane is only mounted in the browser (inside md:flex div), so localStorage
   // is always available here. The conditional satisfies exactOptionalPropertyTypes.
   const storage = typeof window !== "undefined" ? localStorage : null;
+  // Do NOT pass `id` when storage is null — useDefaultLayout reads localStorage
+  // internally when given an id, even with no explicit storage option, which
+  // throws "localStorage is not defined" during SSR.
   const { defaultLayout, onLayoutChanged } = useDefaultLayout(
     storage !== null
       ? { id: "reader-panel-group", panelIds: [...PANEL_IDS], storage }
-      : { id: "reader-panel-group", panelIds: [...PANEL_IDS] },
+      : { panelIds: [...PANEL_IDS] },
   );
 
   const handleGoToPage = (page: number) => {
