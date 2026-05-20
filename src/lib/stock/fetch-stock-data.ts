@@ -1,6 +1,8 @@
 import "server-only";
 
-import yahooFinance from "yahoo-finance2";
+import YahooFinance from "yahoo-finance2";
+
+const yahooFinance = new YahooFinance();
 
 import { supabaseAdmin } from "@/db/client";
 
