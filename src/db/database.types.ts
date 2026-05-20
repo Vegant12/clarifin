@@ -190,6 +190,8 @@ export type Database = {
           session_id: string | null
           size_bytes: number
           status: Database["public"]["Enums"]["document_status"]
+          stock_data: Json | null
+          stock_fetched_at: string | null
           storage_path: string
           ticker: string | null
           total_pages: number | null
@@ -207,6 +209,8 @@ export type Database = {
           session_id?: string | null
           size_bytes: number
           status?: Database["public"]["Enums"]["document_status"]
+          stock_data?: Json | null
+          stock_fetched_at?: string | null
           storage_path: string
           ticker?: string | null
           total_pages?: number | null
@@ -224,6 +228,8 @@ export type Database = {
           session_id?: string | null
           size_bytes?: number
           status?: Database["public"]["Enums"]["document_status"]
+          stock_data?: Json | null
+          stock_fetched_at?: string | null
           storage_path?: string
           ticker?: string | null
           total_pages?: number | null
