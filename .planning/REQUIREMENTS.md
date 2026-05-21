@@ -72,12 +72,12 @@ Requirements for the initial public release. Each maps to roadmap phases. All re
 
 ### Chat (CHAT)
 
-- [ ] **CHAT-01**: User can ask follow-up questions about the uploaded document via a chat interface
-- [ ] **CHAT-02**: Chat answers are grounded in retrieved document chunks and include page citations
+- [x] **CHAT-01**: User can ask follow-up questions about the uploaded document via a chat interface
+- [x] **CHAT-02**: Chat answers are grounded in retrieved document chunks and include page citations
 - [ ] **CHAT-03**: Chat answers stream progressively to the UI as they are generated
-- [ ] **CHAT-04**: Chat session persists across page refresh (anonymous, browser-keyed, 7-day TTL)
-- [ ] **CHAT-05**: Chat surfaces 3–5 seeded suggested questions at session start to reduce blank-prompt anxiety
-- [ ] **CHAT-06**: Buy/sell recommendation language is hard-blocked in chat responses via post-processing filter
+- [x] **CHAT-04**: Chat session persists across page refresh (anonymous, browser-keyed, 7-day TTL)
+- [x] **CHAT-05**: Chat surfaces 3–5 seeded suggested questions at session start to reduce blank-prompt anxiety
+- [x] **CHAT-06**: Buy/sell recommendation language is hard-blocked in chat responses via post-processing filter
 
 ### Disclaimers & Compliance (DISCLAIM)
 
@@ -199,12 +199,12 @@ Explicitly excluded from v1 AND v2. Documented to prevent scope creep.
 | STOCK-05 | Phase 9 | Pending |
 | CHART-01 | Phase 9 | Pending |
 | CHART-02 | Phase 9 | Pending |
-| CHAT-01 | Phase 10 | Pending |
-| CHAT-02 | Phase 10 | Pending |
+| CHAT-01 | Phase 10 | Complete |
+| CHAT-02 | Phase 10 | Complete |
 | CHAT-03 | Phase 10 | Pending |
-| CHAT-04 | Phase 10 | Pending |
-| CHAT-05 | Phase 10 | Pending |
-| CHAT-06 | Phase 10 | Pending |
+| CHAT-04 | Phase 10 | Complete |
+| CHAT-05 | Phase 10 | Complete |
+| CHAT-06 | Phase 10 | Complete |
 | DISCLAIM-01 | Phase 12 | Pending |
 | DISCLAIM-02 | Phase 6 | Pending |
 | DISCLAIM-03 | Phase 12 | Pending |
