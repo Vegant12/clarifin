@@ -29,7 +29,8 @@ describe("StarterQuestions (CHAT-05)", () => {
   it("clicking a pill invokes onSelect with the question text", () => {
     const onSelect = vi.fn();
     render(<StarterQuestions questions={Q} onSelect={onSelect} visible />);
-    fireEvent.click(screen.getByText(Q[0]));
+    // Q[0] is always defined — assert non-null to satisfy TypeScript
+    fireEvent.click(screen.getByText(Q[0]!));
     expect(onSelect).toHaveBeenCalledWith(Q[0]);
   });
 });
