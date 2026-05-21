@@ -144,6 +144,7 @@ export type Database = {
           score_at: string | null
           score_breakdown: Json | null
           score_reasoning: string | null
+          starter_questions: Json | null
         }
         Insert: {
           created_at?: string
@@ -155,6 +156,7 @@ export type Database = {
           score_at?: string | null
           score_breakdown?: Json | null
           score_reasoning?: string | null
+          starter_questions?: Json | null
         }
         Update: {
           created_at?: string
@@ -166,6 +168,7 @@ export type Database = {
           score_at?: string | null
           score_breakdown?: Json | null
           score_reasoning?: string | null
+          starter_questions?: Json | null
         }
         Relationships: [
           {
