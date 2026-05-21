@@ -10,7 +10,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { ExplanationResult } from "@/lib/explain/explanation-schema";
 import type { ScoreResult } from "@/lib/explain/score-schema";
 import type { ChartDataPoint, StockData } from "@/lib/stock/stock-schema";
+import type { Message } from "ai";
 
+import { ChatPanel } from "@/components/chat/chat-panel";
 import { ExplanationPanel } from "./explanation-panel";
 import { MobileTabView } from "./mobile-tab-view";
 import type { PdfViewerHandle } from "./pdf-viewer-panel";
@@ -35,8 +37,24 @@ function DesktopSplitPane(props: {
   stockData: StockData | null;
   chartData: ChartDataPoint[] | null;
   stockError: boolean;
+  sessionId: string | null;
+  initialMessages: Message[];
+  starterQuestions: string[];
 }) {
-  const { documentId, explanation, pdfUrl, pdfRef, score, ticker, stockData, chartData, stockError } = props;
+  const {
+    documentId,
+    explanation,
+    pdfUrl,
+    pdfRef,
+    score,
+    ticker,
+    stockData,
+    chartData,
+    stockError,
+    sessionId,
+    initialMessages,
+    starterQuestions,
+  } = props;
 
   // SSR-safe storage shim: react-resizable-panels calls storage.getItem/setItem
   // synchronously; providing a no-op on the server avoids "localStorage is not defined".
@@ -76,6 +94,17 @@ function DesktopSplitPane(props: {
           chartData={chartData}
           stockError={stockError}
         />
+        {/* CHAT-01: ChatPanel appended to the left scrollable panel, rendered UNCONDITIONALLY.
+            sessionId ?? "" defers "session not yet ready" UX to ChatInterface.
+            A sessionId !== null guard would suppress CHAT-05 starter-question empty state on
+            first paint, violating the phase must_haves.truths contract. */}
+        <ChatPanel
+          documentId={documentId}
+          sessionId={sessionId ?? ""}
+          initialMessages={initialMessages}
+          starterQuestions={starterQuestions}
+          onGoToPage={handleGoToPage}
+        />
       </Panel>
       <Separator
         id="resize-handle"
@@ -98,8 +127,23 @@ export function DocumentReaderLayout(props: {
   stockData: StockData | null;
   chartData: ChartDataPoint[] | null;
   stockError: boolean;
+  sessionId: string | null;
+  initialMessages: Message[];
+  starterQuestions: string[];
 }) {
-  const { documentId, explanation, pdfUrl, score, ticker, stockData, chartData, stockError } = props;
+  const {
+    documentId,
+    explanation,
+    pdfUrl,
+    score,
+    ticker,
+    stockData,
+    chartData,
+    stockError,
+    sessionId,
+    initialMessages,
+    starterQuestions,
+  } = props;
   const pdfRef = useRef<PdfViewerHandle>(null);
 
   if (!explanation) {
@@ -124,7 +168,19 @@ export function DocumentReaderLayout(props: {
     <main className="h-screen w-full overflow-hidden">
       {/* Mobile (≤768px): tab switcher */}
       <div className="flex h-full md:hidden">
-        <MobileTabView documentId={documentId} explanation={explanation} pdfUrl={pdfUrl} score={score} ticker={ticker} stockData={stockData} chartData={chartData} stockError={stockError} />
+        <MobileTabView
+          documentId={documentId}
+          explanation={explanation}
+          pdfUrl={pdfUrl}
+          score={score}
+          ticker={ticker}
+          stockData={stockData}
+          chartData={chartData}
+          stockError={stockError}
+          sessionId={sessionId}
+          initialMessages={initialMessages}
+          starterQuestions={starterQuestions}
+        />
       </div>
 
       {/* Desktop (≥769px): resizable split */}
@@ -139,6 +195,9 @@ export function DocumentReaderLayout(props: {
           stockData={stockData}
           chartData={chartData}
           stockError={stockError}
+          sessionId={sessionId}
+          initialMessages={initialMessages}
+          starterQuestions={starterQuestions}
         />
       </div>
     </main>

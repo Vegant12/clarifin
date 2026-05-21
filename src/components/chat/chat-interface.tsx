@@ -36,6 +36,10 @@ export function ChatInterface(props: ChatInterfaceProps) {
     className,
   } = props;
 
+  // When sessionId is empty string the URL sync effect (DocumentProgressView) has not yet
+  // appended ?sessionId= to the URL. Disable submit until a real session id is available.
+  const isSessionReady = sessionId.length > 0;
+
   const { messages, input, handleInputChange, handleSubmit, isLoading, error, append } =
     useChat({
       api: "/api/chat",
@@ -109,7 +113,16 @@ export function ChatInterface(props: ChatInterfaceProps) {
         <div ref={sentinelRef} />
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+      <form
+        onSubmit={(e) => {
+          if (!isSessionReady) {
+            e.preventDefault();
+            return;
+          }
+          handleSubmit(e);
+        }}
+        className="flex flex-col gap-2"
+      >
         <div className="flex items-end gap-2">
           <textarea
             ref={textareaRef}
@@ -120,7 +133,7 @@ export function ChatInterface(props: ChatInterfaceProps) {
             aria-label="Ask about this document"
             aria-required="true"
             placeholder="Ask anything about this document…"
-            disabled={isLoading}
+            disabled={!isSessionReady || isLoading}
             className={cn(
               "flex-1 resize-none rounded-md border border-input bg-background px-3 py-2",
               "text-base leading-relaxed",
@@ -131,7 +144,7 @@ export function ChatInterface(props: ChatInterfaceProps) {
           />
           <Button
             type="submit"
-            disabled={isLoading || input.trim().length === 0}
+            disabled={!isSessionReady || isLoading || input.trim().length === 0}
             className="min-h-[44px]"
           >
             Send Message
@@ -143,6 +156,15 @@ export function ChatInterface(props: ChatInterfaceProps) {
           </p>
         ) : null}
       </form>
+      {!isSessionReady ? (
+        <p
+          role="status"
+          aria-live="polite"
+          className="mt-2 text-xs text-muted-foreground"
+        >
+          Setting up your chat session…
+        </p>
+      ) : null}
     </div>
   );
 }
