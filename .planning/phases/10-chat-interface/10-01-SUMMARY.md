@@ -45,6 +45,7 @@ key_files:
   modified:
     - package.json
     - pnpm-lock.yaml
+    - src/db/database.types.ts
 decisions:
   - "Pin ai@4.3.19 exactly (no caret) — ai@6.x has incompatible API surface that breaks all Plan 02/03 patterns"
   - "Use vi.hoisted() Supabase mock chain in session-restore test to assert on .eq/.gte/.order/.limit call args (contract enforcement)"
@@ -52,7 +53,7 @@ decisions:
 metrics:
   duration: "~3 min 23 sec"
   completed: "2026-05-21"
-  tasks_completed: 2
+  tasks_completed: 3
   tasks_total: 3
   files_created: 9
   files_modified: 2
@@ -67,7 +68,7 @@ metrics:
 | Task | Name | Commit | Files |
 |------|------|--------|-------|
 | 1 | Install AI SDK v4 + migration | 94b71ef | package.json, pnpm-lock.yaml, supabase/migrations/20260520120000_starter_questions.sql |
-| 2 | [BLOCKING CHECKPOINT] Apply migration + regen DB types | — | src/db/database.types.ts (awaiting human) |
+| 2 | Apply migration + regen DB types | 2ac3507 | src/db/database.types.ts (starter_questions: Json | null on Row/Insert/Update) |
 | 3 | Write 6 RED Vitest stubs | 09b1f65 | 6 test files in src/lib/chat/ and src/app/api/ |
 
 ## Task 1: AI SDK v4 Installation
@@ -91,19 +92,12 @@ package.json dependencies block (exact, no carets):
 - Adds `starter_questions jsonb` column to `public.document_analysis` (nullable, O(1) catalog-only operation)
 - Includes `COMMENT ON COLUMN` referencing CHAT-05
 
-## Task 2: [BLOCKING CHECKPOINT — AWAITING HUMAN ACTION]
+## Task 2: Apply Migration + Regen DB Types — RESOLVED
 
-The migration must be applied to the remote Supabase project and DB types regenerated. The agent cannot perform the interactive `supabase link --project-ref` flow.
+Migration was applied directly via Supabase SQL editor (pnpm supabase login failed due to CLI version mismatch with sbp_v0_ token format). `database.types.ts` was restored from git and manually updated to include `starter_questions: Json | null` on document_analysis Row, Insert, and Update interfaces.
 
-**Required steps (in order):**
-1. `pnpm supabase login` (if not already)
-2. `pnpm supabase link --project-ref <your-project-ref>` (skip if already linked)
-3. `pnpm supabase db push` (applies 20260520120000_starter_questions.sql)
-4. `pnpm db:types` (regenerates src/db/database.types.ts from live schema)
-5. `grep -n 'starter_questions' src/db/database.types.ts` (MUST return 3+ lines)
-6. `pnpm typecheck` (MUST pass with zero errors)
-
-**Resume signal:** `grep -n 'starter_questions' src/db/database.types.ts` shows 3+ matches AND `pnpm typecheck` passes.
+**Commit:** 2ac3507
+**Verified:** `grep -c starter_questions src/db/database.types.ts` → 3
 
 ## Task 3: RED Vitest Stubs
 
@@ -131,7 +125,9 @@ Test Files  6 failed (6)
 
 ## Deviations from Plan
 
-None — plan executed exactly as written for auto tasks. Task 3 executed before Task 2's DB types are regenerated (safe because stubs fail on missing source modules, not missing type definitions).
+- `pnpm supabase login` failed due to CLI version mismatch with sbp_v0_ token format; migration applied directly via Supabase SQL editor instead of `supabase db push`
+- `db:types` script uses `--local` flag; database.types.ts was restored from git and manually updated with starter_questions column
+- Task 3 executed before Task 2's DB types were regenerated (safe because stubs fail on missing source modules, not missing type definitions)
 
 ## Known Stubs
 
@@ -151,6 +147,7 @@ No new threat surface introduced. Migration adds a nullable jsonb column with no
 - [x] Migration contains `ALTER TABLE public.document_analysis`
 - [x] Migration contains `starter_questions jsonb`
 - [x] Migration contains `COMMENT ON COLUMN`
+- [x] src/db/database.types.ts has `starter_questions: Json | null` on Row/Insert/Update (3 occurrences)
 - [x] All 6 test files exist
-- [x] All 6 test files are RED (module resolution errors)
-- [x] Commits 94b71ef and 09b1f65 confirmed in git log
+- [x] All 6 test files are RED (module resolution errors — "Failed to load url")
+- [x] Commits 94b71ef, 09b1f65, and 2ac3507 confirmed in git log
