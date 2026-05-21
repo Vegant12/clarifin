@@ -90,20 +90,18 @@ export function MobileTabView(props: {
       {/* CHAT-01 mobile: Chat tab rendered UNCONDITIONALLY — no sessionId !== null guard.
           Citation clicks switch to "pdf" tab then scroll, per UI-SPEC Citation Click in Chat. */}
       <TabsContent value="chat" className="flex-1 overflow-hidden">
-        <div className="flex h-full flex-col overflow-hidden">
-          <ChatPanel
-            documentId={documentId}
-            sessionId={sessionId ?? ""}
-            initialMessages={initialMessages}
-            starterQuestions={starterQuestions}
-            onGoToPage={(p) => {
-              setTab("pdf");
-              // Defer scroll to next tick so the PDF panel is mounted/visible.
-              setTimeout(() => pdfRef.current?.scrollToPage(p), 0);
-            }}
-            className="h-full overflow-auto"
-          />
-        </div>
+        <ChatPanel
+          documentId={documentId}
+          sessionId={sessionId ?? ""}
+          initialMessages={initialMessages}
+          starterQuestions={starterQuestions}
+          onGoToPage={(p) => {
+            setTab("pdf");
+            // Defer scroll to next tick so the PDF panel is mounted/visible.
+            setTimeout(() => pdfRef.current?.scrollToPage(p), 0);
+          }}
+          className="h-full"
+        />
       </TabsContent>
     </Tabs>
   );

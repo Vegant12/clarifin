@@ -83,27 +83,29 @@ function DesktopSplitPane(props: {
       defaultLayout={defaultLayout}
       onLayoutChanged={onLayoutChanged}
     >
-      <Panel id="explanation" defaultSize={50} minSize={20} className="overflow-auto">
-        <ExplanationPanel
-          documentId={documentId}
-          explanation={explanation}
-          score={score}
-          onGoToPage={handleGoToPage}
-          ticker={ticker}
-          stockData={stockData}
-          chartData={chartData}
-          stockError={stockError}
-        />
-        {/* CHAT-01: ChatPanel appended to the left scrollable panel, rendered UNCONDITIONALLY.
-            sessionId ?? "" defers "session not yet ready" UX to ChatInterface.
-            A sessionId !== null guard would suppress CHAT-05 starter-question empty state on
-            first paint, violating the phase must_haves.truths contract. */}
+      {/* CHAT-01: left panel is split into two regions:
+          - ExplanationPanel: flex-1, scrolls independently so chat is never buried below the fold
+          - ChatPanel: fixed 420px section pinned at bottom, always visible */}
+      <Panel id="explanation" defaultSize={50} minSize={20} className="flex flex-col overflow-hidden">
+        <div className="flex-1 overflow-auto min-h-0">
+          <ExplanationPanel
+            documentId={documentId}
+            explanation={explanation}
+            score={score}
+            onGoToPage={handleGoToPage}
+            ticker={ticker}
+            stockData={stockData}
+            chartData={chartData}
+            stockError={stockError}
+          />
+        </div>
         <ChatPanel
           documentId={documentId}
           sessionId={sessionId ?? ""}
           initialMessages={initialMessages}
           starterQuestions={starterQuestions}
           onGoToPage={handleGoToPage}
+          className="h-[420px] shrink-0 border-t"
         />
       </Panel>
       <Separator

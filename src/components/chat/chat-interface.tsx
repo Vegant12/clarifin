@@ -88,13 +88,13 @@ export function ChatInterface(props: ChatInterfaceProps) {
   }
 
   return (
-    <div className={cn("flex flex-col gap-4", className)}>
+    <div className={cn("flex flex-col gap-4 h-full", className)}>
       <div
         ref={listRef}
         role="log"
         aria-live="polite"
         aria-label="Chat messages"
-        className="flex flex-col gap-4"
+        className="flex-1 overflow-y-auto min-h-0 flex flex-col gap-4"
       >
         <StarterQuestions
           questions={starterQuestions}

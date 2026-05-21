@@ -26,15 +26,16 @@ export function ChatPanel(props: {
   return (
     <section
       aria-label="Chat about this document"
-      className={cn("flex flex-col gap-6 px-6 py-8", className)}
+      className={cn("flex flex-col gap-3 px-6 pt-4 pb-4", className)}
     >
-      <h2 className="text-xl font-semibold text-foreground">Chat</h2>
+      <h2 className="shrink-0 text-xl font-semibold text-foreground">Chat</h2>
       <ChatInterface
         documentId={documentId}
         sessionId={sessionId}
         initialMessages={initialMessages}
         starterQuestions={starterQuestions}
         onGoToPage={onGoToPage}
+        className="flex-1 min-h-0"
       />
     </section>
   );
