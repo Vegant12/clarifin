@@ -517,19 +517,28 @@ const { data } = await supabaseAdmin
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
+
+> All three open questions have been resolved by the Phase 10 plans. Resolution annotations inline below.
 
 1. **Where should starter questions be stored/triggered?**
+
+   > **RESOLVED (Plan 01 + Plan 03):** `starter_questions jsonb` column added to `document_analysis` via migration; populated lazily by `/api/starter-questions` route (cache-then-generate). RSC reads the cached value directly; on cache miss with explanation ready, RSC fires a server-to-server fetch to `/api/starter-questions` which generates and caches.
+
    - What we know: AI-SPEC §4 says "cache per document in Supabase (generate once at upload)". The `document_analysis` table doesn't have a `starter_questions` column yet.
    - What's unclear: Whether to add a `starter_questions jsonb` column to `document_analysis`, or create a separate `/api/starter-questions` route called on first session open.
    - Recommendation: Add `starter_questions jsonb` to `document_analysis` via a migration, populate it in the `analyze-document-batch` pipeline after explanation. The chat UI reads it from the existing analysis fetch on the document page.
 
 2. **How does the Server Component know the `session_id` for chat restore?**
+
+   > **RESOLVED (Plan 05):** `session_id` is passed as a `?sessionId={uuid}` URL search parameter. On first visit, `DocumentProgressView` (client component) reads the localStorage `session_token`, calls `/api/session` to obtain the `session_id`, then `router.replace`s the URL to append `?sessionId=`. Subsequent refreshes preserve the param and trigger the RSC chat_messages query.
    - What we know: `session_token` is in `localStorage` (client-only). The Server Component at `doc/[documentId]/page.tsx` runs server-side.
    - What's unclear: How the RSC gets the session ID to load `chat_messages`. There's no auth cookie mechanism.
    - Recommendation: Pass `sessionId` as a URL query parameter from the client (after `ensureBrowserSession`), or use a cookie set on `/api/session`. The existing `/api/session` returns `session_id` — the client can redirect to `?sessionId=xxx` after ensuring session. Alternatively, move chat to a nested client boundary where `initialMessages` is fetched client-side (adds 1 roundtrip but avoids session ID leakage via URL).
 
 3. **Does the existing `doc/[documentId]/page.tsx` need to be split for chat routing?**
+
+   > **RESOLVED (Plan 05):** Existing `doc/[documentId]/page.tsx` RSC is extended with additional Supabase fetches for `initialMessages` (via `loadInitialMessages` helper in `src/lib/chat/session-restore.ts`) and `starter_questions` (via `document_analysis` jsonb column or `/api/starter-questions` loopback). No split needed — one query overhead per page render.
    - What we know: Current page fetches explanation, score, PDF URL, stock data in one RSC. Adding chat history fetch adds another DB query.
    - What's unclear: Whether to add chat directly to the existing page or create a nested route/component.
    - Recommendation: Keep one page, add the chat history fetch alongside the existing queries. The overhead is one small Supabase query.
