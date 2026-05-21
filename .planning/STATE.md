@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: Executing Phase 10
-stopped_at: Phase 10 Plan 01 — BLOCKING at Task 2 (supabase db push)
-last_updated: "2026-05-21T03:30:59.864Z"
+stopped_at: Completed 10-02-PLAN.md (pure-function chat modules)
+last_updated: "2026-05-21T04:08:38.837Z"
 progress:
   total_phases: 12
   completed_phases: 6
   total_plans: 28
-  completed_plans: 24
-  percent: 86
+  completed_plans: 25
+  percent: 89
 ---
 
 # Project State
@@ -25,7 +25,7 @@ progress:
 
 ## Session Record
 
-- **Stopped at:** Phase 10 Plan 01 — BLOCKING at Task 2 (supabase db push)
+- **Stopped at:** Completed 10-02-PLAN.md (pure-function chat modules)
 - **Resume file:** None
 
 ## Phase Progress
@@ -39,4 +39,15 @@ progress:
 | 5: Indonesian Eval Harness | Complete (2026-05-17) — VERIFICATION passed |
 | 6: AI Explanation Generation | Complete (2026-05-18) |
 | 7: Citation UI & PDF Viewer | Complete (2026-05-19) — human-verify approved |
-| 8–12 | Not started |
+| 8 | Not started |
+| 9 | Not started |
+| 10: Chat Interface | In Progress — Plans 01-02 complete, Plans 03-05 pending |
+| 11–12 | Not started |
+
+## Key Decisions
+
+| Decision | Phase | Summary |
+|----------|-------|---------|
+| Chat library module paths | 10-02 | Files placed at src/lib/ root (not src/lib/chat/) to match ../guardrail relative import from test files in src/lib/chat/ |
+| PSAK_GLOSSARY reuse | 10-02 | Imported from explain-prompts.ts, not redefined — avoids drift between explanation and chat glossaries |
+| session-restore.ts deferred | 10-02 | Not in Plan 02 scope; requires Supabase I/O (not pure function); will be implemented in Plan 03 |

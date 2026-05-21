@@ -227,7 +227,7 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
   5. Submitting "Should I buy this stock?" or similar produces a friendly "I can't make buy/sell recommendations" deflection — never an investment recommendation
 **Plans**: 5 plans
 - [x] 10-01-PLAN.md (10-01-wave0-setup) — Pin ai@4.3.19 + @ai-sdk/google + @ai-sdk/groq, add document_analysis.starter_questions migration, regen DB types, write 5 RED Vitest stubs (Wave 0, blocking remote db push)
-- [ ] 10-02-PLAN.md (10-02-pure-libs) — Implement guardrail.ts (CHAT-06), prompts.ts (CHAT-02 + DISCLAIM-01), starter-questions-schema.ts (CHAT-05) — pure functions, turn Wave 0 RED tests GREEN (Wave 1)
+- [x] 10-02-PLAN.md (10-02-pure-libs) — Implement guardrail.ts (CHAT-06), prompts.ts (CHAT-02 + DISCLAIM-01), starter-questions-schema.ts (CHAT-05) — pure functions, turn Wave 0 RED tests GREEN (Wave 1)
 - [ ] 10-03-PLAN.md (10-03-api-routes) — /api/chat streamText route + /api/starter-questions cache-then-generate route (Wave 2)
 - [ ] 10-04-PLAN.md (10-04-ui-components) — 6 chat React components (ChatPanel, ChatInterface, ChatMessage, StarterQuestions, ChatLoadingSkeleton, GuardrailDeflection) + 2 render tests (Wave 3)
 - [ ] 10-05-PLAN.md (10-05-rsc-wiring) — Wire ChatPanel into doc/[documentId]/page.tsx RSC + DocumentReaderLayout (desktop) + MobileTabView ('Chat' tab); sessionId URL sync (Wave 4, blocking human-verify)
@@ -289,7 +289,7 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
 | 7. Citation UI & PDF Viewer | 0/3 | Planned · API+jargon dict (W1), citation+jargon UI (W2), reader layout+RSC (W3, human-verify) | - |
 | 8. AI Score & Drill-Down | 0/4 | Planned · setup+stubs (W0), schema+prompts (W1), generator+orchestrator (W2), UI+threading (W3, human-verify) | - |
 | 9. Stock Data & Trend Chart | 0/TBD | Not started | - |
-| 10. Chat Interface | 1/5 | In Progress|  |
+| 10. Chat Interface | 2/5 | In Progress|  |
 | 11. Observability & Reliability | 0/TBD | Not started | - |
 | 12. Polish & Public Launch | 0/TBD | Not started | - |
 
