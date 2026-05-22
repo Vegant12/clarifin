@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { DocumentReaderLayout } from "@/components/doc/document-reader-layout";
@@ -14,6 +15,7 @@ import type { ExplanationResult } from "@/lib/explain/explanation-schema";
 import type { ScoreResult } from "@/lib/explain/score-schema";
 import { useDocumentStatus } from "@/lib/hooks/use-document-status";
 import { getBrowserSessionToken } from "@/lib/session-client";
+import type { Message } from "ai";
 
 const uuidSchema = z.string().uuid();
 
@@ -26,8 +28,23 @@ export function DocumentProgressView(props: {
   stockData: StockData | null;
   chartData: ChartDataPoint[] | null;
   stockError: boolean;
+  sessionId: string | null;
+  initialMessages: Message[];
+  starterQuestions: string[];
 }) {
-  const { documentId, explanation, pdfUrl, score, ticker, stockData, chartData, stockError } = props;
+  const {
+    documentId,
+    explanation,
+    pdfUrl,
+    score,
+    ticker,
+    stockData,
+    chartData,
+    stockError,
+    sessionId,
+    initialMessages,
+    starterQuestions,
+  } = props;
   const { isSessionReady, sessionError } = useSessionReady();
 
   const [mounted, setMounted] = useState(false);
@@ -35,6 +52,37 @@ export function DocumentProgressView(props: {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // CHAT-04: URL-sync effect — if the RSC rendered without ?sessionId= in the URL
+  // (first visit), fetch the session_id row id from /api/session and append it.
+  // On next navigation/refresh the RSC can query chat_messages for session restore.
+  useEffect(() => {
+    if (!mounted || !isSessionReady || sessionId !== null) return;
+    let cancelled = false;
+    void (async () => {
+      const token = getBrowserSessionToken();
+      if (!token) return;
+      try {
+        const res = await fetch("/api/session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ session_token: token }),
+        });
+        if (!res.ok) return;
+        const body = (await res.json()) as { session_id?: string };
+        if (cancelled || !body.session_id) return;
+        router.replace(`${pathname}?sessionId=${body.session_id}`, { scroll: false });
+      } catch {
+        // Non-fatal: chat will work without restore on first visit; refresh will resync.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [mounted, isSessionReady, sessionId, router, pathname]);
 
   const sessionToken = mounted ? getBrowserSessionToken() : null;
   const hasToken = Boolean(sessionToken && sessionToken.length > 0);
@@ -54,13 +102,37 @@ export function DocumentProgressView(props: {
   // Polling continues in the background and would only matter for stale SSR edge cases.
   if (explanation) {
     return (
-      <DocumentReaderLayout documentId={documentId} explanation={explanation} pdfUrl={pdfUrl} score={score} ticker={ticker} stockData={stockData} chartData={chartData} stockError={stockError} />
+      <DocumentReaderLayout
+        documentId={documentId}
+        explanation={explanation}
+        pdfUrl={pdfUrl}
+        score={score}
+        ticker={ticker}
+        stockData={stockData}
+        chartData={chartData}
+        stockError={stockError}
+        sessionId={sessionId}
+        initialMessages={initialMessages}
+        starterQuestions={starterQuestions}
+      />
     );
   }
 
   if (mounted && !sessionError && docIdValid && hasToken && data?.status === "ready") {
     return (
-      <DocumentReaderLayout documentId={documentId} explanation={explanation} pdfUrl={pdfUrl} score={score} ticker={ticker} stockData={stockData} chartData={chartData} stockError={stockError} />
+      <DocumentReaderLayout
+        documentId={documentId}
+        explanation={explanation}
+        pdfUrl={pdfUrl}
+        score={score}
+        ticker={ticker}
+        stockData={stockData}
+        chartData={chartData}
+        stockError={stockError}
+        sessionId={sessionId}
+        initialMessages={initialMessages}
+        starterQuestions={starterQuestions}
+      />
     );
   }
 

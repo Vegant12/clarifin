@@ -10,7 +10,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { ExplanationResult } from "@/lib/explain/explanation-schema";
 import type { ScoreResult } from "@/lib/explain/score-schema";
 import type { ChartDataPoint, StockData } from "@/lib/stock/stock-schema";
+import type { Message } from "ai";
 
+import { ChatPanel } from "@/components/chat/chat-panel";
 import { ExplanationPanel } from "./explanation-panel";
 import { MobileTabView } from "./mobile-tab-view";
 import type { PdfViewerHandle } from "./pdf-viewer-panel";
@@ -35,8 +37,24 @@ function DesktopSplitPane(props: {
   stockData: StockData | null;
   chartData: ChartDataPoint[] | null;
   stockError: boolean;
+  sessionId: string | null;
+  initialMessages: Message[];
+  starterQuestions: string[];
 }) {
-  const { documentId, explanation, pdfUrl, pdfRef, score, ticker, stockData, chartData, stockError } = props;
+  const {
+    documentId,
+    explanation,
+    pdfUrl,
+    pdfRef,
+    score,
+    ticker,
+    stockData,
+    chartData,
+    stockError,
+    sessionId,
+    initialMessages,
+    starterQuestions,
+  } = props;
 
   // SSR-safe storage shim: react-resizable-panels calls storage.getItem/setItem
   // synchronously; providing a no-op on the server avoids "localStorage is not defined".
@@ -65,16 +83,29 @@ function DesktopSplitPane(props: {
       defaultLayout={defaultLayout}
       onLayoutChanged={onLayoutChanged}
     >
-      <Panel id="explanation" defaultSize={50} minSize={20} className="overflow-auto">
-        <ExplanationPanel
+      {/* CHAT-01: left panel is split into two regions:
+          - ExplanationPanel: flex-1, scrolls independently so chat is never buried below the fold
+          - ChatPanel: fixed 420px section pinned at bottom, always visible */}
+      <Panel id="explanation" defaultSize={50} minSize={20} className="flex flex-col !overflow-hidden">
+        <div className="flex-1 overflow-auto min-h-0">
+          <ExplanationPanel
+            documentId={documentId}
+            explanation={explanation}
+            score={score}
+            onGoToPage={handleGoToPage}
+            ticker={ticker}
+            stockData={stockData}
+            chartData={chartData}
+            stockError={stockError}
+          />
+        </div>
+        <ChatPanel
           documentId={documentId}
-          explanation={explanation}
-          score={score}
+          sessionId={sessionId ?? ""}
+          initialMessages={initialMessages}
+          starterQuestions={starterQuestions}
           onGoToPage={handleGoToPage}
-          ticker={ticker}
-          stockData={stockData}
-          chartData={chartData}
-          stockError={stockError}
+          className="h-[420px] shrink-0 border-t"
         />
       </Panel>
       <Separator
@@ -98,8 +129,23 @@ export function DocumentReaderLayout(props: {
   stockData: StockData | null;
   chartData: ChartDataPoint[] | null;
   stockError: boolean;
+  sessionId: string | null;
+  initialMessages: Message[];
+  starterQuestions: string[];
 }) {
-  const { documentId, explanation, pdfUrl, score, ticker, stockData, chartData, stockError } = props;
+  const {
+    documentId,
+    explanation,
+    pdfUrl,
+    score,
+    ticker,
+    stockData,
+    chartData,
+    stockError,
+    sessionId,
+    initialMessages,
+    starterQuestions,
+  } = props;
   const pdfRef = useRef<PdfViewerHandle>(null);
 
   if (!explanation) {
@@ -124,7 +170,19 @@ export function DocumentReaderLayout(props: {
     <main className="h-screen w-full overflow-hidden">
       {/* Mobile (≤768px): tab switcher */}
       <div className="flex h-full md:hidden">
-        <MobileTabView documentId={documentId} explanation={explanation} pdfUrl={pdfUrl} score={score} ticker={ticker} stockData={stockData} chartData={chartData} stockError={stockError} />
+        <MobileTabView
+          documentId={documentId}
+          explanation={explanation}
+          pdfUrl={pdfUrl}
+          score={score}
+          ticker={ticker}
+          stockData={stockData}
+          chartData={chartData}
+          stockError={stockError}
+          sessionId={sessionId}
+          initialMessages={initialMessages}
+          starterQuestions={starterQuestions}
+        />
       </div>
 
       {/* Desktop (≥769px): resizable split */}
@@ -139,6 +197,9 @@ export function DocumentReaderLayout(props: {
           stockData={stockData}
           chartData={chartData}
           stockError={stockError}
+          sessionId={sessionId}
+          initialMessages={initialMessages}
+          starterQuestions={starterQuestions}
         />
       </div>
     </main>
