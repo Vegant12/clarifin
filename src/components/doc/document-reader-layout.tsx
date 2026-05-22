@@ -86,7 +86,7 @@ function DesktopSplitPane(props: {
       {/* CHAT-01: left panel is split into two regions:
           - ExplanationPanel: flex-1, scrolls independently so chat is never buried below the fold
           - ChatPanel: fixed 420px section pinned at bottom, always visible */}
-      <Panel id="explanation" defaultSize={50} minSize={20} className="flex flex-col overflow-hidden">
+      <Panel id="explanation" defaultSize={50} minSize={20} className="flex flex-col !overflow-hidden">
         <div className="flex-1 overflow-auto min-h-0">
           <ExplanationPanel
             documentId={documentId}
