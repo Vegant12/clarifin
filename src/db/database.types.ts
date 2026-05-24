@@ -189,6 +189,7 @@ export type Database = {
           filename: string
           gemini_file_resource_name: string | null
           id: string
+          ip_address: string | null
           parse_next_page: number
           session_id: string | null
           size_bytes: number
@@ -208,6 +209,7 @@ export type Database = {
           filename: string
           gemini_file_resource_name?: string | null
           id?: string
+          ip_address?: string | null
           parse_next_page?: number
           session_id?: string | null
           size_bytes: number
@@ -227,6 +229,7 @@ export type Database = {
           filename?: string
           gemini_file_resource_name?: string | null
           id?: string
+          ip_address?: string | null
           parse_next_page?: number
           session_id?: string | null
           size_bytes?: number
