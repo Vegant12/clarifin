@@ -108,3 +108,12 @@ describe("ExplanationPanel — Phase 9 stock + chart slots", () => {
     expect(screen.getByRole("heading", { name: "Key Risks" })).toBeInTheDocument();
   });
 });
+
+describe("ExplanationPanel — DISCLAIM-01 inline disclaimer", () => {
+  it("renders the inline disclaimer paragraph", () => {
+    renderPanel();
+    const el = screen.getByTestId("explanation-disclaimer");
+    expect(el).toBeInTheDocument();
+    expect(el).toHaveTextContent("AI analysis · not financial advice");
+  });
+});

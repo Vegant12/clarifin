@@ -174,6 +174,12 @@ export function ExplanationPanel(props: {
           </section>
         );
       })}
+      <p
+        data-testid="explanation-disclaimer"
+        className="text-xs text-muted-foreground px-6 pb-4"
+      >
+        AI analysis · not financial advice. Verify all figures against the source PDF.
+      </p>
     </article>
   );
 }
