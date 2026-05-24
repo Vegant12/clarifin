@@ -249,9 +249,9 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
   5. A Vercel Cron job runs weekly and pings the Supabase database to prevent free-tier inactivity pause
 **Plans**: 4 plans
 - [x] 11-01-PLAN.md (11-01-foundation) — Langfuse env schema + singleton client at src/lib/langfuse.ts (Wave 1)
-- [ ] 11-02-PLAN.md (11-02-pattern-a-batch) — Instrument generate-explanation.ts + generate-score.ts with Pattern A (manual trace/generation/flush) (Wave 2)
-- [ ] 11-03-PLAN.md (11-03-pattern-b-routes) — Instrument chat/route.ts (onFinish closure) + starter-questions/route.ts (try/finally) with Pattern B (Wave 2)
-- [ ] 11-04-PLAN.md (11-04-reliability) — INFRA-03 concurrency cap + INFRA-04 PDF cleanup + INFRA-05 keep-alive cron route + vercel.json schedule (Wave 2)
+- [x] 11-02-PLAN.md (11-02-pattern-a-batch) — Instrument generate-explanation.ts + generate-score.ts with Pattern A (manual trace/generation/flush) (Wave 2)
+- [x] 11-03-PLAN.md (11-03-pattern-b-routes) — Instrument chat/route.ts (onFinish closure) + starter-questions/route.ts (try/finally) with Pattern B (Wave 2)
+- [x] 11-04-PLAN.md (11-04-reliability) — INFRA-03 concurrency cap + INFRA-04 PDF cleanup + INFRA-05 keep-alive cron route + vercel.json schedule (Wave 2)
 **UI hint**: no
 **AI hint**: no
 **Research flag**: no — Langfuse SDK + Next.js integration is standard; concurrency queue with `p-limit` is straightforward; Vercel Cron setup is well-documented
@@ -294,7 +294,7 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
 | 8. AI Score & Drill-Down | 0/4 | Planned · setup+stubs (W0), schema+prompts (W1), generator+orchestrator (W2), UI+threading (W3, human-verify) | - |
 | 9. Stock Data & Trend Chart | 0/TBD | Not started | - |
 | 10. Chat Interface | 4/5 | In Progress|  |
-| 11. Observability & Reliability | 1/4 | In Progress|  |
+| 11. Observability & Reliability | 4/4 | Complete | 2026-05-24 |
 | 12. Polish & Public Launch | 0/TBD | Not started | - |
 
 ---
