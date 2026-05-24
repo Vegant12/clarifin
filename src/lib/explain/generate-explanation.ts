@@ -13,6 +13,7 @@ import {
   EXPLANATION_MODEL_ID,
   buildExplanationPrompt,
 } from "@/lib/explain/explain-prompts";
+import { langfuse } from "@/lib/langfuse";
 
 // ---------------------------------------------------------------------------
 // Internal helpers
@@ -131,6 +132,10 @@ export interface GenerateExplanationResult {
  * server-side before JSON.parse + Zod validation.
  *
  * Does NOT write to Supabase — the caller (runAnalyzeBatch) owns persistence.
+ *
+ * Langfuse Pattern A (D-02, Plan 11-02): opens a trace + generation BEFORE the LLM call,
+ * closes the generation with output + usageDetails on success or level:"ERROR" on failure,
+ * and flushes in a finally block (AI-SPEC §3 pitfall 1 — mandatory before serverless exit).
  */
 export async function generateExplanation(
   params: GenerateExplanationParams,
@@ -169,34 +174,98 @@ export async function generateExplanation(
   const isIndonesian = isIndonesianDoc(params.extractionSource, params.firstPageText);
   const prompt = buildExplanationPrompt(params.totalPages, isIndonesian);
 
-  const stream = await ai.models.generateContentStream({
+  // ---------------------------------------------------------------------------
+  // Langfuse Pattern A (D-02): open trace + generation BEFORE the LLM call.
+  // - Trace name = "explanation" (pipeline step identifier).
+  // - Generation captures input prompt, model ID, modelParameters.
+  // - metadata.commit = VERCEL_GIT_COMMIT_SHA (set on Vercel) or "local" for dev (D-06).
+  // - DO NOT pass pdfBytes as input (AI-SPEC §3 pitfall 5 — exceeds per-event byte limit).
+  // ---------------------------------------------------------------------------
+  const trace = langfuse.trace({
+    name: "explanation",
+    metadata: {
+      doc_id: params.docId,
+      commit: process.env.VERCEL_GIT_COMMIT_SHA ?? "local",
+      step: "explanation",
+    },
+  });
+  const generation = trace.generation({
+    name: "gemini-explanation",
     model: EXPLANATION_MODEL_ID,
-    contents: [createPartFromUri(uri, mimeType), { text: prompt }],
-    config: {
-      responseMimeType: "application/json",
-      responseSchema: EXPLANATION_RESPONSE_SCHEMA,
+    input: {
+      prompt,
+      docId: params.docId,
+      isIndonesian,
+      totalPages: params.totalPages,
+    },
+    modelParameters: { responseMimeType: "application/json" },
+    metadata: {
+      doc_id: params.docId,
+      step: "explanation",
+      gemini_file_uri: uri,
     },
   });
 
-  // Accumulate chunks — each chunk is partial JSON; do NOT JSON.parse per chunk (Pitfall 1)
-  let accumulated = "";
-  for await (const chunk of stream) {
-    accumulated += (chunk as { text?: string }).text ?? "";
+  try {
+    const stream = await ai.models.generateContentStream({
+      model: EXPLANATION_MODEL_ID,
+      contents: [createPartFromUri(uri, mimeType), { text: prompt }],
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: EXPLANATION_RESPONSE_SCHEMA,
+      },
+    });
+
+    // Accumulate chunks — each chunk is partial JSON; do NOT JSON.parse per chunk (Pitfall 1)
+    // lastChunk carries the cumulative usageMetadata on the final chunk (Gemini behavior)
+    let accumulated = "";
+    let lastChunk:
+      | { usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number } }
+      | undefined;
+    for await (const chunk of stream) {
+      accumulated += (chunk as { text?: string }).text ?? "";
+      lastChunk = chunk as typeof lastChunk;
+    }
+
+    if (!accumulated) {
+      throw new Error("Empty Gemini response (no chunks accumulated).");
+    }
+
+    // Strip markdown fences defensively — responseMimeType should prevent them but match
+    // the defensive strip from gemini-pdf-pages.ts
+    const stripped = accumulated
+      .trim()
+      .replace(/^```(?:json)?\s*/i, "")
+      .replace(/\s*```$/i, "");
+
+    const parsed = JSON.parse(stripped) as unknown;
+    const result = explanationSchema.parse(parsed);
+
+    // Close generation with output + token counts from the final chunk's usageMetadata
+    generation.end({
+      output: result,
+      usageDetails: {
+        input: lastChunk?.usageMetadata?.promptTokenCount ?? 0,
+        output: lastChunk?.usageMetadata?.candidatesTokenCount ?? 0,
+      },
+    });
+    trace.update({
+      output: { status: "success", sections: Object.keys(result) },
+    });
+
+    return { result, fileResourceName: resourceName };
+  } catch (err) {
+    // AI-SPEC §3 pitfall 4: must close generation on error path or trace becomes orphaned.
+    generation.end({
+      output: { error: String(err) },
+      level: "ERROR",
+      statusMessage: String(err),
+    });
+    trace.update({ output: { error: String(err) } });
+    throw err;
+  } finally {
+    // AI-SPEC §3 pitfall 1: MUST flush before the serverless function exits,
+    // otherwise the in-memory event queue is silently discarded by Node teardown.
+    await langfuse.flushAsync();
   }
-
-  if (!accumulated) {
-    throw new Error("Empty Gemini response (no chunks accumulated).");
-  }
-
-  // Strip markdown fences defensively — responseMimeType should prevent them but match
-  // the defensive strip from gemini-pdf-pages.ts
-  const stripped = accumulated
-    .trim()
-    .replace(/^```(?:json)?\s*/i, "")
-    .replace(/\s*```$/i, "");
-
-  const parsed = JSON.parse(stripped) as unknown;
-  const result = explanationSchema.parse(parsed);
-
-  return { result, fileResourceName: resourceName };
 }
