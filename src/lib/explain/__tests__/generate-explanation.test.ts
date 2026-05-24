@@ -34,6 +34,29 @@ vi.mock("@/lib/env", () => ({
 vi.mock("server-only", () => ({}));
 
 // ---------------------------------------------------------------------------
+// Langfuse mock (Plan 11-02) — hoisted so spies are accessible inside tests
+// ---------------------------------------------------------------------------
+
+const { flushAsyncMock, generationEndMock, traceUpdateMock, traceMock, generationMock } =
+  vi.hoisted(() => {
+    const generationEnd = vi.fn();
+    const traceUpdate = vi.fn();
+    const generation = vi.fn(() => ({ end: generationEnd }));
+    const trace = vi.fn(() => ({ generation, update: traceUpdate }));
+    return {
+      flushAsyncMock: vi.fn().mockResolvedValue(undefined),
+      generationEndMock: generationEnd,
+      traceUpdateMock: traceUpdate,
+      traceMock: trace,
+      generationMock: generation,
+    };
+  });
+
+vi.mock("@/lib/langfuse", () => ({
+  langfuse: { trace: traceMock, flushAsync: flushAsyncMock },
+}));
+
+// ---------------------------------------------------------------------------
 // Subject under test
 // ---------------------------------------------------------------------------
 
@@ -178,5 +201,83 @@ describe("generateExplanation", () => {
 
     // generateContentStream must NOT have been called — we never reached the LLM call
     expect(generateContentStream).not.toHaveBeenCalled();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Langfuse instrumentation tests (Plan 11-02)
+// ---------------------------------------------------------------------------
+
+describe("Langfuse instrumentation", () => {
+  beforeEach(() => {
+    traceMock.mockClear();
+    generationMock.mockClear();
+    generationEndMock.mockClear();
+    traceUpdateMock.mockClear();
+    flushAsyncMock.mockClear();
+    filesGet.mockResolvedValue({
+      state: "ACTIVE",
+      uri: "gs://bucket/file",
+      mimeType: "application/pdf",
+    });
+    generateContentStream.mockResolvedValue(
+      (async function* () {
+        yield { text: JSON.stringify({
+          revenue: "R [p.1]",
+          profitability: "P [p.2]",
+          balance_sheet: "B [p.3]",
+          cash_flow: "C [p.4]",
+          key_risks: "K [p.5]",
+        }) };
+      })(),
+    );
+  });
+
+  const baseParams = {
+    docId: "doc-1",
+    pdfBytes: new Uint8Array([1, 2, 3]),
+    filename: "report.pdf",
+    totalPages: 50,
+    extractionSource: "unpdf" as string | null,
+    fileResourceName: "files/abc123" as string | null,
+    firstPageText: "laporan tahun keuangan dalam untuk dengan dan yang",
+  };
+
+  it("opens trace 'explanation' and generation 'gemini-explanation' on success", async () => {
+    await generateExplanation(baseParams);
+    expect(traceMock).toHaveBeenCalledWith(
+      expect.objectContaining({ name: "explanation" }),
+    );
+    expect(generationMock).toHaveBeenCalledWith(
+      expect.objectContaining({ name: "gemini-explanation" }),
+    );
+  });
+
+  it("calls flushAsync exactly once on success and once on failure", async () => {
+    // success
+    await generateExplanation(baseParams);
+    expect(flushAsyncMock).toHaveBeenCalledTimes(1);
+
+    // failure
+    flushAsyncMock.mockClear();
+    generateContentStream.mockRejectedValueOnce(new Error("gemini boom"));
+    await expect(generateExplanation(baseParams)).rejects.toThrow();
+    expect(flushAsyncMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("closes generation with level: 'ERROR' when Gemini throws", async () => {
+    generationEndMock.mockClear();
+    generateContentStream.mockRejectedValueOnce(new Error("gemini fail"));
+    await expect(
+      generateExplanation({ ...baseParams, docId: "doc-3" }),
+    ).rejects.toThrow();
+    expect(generationEndMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        level: "ERROR",
+        output: expect.objectContaining({
+          error: expect.stringContaining("gemini fail"),
+        }),
+      }),
+    );
   });
 });
