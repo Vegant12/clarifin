@@ -93,6 +93,28 @@ export async function runAnalyzeBatch({ docId }: { docId: string }): Promise<{ d
   if (doc.status === "ready") return { done: true };
   if (doc.status !== "analyzing") return { done: true };
 
+  // ---------------------------------------------------------------------------
+  // INFRA-03: Concurrency cap. Max 2 concurrent LLM analysis jobs to stay
+  // within Gemini 2.5 Flash free-tier rate limits (10 RPM / 250 RPD).
+  //
+  // The current doc is itself in `status="analyzing"`, so the count includes
+  // it. Threshold `> 2` allows up to 2 concurrent (this doc + at most 1 other).
+  //
+  // On cap exceeded: return `{ done: false }` so the doc stays in "analyzing"
+  // and the cron re-picks it on the next tick (queueing, not failing).
+  //
+  // Fail-open on count-query error: a transient Supabase hiccup must not
+  // deadlock the pipeline.
+  // ---------------------------------------------------------------------------
+  const { count: activeCount, error: countError } = await supabaseAdmin
+    .from("documents")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "analyzing");
+
+  if (!countError && (activeCount ?? 0) > 2) {
+    return { done: false };
+  }
+
   // -------------------------------------------------------------------------
   // 3. Cache check (EXPLAIN-04) — skip Gemini if explanation already exists
   // -------------------------------------------------------------------------
