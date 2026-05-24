@@ -248,7 +248,7 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
   4. After a document's chunks are successfully stored in pgvector, the raw PDF is deleted from Supabase Storage
   5. A Vercel Cron job runs weekly and pings the Supabase database to prevent free-tier inactivity pause
 **Plans**: 4 plans
-- [ ] 11-01-PLAN.md (11-01-foundation) — Langfuse env schema + singleton client at src/lib/langfuse.ts (Wave 1)
+- [x] 11-01-PLAN.md (11-01-foundation) — Langfuse env schema + singleton client at src/lib/langfuse.ts (Wave 1)
 - [ ] 11-02-PLAN.md (11-02-pattern-a-batch) — Instrument generate-explanation.ts + generate-score.ts with Pattern A (manual trace/generation/flush) (Wave 2)
 - [ ] 11-03-PLAN.md (11-03-pattern-b-routes) — Instrument chat/route.ts (onFinish closure) + starter-questions/route.ts (try/finally) with Pattern B (Wave 2)
 - [ ] 11-04-PLAN.md (11-04-reliability) — INFRA-03 concurrency cap + INFRA-04 PDF cleanup + INFRA-05 keep-alive cron route + vercel.json schedule (Wave 2)
@@ -294,7 +294,7 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
 | 8. AI Score & Drill-Down | 0/4 | Planned · setup+stubs (W0), schema+prompts (W1), generator+orchestrator (W2), UI+threading (W3, human-verify) | - |
 | 9. Stock Data & Trend Chart | 0/TBD | Not started | - |
 | 10. Chat Interface | 4/5 | In Progress|  |
-| 11. Observability & Reliability | 0/4 | Planned · foundation (W1), Pattern A batch (W2), Pattern B routes (W2), reliability infra (W2) | - |
+| 11. Observability & Reliability | 1/4 | In Progress|  |
 | 12. Polish & Public Launch | 0/TBD | Not started | - |
 
 ---
