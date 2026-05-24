@@ -17,6 +17,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { supabaseAdmin } from "@/db/client";
+import { langfuse } from "@/lib/langfuse";
 import { CHAT_MODEL_ID } from "@/lib/prompts";
 import { StarterQuestionsSchema } from "@/lib/starter-questions-schema";
 
@@ -96,25 +97,73 @@ export async function POST(request: Request): Promise<Response> {
     );
   }
 
+  // ---------------------------------------------------------------------------
+  // Langfuse Pattern B variant (D-03): non-streaming → try/finally around the
+  // generateObject call. flushAsync goes in finally — NOT after the return,
+  // because the function exits after return and the queue is discarded
+  // (AI-SPEC §3 pitfall 1).
+  // ---------------------------------------------------------------------------
+  const trace = langfuse.trace({
+    name: "starter-questions",
+    metadata: {
+      doc_id: documentId,
+      commit: process.env.VERCEL_GIT_COMMIT_SHA ?? "local",
+      step: "starter-questions",
+    },
+  });
+  const generation = trace.generation({
+    name: "gemini-starter-questions",
+    model: CHAT_MODEL_ID,
+    input: { summary },
+    modelParameters: { maxTokens: 512, maxRetries: 2 },
+    metadata: {
+      doc_id: documentId,
+      step: "starter-questions",
+    },
+  });
+
   // 3. Generate.
-  const { object } = await generateObject({
-    model: google(CHAT_MODEL_ID),
-    schema: StarterQuestionsSchema,
-    prompt: `Given this plain-English summary of an IDX-listed company's financial document, generate exactly 5 plain-English follow-up questions a non-finance Indonesian retail investor would want to ask. Each question MUST be ≤120 characters. Do NOT ask questions about buying, selling, or investing. Focus on the company's revenue, profitability, debt, cash flow, and risks.
+  try {
+    const { object, usage } = await generateObject({
+      model: google(CHAT_MODEL_ID),
+      schema: StarterQuestionsSchema,
+      prompt: `Given this plain-English summary of an IDX-listed company's financial document, generate exactly 5 plain-English follow-up questions a non-finance Indonesian retail investor would want to ask. Each question MUST be ≤120 characters. Do NOT ask questions about buying, selling, or investing. Focus on the company's revenue, profitability, debt, cash flow, and risks.
 
 SUMMARY:
 ${summary}`,
-  });
+      maxTokens: 512,
+      maxRetries: 2,
+    });
 
-  // 4. Persist cache — best-effort; do not fail the response on write error.
-  try {
-    await supabaseAdmin
-      .from("document_analysis")
-      .update({ starter_questions: object.questions })
-      .eq("doc_id", documentId);
-  } catch {
-    // Plan 11 will trace this via Langfuse.
+    generation.end({
+      output: object,
+      usageDetails: {
+        input: usage?.promptTokens ?? 0,
+        output: usage?.completionTokens ?? 0,
+      },
+    });
+    trace.update({ output: { status: "success" } });
+
+    // 4. Persist cache — best-effort; do not fail the response on write error.
+    try {
+      await supabaseAdmin
+        .from("document_analysis")
+        .update({ starter_questions: object.questions })
+        .eq("doc_id", documentId);
+    } catch {
+      // Cache write is best-effort; the response still returns the freshly-generated questions.
+    }
+
+    return NextResponse.json({ questions: object.questions });
+  } catch (err) {
+    generation.end({
+      output: { error: String(err) },
+      level: "ERROR",
+      statusMessage: String(err),
+    });
+    trace.update({ output: { error: String(err) } });
+    throw err; // surfaces as a 500 to the client, same as before instrumentation
+  } finally {
+    await langfuse.flushAsync();
   }
-
-  return NextResponse.json({ questions: object.questions });
 }
