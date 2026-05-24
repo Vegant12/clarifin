@@ -47,7 +47,7 @@ export async function runEmbedBatch({ docId }: { docId: string }): Promise<{ don
 
   const docRes = await supabaseAdmin
     .from("documents")
-    .select("id, status")
+    .select("id, status, storage_path")
     .eq("id", docId)
     .maybeSingle();
 
@@ -79,6 +79,20 @@ export async function runEmbedBatch({ docId }: { docId: string }): Promise<{ don
       if (remaining === 0) {
         await supabaseAdmin.from("documents").update({ status: "analyzing" }).eq("id", docId);
         scheduleAnalyzeBatchForDoc(docId);
+
+        // INFRA-04: delete raw PDF from Storage after all chunks confirmed embedded.
+        // Best-effort: a Storage error does NOT roll back embedding work — the doc
+        // has already transitioned to "analyzing" and the analyze cron will run.
+        // Logged via console.warn so orphan PDFs are detectable in Vercel logs.
+        if (docRes.data?.storage_path) {
+          await supabaseAdmin.storage
+            .from("pdfs")
+            .remove([docRes.data.storage_path])
+            .catch((err) => {
+              console.warn(`[embed-batch] PDF cleanup failed for doc ${docId}:`, err);
+            });
+        }
+
         return { done: true };
       }
       if (remaining < 0) {
@@ -126,6 +140,20 @@ export async function runEmbedBatch({ docId }: { docId: string }): Promise<{ don
     if (afterCount === 0) {
       await supabaseAdmin.from("documents").update({ status: "analyzing" }).eq("id", docId);
       scheduleAnalyzeBatchForDoc(docId);
+
+      // INFRA-04: delete raw PDF from Storage after all chunks confirmed embedded.
+      // Best-effort: a Storage error does NOT roll back embedding work — the doc
+      // has already transitioned to "analyzing" and the analyze cron will run.
+      // Logged via console.warn so orphan PDFs are detectable in Vercel logs.
+      if (docRes.data?.storage_path) {
+        await supabaseAdmin.storage
+          .from("pdfs")
+          .remove([docRes.data.storage_path])
+          .catch((err) => {
+            console.warn(`[embed-batch] PDF cleanup failed for doc ${docId}:`, err);
+          });
+      }
+
       return { done: true };
     }
     if (afterCount < 0) {
