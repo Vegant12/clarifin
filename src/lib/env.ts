@@ -27,6 +27,12 @@ export const env = createEnv({
     STUB_PIPELINE_TICK: z.string().optional(),
     /** Optional public site URL for server-side fetch (else VERCEL_URL, localhost) */
     CLARIFIN_APP_URL: z.string().url().optional(),
+    /** Langfuse v3 server secret — required. Get from https://cloud.langfuse.com -> Project Settings -> API Keys. */
+    LANGFUSE_SECRET_KEY: z.string().min(20),
+    /** Langfuse v3 public key — required. Same source as secret key. */
+    LANGFUSE_PUBLIC_KEY: z.string().min(20),
+    /** Optional Langfuse base URL. Omit for cloud (defaults to https://cloud.langfuse.com); set only for self-hosted. */
+    LANGFUSE_HOST: z.string().url().optional(),
   },
 
   client: {
@@ -48,6 +54,9 @@ export const env = createEnv({
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     STUB_PIPELINE_TICK: process.env.STUB_PIPELINE_TICK,
     CLARIFIN_APP_URL: process.env.CLARIFIN_APP_URL,
+    LANGFUSE_SECRET_KEY: process.env.LANGFUSE_SECRET_KEY,
+    LANGFUSE_PUBLIC_KEY: process.env.LANGFUSE_PUBLIC_KEY,
+    LANGFUSE_HOST: process.env.LANGFUSE_HOST,
   },
 
   /**
