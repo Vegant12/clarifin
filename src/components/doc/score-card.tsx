@@ -45,7 +45,7 @@ export function ScoreCard(props: {
           <AccordionItem key={dim.name} value={dim.name}>
             <AccordionTrigger aria-label={`Expand ${dim.name} details`}>
               <div className="flex w-full items-center gap-2 pr-2">
-                <span className="text-sm font-semibold text-foreground flex-1">{dim.name}</span>
+                <span className="text-sm font-semibold text-foreground flex-1 min-w-0">{dim.name}</span>
                 <span className="rounded-full bg-primary px-2 py-1 text-primary-foreground text-xs font-semibold">
                   {`[${dim.score}/10]`}
                 </span>

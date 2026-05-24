@@ -135,7 +135,7 @@ export function ChatInterface(props: ChatInterfaceProps) {
             placeholder="Ask anything about this document…"
             disabled={!isSessionReady || isLoading}
             className={cn(
-              "flex-1 resize-none rounded-md border border-input bg-background px-3 py-2",
+              "flex-1 min-w-0 resize-none rounded-md border border-input bg-background px-3 py-2",
               "text-base leading-relaxed",
               "min-h-[44px] max-h-[112px] overflow-y-auto",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -145,7 +145,7 @@ export function ChatInterface(props: ChatInterfaceProps) {
           <Button
             type="submit"
             disabled={!isSessionReady || isLoading || input.trim().length === 0}
-            className="min-h-[44px]"
+            className="min-h-[44px] whitespace-nowrap"
           >
             Send Message
           </Button>
