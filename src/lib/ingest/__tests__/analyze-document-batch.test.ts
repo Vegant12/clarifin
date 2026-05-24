@@ -162,6 +162,14 @@ describe("analyze-document-batch", () => {
             }),
           };
         }
+        if (callCount === 2) {
+          // Second call: INFRA-03 concurrency count query (count: "exact", head: true)
+          return {
+            select: () => ({
+              eq: () => Promise.resolve({ count: 1, error: null }),
+            }),
+          };
+        }
         // Subsequent calls: status update
         return {
           update: () => ({
