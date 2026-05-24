@@ -156,6 +156,12 @@ export function ChatInterface(props: ChatInterfaceProps) {
           </p>
         ) : null}
       </form>
+      <p
+        data-testid="chat-disclaimer"
+        className="text-xs text-muted-foreground"
+      >
+        AI analysis · not financial advice.
+      </p>
       {!isSessionReady ? (
         <p
           role="status"
