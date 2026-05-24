@@ -27,6 +27,7 @@ import {
   CHAT_SYSTEM_PROMPT,
 } from "@/lib/prompts";
 import { matchDocumentChunks } from "@/lib/rag/match-document-chunks";
+import { langfuse } from "@/lib/langfuse";
 
 export const runtime = "nodejs";
 // Vercel Hobby cap is 60s; chat budget per RESEARCH.md §Pitfall 7 is ~12s p50.
@@ -129,6 +130,33 @@ export async function POST(request: Request): Promise<Response> {
     { role: "user", content: lastMessage },
   ]);
 
+  // ---------------------------------------------------------------------------
+  // Langfuse Pattern B (D-03): open trace + generation BEFORE streamText.
+  // generation.end() and flushAsync() are called INSIDE onFinish below.
+  // Do NOT move flushAsync after `return result.toDataStreamResponse()` — the
+  // function exits there and the in-memory queue is silently discarded
+  // (AI-SPEC §3 pitfall 1; §4b.2 flush timing pitfall).
+  // ---------------------------------------------------------------------------
+  const trace = langfuse.trace({
+    name: "chat",
+    metadata: {
+      doc_id: documentId,
+      session_id: sessionId,
+      commit: process.env.VERCEL_GIT_COMMIT_SHA ?? "local",
+    },
+  });
+  const generation = trace.generation({
+    name: "gemini-chat",
+    model: CHAT_MODEL_ID,
+    input: messages,
+    modelParameters: { maxTokens: 1500, temperature: 0.3 },
+    metadata: {
+      doc_id: documentId,
+      step: "chat",
+      chunks_retrieved: chunks.length,
+    },
+  });
+
   // 5. CHAT-03 streamText + CHAT-04 onFinish persist.
   const result = streamText({
     model: google(CHAT_MODEL_ID),
@@ -136,7 +164,19 @@ export async function POST(request: Request): Promise<Response> {
     messages,
     maxTokens: 1500,
     temperature: 0.3,
-    onFinish: async ({ text }) => {
+    onFinish: async ({ text, usage }) => {
+      // Langfuse close — fires while the Response is still being drained,
+      // so flushAsync completes before the function tears down.
+      generation.end({
+        output: text,
+        usageDetails: {
+          input: usage?.promptTokens ?? 0,
+          output: usage?.completionTokens ?? 0,
+        },
+      });
+      await langfuse.flushAsync();
+
+      // Existing persistence — unchanged.
       try {
         await persistMessages(sessionId, documentId, [
           { role: "assistant", content: text },
@@ -144,7 +184,6 @@ export async function POST(request: Request): Promise<Response> {
       } catch {
         // Persistence failure inside onFinish must not crash the stream;
         // the stream has already been delivered to the client at this point.
-        // Plan 11 (Observability) will surface this as a Langfuse error span.
       }
     },
   });
