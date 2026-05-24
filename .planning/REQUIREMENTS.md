@@ -83,7 +83,7 @@ Requirements for the initial public release. Each maps to roadmap phases. All re
 
 - [ ] **DISCLAIM-01**: "AI analysis · not financial advice" labels are visible adjacent to score, explanation, and chat (not buried in footer)
 - [ ] **DISCLAIM-02**: System prompts hard-code no-recommendation instructions for every LLM call
-- [ ] **DISCLAIM-03**: First-time visitors see a brief disclaimer/onboarding modal explaining what Clarifin is and is not
+- [x] **DISCLAIM-03**: First-time visitors see a brief disclaimer/onboarding modal explaining what Clarifin is and is not
 
 ### Evaluation Harness (EVAL)
 
@@ -107,7 +107,7 @@ Requirements for the initial public release. Each maps to roadmap phases. All re
 ### Infrastructure & Safety (INFRA)
 
 - [x] **INFRA-01**: PDF uploads are size-limited (50 MB max) and MIME-type validated server-side
-- [ ] **INFRA-02**: Per-IP daily upload rate limit prevents free-tier abuse
+- [x] **INFRA-02**: Per-IP daily upload rate limit prevents free-tier abuse
 - [ ] **INFRA-03**: LLM call concurrency is capped (≤2 concurrent) to stay within free-tier rate limits
 - [ ] **INFRA-04**: Raw uploaded PDFs are deleted from object storage after processing completes (Supabase egress discipline)
 - [ ] **INFRA-05**: Weekly keep-alive cron pings the database to prevent free-tier inactivity pause
@@ -207,7 +207,7 @@ Explicitly excluded from v1 AND v2. Documented to prevent scope creep.
 | CHAT-06 | Phase 10 | Complete |
 | DISCLAIM-01 | Phase 12 | Pending |
 | DISCLAIM-02 | Phase 6 | Pending |
-| DISCLAIM-03 | Phase 12 | Pending |
+| DISCLAIM-03 | Phase 12 | Complete |
 | EVAL-01 | Phase 5 | Pending |
 | EVAL-02 | Phase 5 | Pending |
 | EVAL-03 | Phase 5 | Pending |
@@ -219,7 +219,7 @@ Explicitly excluded from v1 AND v2. Documented to prevent scope creep.
 | UX-03 | Phase 12 | Pending |
 | UX-04 | Phase 1 | Complete |
 | INFRA-01 | Phase 1 | Complete |
-| INFRA-02 | Phase 12 | Pending |
+| INFRA-02 | Phase 12 | Complete |
 | INFRA-03 | Phase 11 | Pending |
 | INFRA-04 | Phase 11 | Pending |
 | INFRA-05 | Phase 11 | Pending |

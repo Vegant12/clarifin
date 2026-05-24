@@ -23,7 +23,7 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
 - [ ] **Phase 9: Stock Data & Trend Chart** — Ticker auto-detection, yahoo-finance2, IDR formatting, Recharts multi-year trend chart
 - [ ] **Phase 10: Chat Interface** — RAG-grounded streaming chat, session persistence, seeded questions, buy/sell hard-block
 - [ ] **Phase 11: Observability & Reliability** — Langfuse traces + prompt versioning, concurrency cap, storage cleanup, keep-alive cron
-- [ ] **Phase 12: Polish & Public Launch** — Mobile responsive layout, first-time modal, inline disclaimers, per-IP rate limiting, final eval pass
+- [x] **Phase 12: Polish & Public Launch** — Mobile responsive layout, first-time modal, inline disclaimers, per-IP rate limiting, final eval pass (completed 2026-05-24)
 
 ---
 
@@ -270,8 +270,8 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
 **Plans**: 4 plans
 - [x] 12-01-PLAN.md (12-01-inline-disclaimer-labels) — Add "AI analysis · not financial advice" to ExplanationPanel + ChatInterface; 2 Vitest tests (Wave 1)
 - [x] 12-02-PLAN.md (12-02-onboarding-modal) — shadcn dialog install, onboarding-client.ts localStorage flag, OnboardingModal component, layout.tsx mount (Wave 1)
-- [ ] 12-03-PLAN.md (12-03-per-ip-rate-limiting) — ip_address migration + DB types regen, rate-limit.ts, upload-init route guard, pdf-dropzone 429 message (Wave 2)
-- [ ] 12-04-PLAN.md (12-04-mobile-responsive-audit) — 375px audit and Tailwind fixes for landing, stepper, score card, chat input; blocking human visual checkpoint (Wave 2)
+- [x] 12-03-PLAN.md (12-03-per-ip-rate-limiting) — ip_address migration + DB types regen, rate-limit.ts, upload-init route guard, pdf-dropzone 429 message (Wave 2)
+- [x] 12-04-PLAN.md (12-04-mobile-responsive-audit) — 375px audit and Tailwind fixes for landing, stepper, score card, chat input; blocking human visual checkpoint (Wave 2)
 **UI hint**: yes
 **AI hint**: no
 **Research flag**: no — responsive CSS, modal patterns, and rate limiting middleware are standard
@@ -299,7 +299,7 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
 | 9. Stock Data & Trend Chart | 0/TBD | Not started | - |
 | 10. Chat Interface | 4/5 | In Progress|  |
 | 11. Observability & Reliability | 4/4 | Complete | 2026-05-24 |
-| 12. Polish & Public Launch | 2/4 | In Progress|  |
+| 12. Polish & Public Launch | 4/4 | Complete   | 2026-05-24 |
 
 ---
 
