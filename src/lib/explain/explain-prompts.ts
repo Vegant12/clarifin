@@ -4,7 +4,7 @@
  * No server-only import — pure strings/functions, importable in Vitest tests.
  */
 
-export const EXPLANATION_MODEL_ID = "gemini-2.0-flash" as const;
+export const EXPLANATION_MODEL_ID = "gemini-2.5-flash" as const;
 
 /**
  * PSAK/IFRS Financial Vocabulary (TRANSLATE-02).
@@ -78,9 +78,9 @@ export function buildExplanationPrompt(
   return `${EXPLAIN_SYSTEM_PROMPT} The document has ${totalPages} total pages; every [p.N] must be a valid page in that range.${glossaryBlock}
 
 Produce a JSON object with EXACTLY these five string keys. Each value is a paragraph (or two) of plain-English analysis with inline [p.N] citations woven into the prose:
-- revenue: Explain what the company earns, revenue growth or decline, and what drove it.
-- profitability: Explain gross margin, operating margin, and net margin trends.
-- balance_sheet: Explain total assets, debt level, liquidity, and equity position.
-- cash_flow: Explain operating cash flow quality and whether the company generates or consumes cash.
-- key_risks: Explain 2-3 material risks evident from the document.`;
+- revenue: Explain what the company earns, revenue growth or decline, and what drove it — then elaborate on what this trend signals about the company's future earning power and why a non-finance investor should care.
+- profitability: Explain gross margin, operating margin, and net margin trends — then elaborate on what improving or deteriorating margins reveal about the company's pricing power, cost discipline, and long-term viability.
+- balance_sheet: Explain total assets, debt level, liquidity, and equity position — then elaborate on what this means for the company's financial stability, its ability to survive a downturn, and its capacity to invest in future growth without needing to raise more capital.
+- cash_flow: Explain operating cash flow quality and whether the company generates or consumes cash — then elaborate on what this means for the company's ability to self-fund its operations, repay debt, and pay dividends without depending on external financing.
+- key_risks: Identify 2-3 material risks evident from the document — then elaborate on the potential financial and operational impact of each risk if it materializes, and what signs to watch for.`;
 }

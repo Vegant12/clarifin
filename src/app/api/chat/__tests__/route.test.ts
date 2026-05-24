@@ -22,7 +22,11 @@ const { traceMock, generationMock, generationEndMock, traceUpdateMock, flushAsyn
   };
 });
 
-vi.mock("ai", () => ({ streamText: streamTextMock }));
+vi.mock("ai", () => ({
+  streamText: streamTextMock,
+  createDataStreamResponse: vi.fn(() => new Response("fixed-stream", { status: 200 })),
+  formatDataStreamPart: vi.fn(() => ""),
+}));
 vi.mock("@ai-sdk/google", () => ({ google: googleMock }));
 vi.mock("@/lib/rag/match-document-chunks", () => ({ matchDocumentChunks: matchChunksMock }));
 vi.mock("@/db/client", () => ({

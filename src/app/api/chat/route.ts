@@ -13,7 +13,7 @@
 
 import "server-only";
 
-import { streamText } from "ai";
+import { createDataStreamResponse, formatDataStreamPart, streamText } from "ai";
 import { google } from "@ai-sdk/google";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -64,6 +64,23 @@ async function persistMessages(
   );
 }
 
+// Returns a proper AI SDK v4 data stream response for a fixed text message.
+// useChat (ai/react v4) expects the data stream protocol — returning plain JSON
+// causes it to throw a parse error and surface "Connection error" to the user.
+function fixedDataStreamResponse(text: string): Response {
+  return createDataStreamResponse({
+    execute: (writer) => {
+      writer.write(formatDataStreamPart("text", text));
+      writer.write(
+        formatDataStreamPart("finish_message", {
+          finishReason: "stop",
+          usage: { promptTokens: 0, completionTokens: 0 },
+        }),
+      );
+    },
+  });
+}
+
 export async function POST(request: Request): Promise<Response> {
   let parsed;
   try {
@@ -94,10 +111,7 @@ export async function POST(request: Request): Promise<Response> {
       { role: "user", content: lastMessage },
       { role: "assistant", content: CHAT_DEFLECTION_MESSAGE },
     ]);
-    return NextResponse.json(
-      { role: "assistant", content: CHAT_DEFLECTION_MESSAGE },
-      { status: 200 },
-    );
+    return fixedDataStreamResponse(CHAT_DEFLECTION_MESSAGE);
   }
 
   // 2. CHAT-02 retrieve — top 5 chunks scoped to this document.
@@ -112,10 +126,7 @@ export async function POST(request: Request): Promise<Response> {
       { role: "user", content: lastMessage },
       { role: "assistant", content: CHAT_EMPTY_RETRIEVAL_MESSAGE },
     ]);
-    return NextResponse.json(
-      { role: "assistant", content: CHAT_EMPTY_RETRIEVAL_MESSAGE },
-      { status: 200 },
-    );
+    return fixedDataStreamResponse(CHAT_EMPTY_RETRIEVAL_MESSAGE);
   }
 
   // 3. Build grounded context block. Format MUST be `[Page N]: ...` so the

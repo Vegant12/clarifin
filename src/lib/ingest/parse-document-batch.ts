@@ -8,6 +8,7 @@ import { chunkSinglePage } from "@/lib/pdf/chunk-page";
 import { classifyExtractionSource } from "@/lib/pdf/classify-extraction-source";
 import { deleteGeminiFileResource, extractPagesWithGemini } from "@/lib/pdf/gemini-pdf-pages";
 import { detectTicker } from "@/lib/stock/detect-ticker";
+import { detectTickerWithAI } from "@/lib/stock/detect-ticker-ai";
 import { clonePdfBytes } from "@/lib/pdf/clone-pdf-bytes";
 import { extractPdfTextItemsPerPage, extractPdfTextPerPage } from "@/lib/pdf/unpdf-extract";
 
@@ -101,14 +102,20 @@ export async function runParseBatch({ docId }: { docId: string }): Promise<{ don
     const sample = bootstrapTexts.texts.slice(0, Math.min(5, bootstrapTexts.texts.length));
     extractionSource = classifyExtractionSource(sample);
 
-    // Phase 9 TICKER-01: detect IDX ticker from first 5 pages. Pure regex, no LLM.
-    // Soft-fail: any internal exception falls back to null and is logged.
+    // Ticker detection: regex first (fast, zero quota), then AI fallback for
+    // non-standard document formats where regex returns null.
     let detectedTicker: string | null = null;
     try {
       detectedTicker = detectTicker(bootstrapTexts.texts);
     } catch (err) {
       console.error("[runParseBatch] detectTicker threw", docId, err);
-      detectedTicker = null;
+    }
+    if (detectedTicker === null) {
+      try {
+        detectedTicker = await detectTickerWithAI(bootstrapTexts.texts);
+      } catch (err) {
+        console.error("[runParseBatch] detectTickerWithAI threw", docId, err);
+      }
     }
 
     const up = await supabaseAdmin
