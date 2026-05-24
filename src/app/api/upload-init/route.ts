@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { supabaseAdmin } from "@/db/client";
+import { extractClientIp, isIpRateLimited } from "@/lib/rate-limit";
 import { validatePdfUpload } from "@/lib/upload-validation";
 
 const bodySchema = z.object({
@@ -30,6 +31,14 @@ export async function POST(request: Request): Promise<Response> {
     }
 
     const { session_token, filename: rawFilename, size_bytes, content_type } = parsed.data;
+
+    const clientIp = extractClientIp(request);
+    if (await isIpRateLimited(clientIp)) {
+      return NextResponse.json(
+        { error: "Daily upload limit reached. Come back tomorrow." },
+        { status: 429 },
+      );
+    }
 
     const sessionRes = await supabaseAdmin
       .from("chat_sessions")
@@ -64,6 +73,7 @@ export async function POST(request: Request): Promise<Response> {
       storage_path,
       size_bytes,
       status: "uploaded",
+      ip_address: clientIp,
     });
 
     if (insertRes.error) {

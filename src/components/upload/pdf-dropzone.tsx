@@ -239,6 +239,14 @@ function mapInitError(body: unknown, status: number): Error {
   const obj = body as { error?: string };
   const msg = typeof obj?.error === "string" ? obj.error : "";
 
+  if (status === 429) {
+    return new Error(
+      msg.includes("Come back tomorrow")
+        ? "You've reached the daily upload limit. Come back tomorrow to upload more documents."
+        : "Too many uploads. Please try again tomorrow.",
+    );
+  }
+
   if (status === 400 || status === 404) {
     if (/Maximum allowed is 20 MB/i.test(msg)) {
       return new Error("This file is too large. Maximum size is 20 MB.");
