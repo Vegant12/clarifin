@@ -14,6 +14,7 @@ import {
   buildScorePrompt,
   scanForInvestmentAdvice,
 } from "@/lib/explain/score-prompts";
+import { langfuse } from "@/lib/langfuse";
 
 export interface GenerateScoreParams {
   docId: string;
@@ -66,48 +67,117 @@ export async function generateScore(params: GenerateScoreParams): Promise<Genera
   const isIndonesian = isIndonesianDoc(params.extractionSource, params.firstPageText);
   const prompt = buildScorePrompt(params.totalPages, isIndonesian);
 
-  // 3. Stream + accumulate — never JSON.parse per chunk
-  const stream = await ai.models.generateContentStream({
+  // ---------------------------------------------------------------------------
+  // Langfuse Pattern A (D-02): open trace + generation BEFORE the LLM call.
+  // - Trace name = "score" (pipeline step identifier).
+  // - Generation captures input prompt, model ID, modelParameters.
+  // - metadata.commit = VERCEL_GIT_COMMIT_SHA (set on Vercel) or "local" for dev (D-06).
+  // - DO NOT pass pdfBytes as input (AI-SPEC §3 pitfall 5 — exceeds per-event byte limit).
+  // ---------------------------------------------------------------------------
+  const trace = langfuse.trace({
+    name: "score",
+    metadata: {
+      doc_id: params.docId,
+      commit: process.env.VERCEL_GIT_COMMIT_SHA ?? "local",
+      step: "score",
+    },
+  });
+  const generation = trace.generation({
+    name: "gemini-score",
     model: SCORE_MODEL_ID,
-    contents: [createPartFromUri(uri, mimeType), { text: prompt }],
-    config: {
+    input: {
+      prompt,
+      docId: params.docId,
+      isIndonesian,
+    },
+    // modelParameters accepts ApiMapValue (string | number | boolean | string[]) — flatten
+    // thinkingConfig to a scalar so TypeScript is satisfied while preserving the info.
+    modelParameters: {
       responseMimeType: "application/json",
-      responseSchema: SCORE_RESPONSE_SCHEMA,
-      thinkingConfig: { thinkingBudget: 0 },
+      thinkingBudget: 0,
+    },
+    metadata: {
+      doc_id: params.docId,
+      step: "score",
+      gemini_file_uri: uri,
     },
   });
 
-  let accumulated = "";
-  for await (const chunk of stream) {
-    accumulated += (chunk as { text?: string }).text ?? "";
-  }
+  try {
+    // 3. Stream + accumulate — never JSON.parse per chunk
+    const stream = await ai.models.generateContentStream({
+      model: SCORE_MODEL_ID,
+      contents: [createPartFromUri(uri, mimeType), { text: prompt }],
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: SCORE_RESPONSE_SCHEMA,
+        thinkingConfig: { thinkingBudget: 0 },
+      },
+    });
 
-  if (!accumulated) {
-    throw new Error("Empty Gemini score response.");
-  }
-
-  // 4. Strip markdown fences + JSON.parse + Zod validate
-  const stripped = accumulated
-    .trim()
-    .replace(/^```(?:json)?\s*/i, "")
-    .replace(/\s*```$/i, "");
-
-  const parsed = JSON.parse(stripped) as unknown;
-  const result = scoreSchema.parse(parsed); // ZodError on invalid shape
-
-  // 5. Compliance guardrail — pre-persist scan (D-05 prompt rule defense in depth)
-  for (const dim of result.dimensions) {
-    const reasoningViolation = scanForInvestmentAdvice(dim.reasoning);
-    if (reasoningViolation) {
-      throw new Error(`Compliance violation: blocked term "${reasoningViolation}" in ${dim.name} reasoning.`);
+    // lastChunk carries the cumulative usageMetadata on the final chunk (Gemini behavior)
+    let accumulated = "";
+    let lastChunk:
+      | { usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number } }
+      | undefined;
+    for await (const chunk of stream) {
+      accumulated += (chunk as { text?: string }).text ?? "";
+      lastChunk = chunk as typeof lastChunk;
     }
-    for (const snip of dim.snippets) {
-      const snipViolation = scanForInvestmentAdvice(snip.text);
-      if (snipViolation) {
-        throw new Error(`Compliance violation: blocked term "${snipViolation}" in ${dim.name} snippet.`);
+
+    if (!accumulated) {
+      throw new Error("Empty Gemini score response.");
+    }
+
+    // 4. Strip markdown fences + JSON.parse + Zod validate
+    const stripped = accumulated
+      .trim()
+      .replace(/^```(?:json)?\s*/i, "")
+      .replace(/\s*```$/i, "");
+
+    const parsed = JSON.parse(stripped) as unknown;
+    const result = scoreSchema.parse(parsed); // ZodError on invalid shape
+
+    // 5. Compliance guardrail — pre-persist scan (D-05 prompt rule defense in depth)
+    // Inside the try block so violations close generation with ERROR via catch.
+    for (const dim of result.dimensions) {
+      const reasoningViolation = scanForInvestmentAdvice(dim.reasoning);
+      if (reasoningViolation) {
+        throw new Error(`Compliance violation: blocked term "${reasoningViolation}" in ${dim.name} reasoning.`);
+      }
+      for (const snip of dim.snippets) {
+        const snipViolation = scanForInvestmentAdvice(snip.text);
+        if (snipViolation) {
+          throw new Error(`Compliance violation: blocked term "${snipViolation}" in ${dim.name} snippet.`);
+        }
       }
     }
-  }
 
-  return { result, fileResourceName: resourceName };
+    // Close generation with output + token counts from the final chunk's usageMetadata
+    generation.end({
+      output: result,
+      usageDetails: {
+        input: lastChunk?.usageMetadata?.promptTokenCount ?? 0,
+        output: lastChunk?.usageMetadata?.candidatesTokenCount ?? 0,
+      },
+    });
+    trace.update({
+      output: { status: "success", overall_score: result.overall_score },
+    });
+
+    return { result, fileResourceName: resourceName };
+  } catch (err) {
+    // AI-SPEC §3 pitfall 4: must close generation on error path or trace becomes orphaned.
+    generation.end({
+      output: { error: String(err) },
+      level: "ERROR",
+      statusMessage: String(err),
+    });
+    trace.update({ output: { error: String(err) } });
+    throw err;
+  } finally {
+    // AI-SPEC §3 pitfall 1: MUST flush before the serverless function exits,
+    // otherwise the in-memory event queue is silently discarded by Node teardown.
+    await langfuse.flushAsync();
+  }
 }
