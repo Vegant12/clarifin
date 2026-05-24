@@ -7,6 +7,10 @@
     {
       "path": "/api/internal/embed-batch?secret=${INTERNAL_PARSE_SECRET}",
       "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/cron/keep-alive",
+      "schedule": "0 0 * * 0"
     }
   ]
 }
