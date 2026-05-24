@@ -267,7 +267,11 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
   2. First-time visitors (detected via localStorage flag) see a brief modal explaining what Clarifin is (document explainer, not advisor), what types of documents to upload, and the AI-opinion disclaimer before accessing the main interface
   3. The complete application layout — upload, explanation, score, chart, and chat — renders on a 375px mobile viewport without horizontal overflow or unusable UI elements
   4. Per-IP daily upload rate limiting is active; exceeding the limit shows a friendly "Come back tomorrow" message rather than a server error
-**Plans**: TBD
+**Plans**: 4 plans
+- [x] 12-01-PLAN.md (12-01-inline-disclaimer-labels) — Add "AI analysis · not financial advice" to ExplanationPanel + ChatInterface; 2 Vitest tests (Wave 1)
+- [x] 12-02-PLAN.md (12-02-onboarding-modal) — shadcn dialog install, onboarding-client.ts localStorage flag, OnboardingModal component, layout.tsx mount (Wave 1)
+- [ ] 12-03-PLAN.md (12-03-per-ip-rate-limiting) — ip_address migration + DB types regen, rate-limit.ts, upload-init route guard, pdf-dropzone 429 message (Wave 2)
+- [ ] 12-04-PLAN.md (12-04-mobile-responsive-audit) — 375px audit and Tailwind fixes for landing, stepper, score card, chat input; blocking human visual checkpoint (Wave 2)
 **UI hint**: yes
 **AI hint**: no
 **Research flag**: no — responsive CSS, modal patterns, and rate limiting middleware are standard
@@ -295,7 +299,7 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
 | 9. Stock Data & Trend Chart | 0/TBD | Not started | - |
 | 10. Chat Interface | 4/5 | In Progress|  |
 | 11. Observability & Reliability | 4/4 | Complete | 2026-05-24 |
-| 12. Polish & Public Launch | 0/TBD | Not started | - |
+| 12. Polish & Public Launch | 2/4 | In Progress|  |
 
 ---
 
