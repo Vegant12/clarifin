@@ -9,6 +9,8 @@ const defaults = {
   NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:54321",
   NEXT_PUBLIC_SUPABASE_ANON_KEY: "test-anon-key-20-characters-minimum-x",
   INTERNAL_PARSE_SECRET: "01234567890123456789012345678901",
+  LANGFUSE_SECRET_KEY: "sk-lf-test-secret-key-min-20-chars",
+  LANGFUSE_PUBLIC_KEY: "pk-lf-test-public-key-min-20-chars",
 };
 
 for (const [key, value] of Object.entries(defaults)) {
