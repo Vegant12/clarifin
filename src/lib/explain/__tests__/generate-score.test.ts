@@ -19,6 +19,29 @@ vi.mock("@google/genai", () => ({
 vi.mock("@/lib/env", () => ({ env: { GEMINI_API_KEY: "test-key" } }));
 vi.mock("server-only", () => ({}));
 
+// ---------------------------------------------------------------------------
+// Langfuse mock (Plan 11-02) — hoisted so spies are accessible inside tests
+// ---------------------------------------------------------------------------
+
+const { flushAsyncMock, generationEndMock, traceUpdateMock, traceMock, generationMock } =
+  vi.hoisted(() => {
+    const generationEnd = vi.fn();
+    const traceUpdate = vi.fn();
+    const generation = vi.fn(() => ({ end: generationEnd }));
+    const trace = vi.fn(() => ({ generation, update: traceUpdate }));
+    return {
+      flushAsyncMock: vi.fn().mockResolvedValue(undefined),
+      generationEndMock: generationEnd,
+      traceUpdateMock: traceUpdate,
+      traceMock: trace,
+      generationMock: generation,
+    };
+  });
+
+vi.mock("@/lib/langfuse", () => ({
+  langfuse: { trace: traceMock, flushAsync: flushAsyncMock },
+}));
+
 async function* makeStream(text: string): AsyncGenerator<{ text: string }> {
   yield { text };
 }
@@ -104,5 +127,61 @@ describe("generateScore", () => {
     const res = await generateScore({ ...baseParams, pdfBytes });
     expect(filesUpload).toHaveBeenCalled();
     expect(res.result.overall_score).toBe(7);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Langfuse instrumentation tests (Plan 11-02)
+// ---------------------------------------------------------------------------
+
+describe("Langfuse instrumentation (score)", () => {
+  beforeEach(() => {
+    traceMock.mockClear();
+    generationMock.mockClear();
+    generationEndMock.mockClear();
+    traceUpdateMock.mockClear();
+    flushAsyncMock.mockClear();
+    filesGet.mockResolvedValue({
+      state: "ACTIVE",
+      uri: "https://gen.example/files/abc",
+      mimeType: "application/pdf",
+    });
+    generateContentStream.mockReturnValue(makeStream(validJson));
+  });
+
+  it("opens trace 'score' and generation 'gemini-score' on success", async () => {
+    await generateScore({ ...baseParams });
+    expect(traceMock).toHaveBeenCalledWith(
+      expect.objectContaining({ name: "score" }),
+    );
+    expect(generationMock).toHaveBeenCalledWith(
+      expect.objectContaining({ name: "gemini-score" }),
+    );
+  });
+
+  it("calls flushAsync exactly once on success and once on failure", async () => {
+    // success
+    await generateScore({ ...baseParams });
+    expect(flushAsyncMock).toHaveBeenCalledTimes(1);
+
+    // failure
+    flushAsyncMock.mockClear();
+    generateContentStream.mockRejectedValueOnce(new Error("gemini boom"));
+    await expect(generateScore({ ...baseParams })).rejects.toThrow();
+    expect(flushAsyncMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("closes generation with level: 'ERROR' when Gemini throws", async () => {
+    generationEndMock.mockClear();
+    generateContentStream.mockRejectedValueOnce(new Error("gemini score fail"));
+    await expect(generateScore({ ...baseParams })).rejects.toThrow();
+    expect(generationEndMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        level: "ERROR",
+        output: expect.objectContaining({
+          error: expect.stringContaining("gemini score fail"),
+        }),
+      }),
+    );
   });
 });
