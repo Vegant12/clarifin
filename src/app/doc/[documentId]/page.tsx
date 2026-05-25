@@ -92,7 +92,20 @@ export default async function DocumentPage(props: {
     const signedRes = await supabaseAdmin.storage
       .from("pdfs")
       .createSignedUrl(docRes.data.storage_path, 3600);
-    if (signedRes.data?.signedUrl) pdfUrl = signedRes.data.signedUrl;
+    if (signedRes.data?.signedUrl) {
+      pdfUrl = signedRes.data.signedUrl;
+    } else if (signedRes.error) {
+      console.error(
+        "[doc-page] createSignedUrl failed",
+        documentId,
+        signedRes.error,
+      );
+    }
+  } else if (docRes.data) {
+    console.warn(
+      "[doc-page] storage_path missing for document",
+      documentId,
+    );
   }
 
   // 3. Stock data (unchanged — Phase 9)

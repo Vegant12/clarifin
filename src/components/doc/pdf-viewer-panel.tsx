@@ -49,7 +49,8 @@ export const PdfViewerPanel = forwardRef<
     return (
       <div className={className} role="status" aria-label="PDF unavailable">
         <p className="p-4 text-muted-foreground text-sm">
-          PDF is not available for this document yet.
+          PDF preview unavailable. The source file may not be stored for older
+          uploads — try re-uploading the document.
         </p>
       </div>
     );

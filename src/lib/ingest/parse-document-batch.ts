@@ -70,6 +70,7 @@ export async function runParseBatch({ docId }: { docId: string }): Promise<{ don
 
   const download = await supabaseAdmin.storage.from("pdfs").download(doc.storage_path);
   if (download.error || !download.data) {
+    console.error("[parse-batch] download failed", docId, download.error);
     await failDocument(docId, "Could not download the PDF. Try uploading again.");
     return { done: false };
   }
@@ -224,6 +225,11 @@ export async function runParseBatch({ docId }: { docId: string }): Promise<{ don
         .update({ gemini_file_resource_name: geminiName })
         .eq("id", docId);
       if (metaUp.error) {
+        console.error(
+          "[parse-batch] documents update during gemini upload failed",
+          docId,
+          metaUp.error,
+        );
         await failDocument(docId, "Could not update document while uploading to the OCR service.");
         return { done: false };
       }
