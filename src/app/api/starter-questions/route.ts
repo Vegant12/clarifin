@@ -12,17 +12,24 @@
 import "server-only";
 
 import { generateObject } from "ai";
-import { google } from "@ai-sdk/google";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { supabaseAdmin } from "@/db/client";
+import { env } from "@/lib/env";
 import { langfuse } from "@/lib/langfuse";
 import { CHAT_MODEL_ID } from "@/lib/prompts";
 import { StarterQuestionsSchema } from "@/lib/starter-questions-schema";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
+
+// Bug 3 fix: the AI SDK's bare `google` export reads GOOGLE_GENERATIVE_AI_API_KEY,
+// but this project ships only GEMINI_API_KEY (src/lib/env.ts:19). Construct the
+// provider explicitly so generateObject doesn't 401. server-only above keeps
+// GEMINI_API_KEY out of any client bundle.
+const google = createGoogleGenerativeAI({ apiKey: env.GEMINI_API_KEY });
 
 const RequestSchema = z.object({
   documentId: z.string().uuid(),

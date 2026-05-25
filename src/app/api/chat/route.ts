@@ -14,11 +14,12 @@
 import "server-only";
 
 import { createDataStreamResponse, formatDataStreamPart, streamText } from "ai";
-import { google } from "@ai-sdk/google";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { supabaseAdmin } from "@/db/client";
+import { env } from "@/lib/env";
 import { isInvestmentAdviceQuery } from "@/lib/guardrail";
 import {
   CHAT_DEFLECTION_MESSAGE,
@@ -32,6 +33,12 @@ import { langfuse } from "@/lib/langfuse";
 export const runtime = "nodejs";
 // Vercel Hobby cap is 60s; chat budget per RESEARCH.md §Pitfall 7 is ~12s p50.
 export const maxDuration = 60;
+
+// Bug 3 fix: the AI SDK's bare `google` export reads GOOGLE_GENERATIVE_AI_API_KEY,
+// but this project ships only GEMINI_API_KEY (src/lib/env.ts:19). Construct the
+// provider explicitly so streamText doesn't 401 and surface "Connection error"
+// in useChat. server-only above keeps GEMINI_API_KEY out of any client bundle.
+const google = createGoogleGenerativeAI({ apiKey: env.GEMINI_API_KEY });
 
 const ChatRequestSchema = z.object({
   messages: z

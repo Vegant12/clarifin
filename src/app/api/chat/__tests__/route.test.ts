@@ -27,7 +27,9 @@ vi.mock("ai", () => ({
   createDataStreamResponse: vi.fn(() => new Response("fixed-stream", { status: 200 })),
   formatDataStreamPart: vi.fn(() => ""),
 }));
-vi.mock("@ai-sdk/google", () => ({ google: googleMock }));
+vi.mock("@ai-sdk/google", () => ({
+  createGoogleGenerativeAI: vi.fn(() => googleMock),
+}));
 vi.mock("@/lib/rag/match-document-chunks", () => ({ matchDocumentChunks: matchChunksMock }));
 vi.mock("@/db/client", () => ({
   supabaseAdmin: { from: supabaseFrom },

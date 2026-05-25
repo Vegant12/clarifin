@@ -22,7 +22,9 @@ const { traceMock, generationMock, generationEndMock, traceUpdateMock, flushAsyn
 });
 
 vi.mock("ai", () => ({ generateObject: generateObjectMock }));
-vi.mock("@ai-sdk/google", () => ({ google: vi.fn(() => "mock-model") }));
+vi.mock("@ai-sdk/google", () => ({
+  createGoogleGenerativeAI: vi.fn(() => vi.fn(() => "mock-model")),
+}));
 vi.mock("@/db/client", () => ({
   supabaseAdmin: { from: supabaseFrom },
 }));
