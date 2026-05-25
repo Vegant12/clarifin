@@ -63,6 +63,31 @@ export async function POST(request: Request): Promise<Response> {
       );
     }
 
+    const storageCheck = await supabaseAdmin.storage
+      .from("pdfs")
+      .createSignedUrl(docRes.data.storage_path, 60);
+    if (storageCheck.error || !storageCheck.data?.signedUrl) {
+      console.error(
+        "[upload-complete] storage object missing for",
+        doc_id,
+        storageCheck.error,
+      );
+      const incompleteMessage =
+        "Upload incomplete — the PDF was not stored. Please try uploading again.";
+      await supabaseAdmin
+        .from("documents")
+        .update({
+          status: "failed",
+          error_message: incompleteMessage,
+          failed_at: new Date().toISOString(),
+        })
+        .eq("id", doc_id);
+      return NextResponse.json(
+        { ok: false, error: incompleteMessage },
+        { status: 400 },
+      );
+    }
+
     const magic = validatePdfMagicBytes(raw);
     if (!magic.ok) {
       await supabaseAdmin.storage
