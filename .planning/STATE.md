@@ -52,3 +52,11 @@ progress:
 | Chat library module paths | 10-02 | Files placed at src/lib/ root (not src/lib/chat/) to match ../guardrail relative import from test files in src/lib/chat/ |
 | PSAK_GLOSSARY reuse | 10-02 | Imported from explain-prompts.ts, not redefined — avoids drift between explanation and chat glossaries |
 | session-restore.ts deferred | 10-02 | Not in Plan 02 scope; requires Supabase I/O (not pure function); will be implemented in Plan 03 |
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260525-dl3 | Fix four pre-phase-12 bugs (post-analysis navigation, PDF viewer, chat connection error, citation popover flicker) — Task 4 human-verify pending | 2026-05-25 | 624c8ab | [260525-dl3-fix-four-pre-phase-12-bugs-post-analysis](./quick/260525-dl3-fix-four-pre-phase-12-bugs-post-analysis/) |
+
+Last activity: 2026-05-25 - Completed quick task 260525-dl3 (3/4 tasks; human smoke test pending)
