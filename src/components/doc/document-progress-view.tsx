@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { DocumentReaderLayout } from "@/components/doc/document-reader-layout";
 import type { ChartDataPoint, StockData } from "@/lib/stock/stock-schema";
@@ -97,28 +97,27 @@ export function DocumentProgressView(props: {
 
   const terminal = data?.status === "ready" || data?.status === "failed";
 
+  // Bug 1 fix: once polling reaches a terminal status and the SSR-supplied
+  // explanation is still null (the user is still on the progress view because the
+  // RSC was rendered BEFORE the pipeline completed), trigger router.refresh()
+  // exactly once. The refresh re-runs the doc page RSC which fetches the now-ready
+  // explanation, score, signed pdfUrl, etc., and the WR-04 fast-path below renders
+  // the reader. hasRefreshedRef guards against re-firing every poll tick during
+  // the (brief) interval between the status flip and the RSC response.
+  const hasRefreshedRef = useRef(false);
+
+  useEffect(() => {
+    if (hasRefreshedRef.current) return;
+    if (explanation !== null) return;
+    if (data?.status !== "ready" && data?.status !== "failed") return;
+    hasRefreshedRef.current = true;
+    router.refresh();
+  }, [data?.status, explanation, router]);
+
   // WR-04: fast-path — if the RSC parent already fetched the explanation (document is ready),
   // render the reader immediately without waiting for the polling hook to resolve.
   // Polling continues in the background and would only matter for stale SSR edge cases.
   if (explanation) {
-    return (
-      <DocumentReaderLayout
-        documentId={documentId}
-        explanation={explanation}
-        pdfUrl={pdfUrl}
-        score={score}
-        ticker={ticker}
-        stockData={stockData}
-        chartData={chartData}
-        stockError={stockError}
-        sessionId={sessionId}
-        initialMessages={initialMessages}
-        starterQuestions={starterQuestions}
-      />
-    );
-  }
-
-  if (mounted && !sessionError && docIdValid && hasToken && data?.status === "ready") {
     return (
       <DocumentReaderLayout
         documentId={documentId}
