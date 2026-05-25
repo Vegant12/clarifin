@@ -69,14 +69,24 @@ export function PdfDropzone() {
       };
 
       const supabase = getBrowserSupabase();
-      const { error: uploadError } = await supabase.storage
+      const uploadRes = await supabase.storage
         .from("pdfs")
         .uploadToSignedUrl(init.path, init.token, file, {
           contentType: PDF_MIME,
           upsert: false,
         });
 
-      if (uploadError) {
+      // Log the full response so the next silent failure has actionable detail.
+      // If the storage server accepts the PUT but persists nothing (or zero
+      // bytes), uploadError will be null but the data shape will tell us.
+      console.log("[upload] uploadToSignedUrl result", {
+        doc_id: init.doc_id,
+        path: init.path,
+        error: uploadRes.error,
+        data: uploadRes.data,
+      });
+
+      if (uploadRes.error) {
         throw new Error("Upload failed. Please try again in a moment.");
       }
 

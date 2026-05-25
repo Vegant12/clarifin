@@ -63,14 +63,23 @@ export async function POST(request: Request): Promise<Response> {
       );
     }
 
-    const storageCheck = await supabaseAdmin.storage
+    // Verify the storage object actually exists AND has bytes. `info()` reads
+    // real object metadata (size, lastModified) so a missing or zero-byte upload
+    // is caught here instead of failing downstream in the parse batch.
+    const storageInfo = await supabaseAdmin.storage
       .from("pdfs")
-      .createSignedUrl(docRes.data.storage_path, 60);
-    if (storageCheck.error || !storageCheck.data?.signedUrl) {
+      .info(docRes.data.storage_path);
+    const storedSize = storageInfo.data?.size ?? 0;
+    if (storageInfo.error || storedSize <= 0) {
       console.error(
-        "[upload-complete] storage object missing for",
+        "[upload-complete] storage object missing or empty for",
         doc_id,
-        storageCheck.error,
+        "path:",
+        docRes.data.storage_path,
+        "size:",
+        storedSize,
+        "error:",
+        storageInfo.error,
       );
       const incompleteMessage =
         "Upload incomplete — the PDF was not stored. Please try uploading again.";
