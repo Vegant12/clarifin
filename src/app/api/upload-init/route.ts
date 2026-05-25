@@ -66,7 +66,10 @@ export async function POST(request: Request): Promise<Response> {
     const documentId = randomUUID();
     const storage_path = `${sessionId}/${documentId}/${safeName}`;
 
-    const insertRes = await supabaseAdmin.from("documents").insert({
+    // Insert with ip_address for rate-limit tracking (INFRA-02).
+    // Falls back to insert without ip_address if the migration has not been applied yet
+    // (column missing → Supabase returns error code 42703 "undefined_column").
+    let insertRes = await supabaseAdmin.from("documents").insert({
       id: documentId,
       session_id: sessionId,
       filename: safeName,
@@ -75,6 +78,20 @@ export async function POST(request: Request): Promise<Response> {
       status: "uploaded",
       ip_address: clientIp,
     });
+
+    if (insertRes.error?.code === "42703") {
+      // ip_address column not yet in DB — migration pending. Retry without it so uploads
+      // are not blocked. Apply supabase/migrations/*_add_ip_address_to_documents.sql to enable tracking.
+      console.warn("[upload-init] ip_address column missing — applying migration will enable rate tracking");
+      insertRes = await supabaseAdmin.from("documents").insert({
+        id: documentId,
+        session_id: sessionId,
+        filename: safeName,
+        storage_path,
+        size_bytes,
+        status: "uploaded",
+      });
+    }
 
     if (insertRes.error) {
       return NextResponse.json({ error: "Could not create document record." }, { status: 500 });
