@@ -33,7 +33,7 @@ exports[`ExplanationPanel > Test 7: snapshot — citations and jargon interleave
         class="text-foreground text-base leading-relaxed"
       >
         <span
-          aria-describedby="«r27»"
+          aria-describedby="«r1g»"
           class="cursor-help underline decoration-muted-foreground decoration-dotted underline-offset-2"
           data-slot="tooltip-trigger"
           data-state="closed"
@@ -42,16 +42,12 @@ exports[`ExplanationPanel > Test 7: snapshot — citations and jargon interleave
         </span>
          grew 
         <span
-          aria-controls="radix-«r29»"
-          aria-expanded="false"
-          aria-haspopup="dialog"
           aria-label="View source for page 1"
           class="inline-flex cursor-pointer items-center rounded-full bg-primary px-1.5 py-0.5 text-primary-foreground text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 hover:shadow-sm"
-          data-slot="popover-trigger"
+          data-slot="hover-card-trigger"
           data-state="closed"
           role="button"
           tabindex="0"
-          type="button"
         >
           [p.1]
         </span>
@@ -114,6 +110,12 @@ exports[`ExplanationPanel > Test 7: snapshot — citations and jargon interleave
         Plain.
       </p>
     </section>
+    <p
+      class="text-xs text-muted-foreground px-6 pb-4"
+      data-testid="explanation-disclaimer"
+    >
+      AI analysis · not financial advice. Verify all figures against the source PDF.
+    </p>
   </article>
 </div>
 `;

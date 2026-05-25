@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { cn } from "@/lib/utils";
 
 import { CitationPopover } from "./citation-popover";
@@ -13,12 +17,17 @@ export function CitationInline(props: {
   onGoToPage: (page: number) => void;
 }) {
   const { page, docId, onGoToPage } = props;
+  // Bug 4 fix: HoverCard manages its own hover-open/close lifecycle AND bridges
+  // the trigger → content gap so moving the cursor onto the content does not
+  // close the card (which is why the old Popover + manual onMouseLeave handlers
+  // flickered). Keeping a controlled open prop because CitationPopover reads it
+  // to gate its page-text fetch (D-07 module-cache pattern).
   const [open, setOpen] = useState(false);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        {/* biome-ignore lint/a11y/useSemanticElements: span needed for inline text flow inside PopoverTrigger asChild */}
+    <HoverCard open={open} onOpenChange={setOpen} openDelay={150} closeDelay={200}>
+      <HoverCardTrigger asChild>
+        {/* biome-ignore lint/a11y/useSemanticElements: span needed for inline text flow inside HoverCardTrigger asChild */}
         <span
           role="button"
           tabIndex={0}
@@ -29,10 +38,6 @@ export function CitationInline(props: {
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
             "hover:shadow-sm",
           )}
-          onMouseEnter={() => setOpen(true)}
-          onMouseLeave={() => setOpen(false)}
-          onFocus={() => setOpen(true)}
-          onBlur={() => setOpen(false)}
           onClick={() => onGoToPage(page)}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
@@ -43,15 +48,10 @@ export function CitationInline(props: {
         >
           {`[p.${page}]`}
         </span>
-      </PopoverTrigger>
-      <PopoverContent
-        side="bottom"
-        align="start"
-        className="z-50 w-80 p-3"
-        onOpenAutoFocus={(e) => e.preventDefault()}
-      >
+      </HoverCardTrigger>
+      <HoverCardContent side="bottom" align="start" className="z-50 w-80 p-3">
         <CitationPopover docId={docId} page={page} open={open} onGoToPage={onGoToPage} />
-      </PopoverContent>
-    </Popover>
+      </HoverCardContent>
+    </HoverCard>
   );
 }
