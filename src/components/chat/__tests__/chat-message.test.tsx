@@ -75,4 +75,89 @@ describe("ChatMessage", () => {
     // Deflection bubble does NOT append the standard disclaimer line
     expect(screen.queryByText(/^this is not investment advice\.$/i)).toBeNull();
   });
+
+  // --- Markdown rendering (quick-260525-eq2) ---
+
+  it("assistant message: renders bold markdown as <strong>", () => {
+    const { container } = render(
+      <ChatMessage
+        message={makeMessage({
+          role: "assistant",
+          content: "**Net profit** was Rp 5T.",
+        })}
+        documentId={DOC_ID}
+        onGoToPage={() => undefined}
+      />,
+    );
+    const strong = container.querySelector("strong");
+    expect(strong).not.toBeNull();
+    expect(strong?.textContent).toContain("Net profit");
+  });
+
+  it("assistant message: renders bulleted list as <li> items", () => {
+    render(
+      <ChatMessage
+        message={makeMessage({
+          role: "assistant",
+          content: "- Revenue: Rp 5T\n- Net profit: Rp 1T",
+        })}
+        documentId={DOC_ID}
+        onGoToPage={() => undefined}
+      />,
+    );
+    const items = screen.getAllByRole("listitem");
+    expect(items).toHaveLength(2);
+    expect(items[0]?.textContent).toContain("Revenue");
+    expect(items[1]?.textContent).toContain("Net profit");
+  });
+
+  it("assistant message: preserves citation pills inside list items", () => {
+    render(
+      <ChatMessage
+        message={makeMessage({
+          role: "assistant",
+          content: "Highlights:\n- Revenue grew [p.4].\n- Margin held [p.7].",
+        })}
+        documentId={DOC_ID}
+        onGoToPage={() => undefined}
+      />,
+    );
+    const pill4 = screen.getByLabelText(/view source for page 4/i);
+    const pill7 = screen.getByLabelText(/view source for page 7/i);
+    expect(pill4).toBeTruthy();
+    expect(pill7).toBeTruthy();
+    // Each pill should be inside an <li>
+    expect(pill4.closest("li")).not.toBeNull();
+    expect(pill7.closest("li")).not.toBeNull();
+  });
+
+  it("assistant message: preserves citation pill inside bold span", () => {
+    const { container } = render(
+      <ChatMessage
+        message={makeMessage({
+          role: "assistant",
+          content: "**Important [p.12]** finding.",
+        })}
+        documentId={DOC_ID}
+        onGoToPage={() => undefined}
+      />,
+    );
+    const strong = container.querySelector("strong");
+    expect(strong).not.toBeNull();
+    expect(strong?.textContent).toContain("Important");
+    // Citation still rendered
+    expect(screen.getByLabelText(/view source for page 12/i)).toBeTruthy();
+  });
+
+  it("user message: does NOT process markdown (asterisks are literal)", () => {
+    const { container } = render(
+      <ChatMessage
+        message={makeMessage({ role: "user", content: "**Hello**" })}
+        documentId={DOC_ID}
+        onGoToPage={() => undefined}
+      />,
+    );
+    // No <strong> rendered from a user message
+    expect(container.querySelector("strong")).toBeNull();
+  });
 });
