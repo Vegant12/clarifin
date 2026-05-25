@@ -58,5 +58,6 @@ progress:
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260525-dl3 | Fix four pre-phase-12 bugs (post-analysis navigation, PDF viewer, chat connection error, citation popover flicker) — Task 4 human-verify pending | 2026-05-25 | 624c8ab | [260525-dl3-fix-four-pre-phase-12-bugs-post-analysis](./quick/260525-dl3-fix-four-pre-phase-12-bugs-post-analysis/) |
+| 260525-eq2 | Chat markdown rendering + chat citation popover verification + PDF/parse-pipeline diagnostics | 2026-05-25 | 466c6c0 | [260525-eq2-chat-markdown-rendering-verify-chat-cita](./quick/260525-eq2-chat-markdown-rendering-verify-chat-cita/) |
 
-Last activity: 2026-05-25 - Completed quick task 260525-dl3 (3/4 tasks; human smoke test pending)
+Last activity: 2026-05-25 - Completed quick task 260525-eq2 (chat markdown + diagnostics; parse-error root-cause deferred to /gsd-debug)
