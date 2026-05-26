@@ -52,3 +52,7 @@ yarn-error.log*
 Thumbs.db
 .idea/
 .vscode/
+
+# planning & local tooling (kept local, not for GitHub)
+.planning/
+.claude/
