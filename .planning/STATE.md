@@ -59,5 +59,12 @@ progress:
 |---|-------------|------|--------|-----------|
 | 260525-dl3 | Fix four pre-phase-12 bugs (post-analysis navigation, PDF viewer, chat connection error, citation popover flicker) — Task 4 human-verify pending | 2026-05-25 | 624c8ab | [260525-dl3-fix-four-pre-phase-12-bugs-post-analysis](./quick/260525-dl3-fix-four-pre-phase-12-bugs-post-analysis/) |
 | 260525-eq2 | Chat markdown rendering + chat citation popover verification + PDF/parse-pipeline diagnostics | 2026-05-25 | 466c6c0 | [260525-eq2-chat-markdown-rendering-verify-chat-cita](./quick/260525-eq2-chat-markdown-rendering-verify-chat-cita/) |
+| 260526-c5k | ExplanationPanel markdown rendering + multi-page citation parsing (`[p.49, p.111]`) — shared `renderInlineWithCitations` helper | 2026-05-26 | 8373f58 | [260526-c5k-explanationpanel-markdown-rendering-mult](./quick/260526-c5k-explanationpanel-markdown-rendering-mult/) |
 
-Last activity: 2026-05-25 - Completed quick task 260525-eq2 (chat markdown + diagnostics; parse-error root-cause deferred to /gsd-debug)
+### Debug Sessions
+
+| Slug | Status | Resolved | Commit | Notes |
+|------|--------|----------|--------|-------|
+| pdf-upload-missing-storage | resolved | 2026-05-26 | b8a808b | INFRA-04 cleanup conflicted with Phase 7 viewer — cleanup removed, regression test added. See `.planning/debug/resolved/pdf-upload-missing-storage.md`. |
+
+Last activity: 2026-05-26 - Completed quick task 260526-c5k (explanation markdown + multi-page citations; cumulative 4 quick tasks touching rendering paths — consider consolidation/regression pass before more polish)
