@@ -80,18 +80,11 @@ export async function runEmbedBatch({ docId }: { docId: string }): Promise<{ don
         await supabaseAdmin.from("documents").update({ status: "analyzing" }).eq("id", docId);
         scheduleAnalyzeBatchForDoc(docId);
 
-        // INFRA-04: delete raw PDF from Storage after all chunks confirmed embedded.
-        // Best-effort: a Storage error does NOT roll back embedding work — the doc
-        // has already transitioned to "analyzing" and the analyze cron will run.
-        // Logged via console.warn so orphan PDFs are detectable in Vercel logs.
-        if (docRes.data?.storage_path) {
-          await supabaseAdmin.storage
-            .from("pdfs")
-            .remove([docRes.data.storage_path])
-            .catch((err) => {
-              console.warn(`[embed-batch] PDF cleanup failed for doc ${docId}:`, err);
-            });
-        }
+        // INFRA-04 deletion REMOVED — Phase 7 added the PDF viewer that needs the
+        // raw PDF in Storage indefinitely (createSignedUrl in the doc-page RSC).
+        // The original cleanup conflicted with the core "show PDF beside analysis"
+        // UX. Free tier 1 GB ≈ 200-500 PDFs is enough for v1; revisit with a
+        // scheduled retention cron once storage fills up.
 
         return { done: true };
       }
@@ -141,18 +134,8 @@ export async function runEmbedBatch({ docId }: { docId: string }): Promise<{ don
       await supabaseAdmin.from("documents").update({ status: "analyzing" }).eq("id", docId);
       scheduleAnalyzeBatchForDoc(docId);
 
-      // INFRA-04: delete raw PDF from Storage after all chunks confirmed embedded.
-      // Best-effort: a Storage error does NOT roll back embedding work — the doc
-      // has already transitioned to "analyzing" and the analyze cron will run.
-      // Logged via console.warn so orphan PDFs are detectable in Vercel logs.
-      if (docRes.data?.storage_path) {
-        await supabaseAdmin.storage
-          .from("pdfs")
-          .remove([docRes.data.storage_path])
-          .catch((err) => {
-            console.warn(`[embed-batch] PDF cleanup failed for doc ${docId}:`, err);
-          });
-      }
+      // INFRA-04 deletion REMOVED — see note above. Raw PDF must stay in Storage
+      // for the Phase 7 PDF viewer (createSignedUrl on doc-page render).
 
       return { done: true };
     }
