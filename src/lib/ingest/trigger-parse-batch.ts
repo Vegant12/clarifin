@@ -19,26 +19,34 @@ export function getInternalAppBaseUrl(): string {
   return "http://localhost:3000";
 }
 
+async function callInternal(path: string, docId: string): Promise<void> {
+  const base = getInternalAppBaseUrl();
+  let res: Response;
+  try {
+    res = await fetch(`${base}${path}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${env.INTERNAL_PARSE_SECRET}`,
+      },
+      body: JSON.stringify({ doc_id: docId }),
+    });
+  } catch (e) {
+    console.error(`[trigger] fetch error → ${path}`, docId, e);
+    return;
+  }
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    console.error(`[trigger] non-2xx from ${path}`, docId, res.status, body);
+  }
+}
+
 /** Fire-and-forget first parse batch after upload handoff (Phase 3). */
 export function scheduleParseBatchesForDoc(docId: string): void {
   if (process.env.NODE_ENV === "test") {
     return;
   }
-  after(async () => {
-    try {
-      const base = getInternalAppBaseUrl();
-      await fetch(`${base}/api/internal/parse-batch`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${env.INTERNAL_PARSE_SECRET}`,
-        },
-        body: JSON.stringify({ doc_id: docId }),
-      });
-    } catch (e) {
-      console.error("scheduleParseBatchesForDoc", e);
-    }
-  });
+  after(() => callInternal("/api/internal/parse-batch", docId));
 }
 
 /** Chain embedding batches after parsing → embedding (Phase 4). */
@@ -46,21 +54,7 @@ export function scheduleEmbedBatchesForDoc(docId: string): void {
   if (process.env.NODE_ENV === "test") {
     return;
   }
-  after(async () => {
-    try {
-      const base = getInternalAppBaseUrl();
-      await fetch(`${base}/api/internal/embed-batch`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${env.INTERNAL_PARSE_SECRET}`,
-        },
-        body: JSON.stringify({ doc_id: docId }),
-      });
-    } catch (e) {
-      console.error("scheduleEmbedBatchesForDoc", e);
-    }
-  });
+  after(() => callInternal("/api/internal/embed-batch", docId));
 }
 
 /** Chain analyze batch after embedding → analyzing (Phase 6). */
@@ -68,19 +62,5 @@ export function scheduleAnalyzeBatchForDoc(docId: string): void {
   if (process.env.NODE_ENV === "test") {
     return;
   }
-  after(async () => {
-    try {
-      const base = getInternalAppBaseUrl();
-      await fetch(`${base}/api/internal/analyze-batch`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${env.INTERNAL_PARSE_SECRET}`,
-        },
-        body: JSON.stringify({ doc_id: docId }),
-      });
-    } catch (e) {
-      console.error("scheduleAnalyzeBatchForDoc", e);
-    }
-  });
+  after(() => callInternal("/api/internal/analyze-batch", docId));
 }

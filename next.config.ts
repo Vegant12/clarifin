@@ -11,6 +11,11 @@ import type { NextConfig } from "next";
 import "./src/lib/env";
 
 const nextConfig: NextConfig = {
+  // Prevent Next.js from bundling pdfjs-dist (used by unpdf) through webpack.
+  // Bundling it causes WASM/worker reference failures on Vercel's serverless
+  // runtime — the module fails to initialise, the parse-batch function crashes
+  // before it can update the document status, and uploads get stuck at "parsing".
+  serverExternalPackages: ["unpdf"],
   experimental: {},
 };
 
