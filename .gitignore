@@ -56,3 +56,4 @@ Thumbs.db
 # planning & local tooling (kept local, not for GitHub)
 .planning/
 .claude/
+CLAUDE.md
