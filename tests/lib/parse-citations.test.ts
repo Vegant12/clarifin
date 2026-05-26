@@ -67,4 +67,66 @@ describe("parseCitations", () => {
     const result = parseCitations("");
     expect(result).toEqual([]);
   });
+
+  // quick-260526-c5k: multi-page citation blocks
+  it("Test 9: multi-page citation `[p.49, p.111]` yields two consecutive citation tokens", () => {
+    const result = parseCitations("See [p.49, p.111] for details.");
+    expect(result).toEqual([
+      { kind: "text", value: "See " },
+      { kind: "citation", page: 49 },
+      { kind: "citation", page: 111 },
+      { kind: "text", value: " for details." },
+    ]);
+  });
+
+  it("Test 10: multi-page block where second page omits `p.` prefix `[p.49, 111]`", () => {
+    const result = parseCitations("[p.49, 111]");
+    expect(result).toEqual([
+      { kind: "citation", page: 49 },
+      { kind: "citation", page: 111 },
+    ]);
+  });
+
+  it("Test 11: three-page citation `[p.49, 111, 123]`", () => {
+    const result = parseCitations("[p.49, 111, 123]");
+    expect(result).toEqual([
+      { kind: "citation", page: 49 },
+      { kind: "citation", page: 111 },
+      { kind: "citation", page: 123 },
+    ]);
+  });
+
+  it("Test 12: page range endpoints `[p.49 - p.55]` parse as both endpoints", () => {
+    const result = parseCitations("[p.49 - p.55]");
+    expect(result).toEqual([
+      { kind: "citation", page: 49 },
+      { kind: "citation", page: 55 },
+    ]);
+  });
+
+  it("Test 13: `[p.0]` is dropped entirely (no tokens emitted)", () => {
+    const result = parseCitations("[p.0]");
+    expect(result).toEqual([]);
+  });
+
+  it("Test 14: `[p.]` (no digits) is dropped entirely", () => {
+    const result = parseCitations("[p.]");
+    expect(result).toEqual([]);
+  });
+
+  it("Test 15: non `p.` block `[foo]` is preserved as plain text", () => {
+    const result = parseCitations("[foo]");
+    expect(result).toEqual([{ kind: "text", value: "[foo]" }]);
+  });
+
+  it("Test 16: malformed citation `[p.0]` between text drops the block but keeps surrounding text", () => {
+    // When a malformed block is dropped, the surrounding text slices stay
+    // (they may merge into adjacent runs depending on impl; documenting actual behavior).
+    const result = parseCitations("text [p.0] more");
+    // The block is consumed silently; the slices "text " and " more" are emitted as two text tokens
+    expect(result).toEqual([
+      { kind: "text", value: "text " },
+      { kind: "text", value: " more" },
+    ]);
+  });
 });
