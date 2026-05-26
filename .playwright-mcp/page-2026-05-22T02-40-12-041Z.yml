@@ -1,0 +1,36 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - paragraph [ref=e4]: Clarifin
+      - heading "Read IDX financial reports in plain English." [level=1] [ref=e5]
+      - paragraph [ref=e6]: Upload an Indonesian-listed company's financial PDF and get a plain-English explanation, an AI assessment score, and a chat interface to ask follow-up questions.
+      - paragraph [ref=e7]: AI analysis · not financial advice.
+    - generic [ref=e8]:
+      - generic [ref=e10]:
+        - generic [ref=e11]: Step 1
+        - heading "Upload PDF" [level=3] [ref=e12]
+        - paragraph [ref=e13]: Annual report, quarterly filing, or financial statement.
+      - generic [ref=e15]:
+        - generic [ref=e16]: Step 2
+        - heading "Read explanation" [level=3] [ref=e17]
+        - paragraph [ref=e18]: Plain-English summary with page citations.
+      - generic [ref=e20]:
+        - generic [ref=e21]: Step 3
+        - heading "Ask follow-ups" [level=3] [ref=e22]
+        - paragraph [ref=e23]: Chat with your document. Answers cite the source.
+    - region "PDF upload" [ref=e24]:
+      - region "PDF upload" [ref=e25]:
+        - generic [ref=e27]:
+          - img [ref=e28]
+          - paragraph [ref=e31]: Drop your IDX PDF here
+          - paragraph [ref=e32]: PDF up to 20 MB. Annual report, quarterly filing, or financial statement.
+          - generic:
+            - button [disabled]
+          - button "Preparing…" [disabled]:
+            - generic:
+              - img
+              - text: Preparing…
+    - generic [ref=e33]:
+      - paragraph [ref=e34]: Clarifin generates AI analysis, not financial advice. Information may be inaccurate; verify against the source PDF before making decisions.
+      - paragraph [ref=e35]: © 2026 Clarifin · Built for IDX investors.
+  - alert [ref=e36]

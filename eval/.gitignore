@@ -1,1 +1,3 @@
 pdfs/*.pdf
+.env.local
+.env.example

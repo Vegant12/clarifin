@@ -2,11 +2,12 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Group, Panel, Separator, useDefaultLayout } from "react-resizable-panels";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { ExplanationResult } from "@/lib/explain/explanation-schema";
 import type { ScoreResult } from "@/lib/explain/score-schema";
 import type { ChartDataPoint, StockData } from "@/lib/stock/stock-schema";
@@ -83,30 +84,35 @@ function DesktopSplitPane(props: {
       defaultLayout={defaultLayout}
       onLayoutChanged={onLayoutChanged}
     >
-      {/* CHAT-01: left panel is split into two regions:
-          - ExplanationPanel: flex-1, scrolls independently so chat is never buried below the fold
-          - ChatPanel: fixed 420px section pinned at bottom, always visible */}
       <Panel id="explanation" defaultSize={50} minSize={20} className="flex flex-col !overflow-hidden">
-        <div className="flex-1 overflow-auto min-h-0">
-          <ExplanationPanel
-            documentId={documentId}
-            explanation={explanation}
-            score={score}
-            onGoToPage={handleGoToPage}
-            ticker={ticker}
-            stockData={stockData}
-            chartData={chartData}
-            stockError={stockError}
-          />
-        </div>
-        <ChatPanel
-          documentId={documentId}
-          sessionId={sessionId ?? ""}
-          initialMessages={initialMessages}
-          starterQuestions={starterQuestions}
-          onGoToPage={handleGoToPage}
-          className="h-[420px] shrink-0 border-t"
-        />
+        <Tabs defaultValue="explanation" className="flex h-full flex-col">
+          <TabsList className="w-full shrink-0 justify-start rounded-none border-b border-border bg-muted">
+            <TabsTrigger value="explanation">Explanation</TabsTrigger>
+            <TabsTrigger value="chat">Chat</TabsTrigger>
+          </TabsList>
+          <TabsContent value="explanation" className="mt-0 min-h-0 flex-1 overflow-auto">
+            <ExplanationPanel
+              documentId={documentId}
+              explanation={explanation}
+              score={score}
+              onGoToPage={handleGoToPage}
+              ticker={ticker}
+              stockData={stockData}
+              chartData={chartData}
+              stockError={stockError}
+            />
+          </TabsContent>
+          <TabsContent value="chat" className="mt-0 min-h-0 flex-1 overflow-hidden">
+            <ChatPanel
+              documentId={documentId}
+              sessionId={sessionId ?? ""}
+              initialMessages={initialMessages}
+              starterQuestions={starterQuestions}
+              onGoToPage={handleGoToPage}
+              className="h-full"
+            />
+          </TabsContent>
+        </Tabs>
       </Panel>
       <Separator
         id="resize-handle"
@@ -147,6 +153,8 @@ export function DocumentReaderLayout(props: {
     starterQuestions,
   } = props;
   const pdfRef = useRef<PdfViewerHandle>(null);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
 
   if (!explanation) {
     return (
@@ -185,22 +193,25 @@ export function DocumentReaderLayout(props: {
         />
       </div>
 
-      {/* Desktop (≥769px): resizable split */}
+      {/* Desktop (≥769px): resizable split — client-only to avoid SSR/hydration mismatch
+          with react-resizable-panels which reads localStorage for panel sizes. */}
       <div className="hidden h-full md:flex">
-        <DesktopSplitPane
-          documentId={documentId}
-          explanation={explanation}
-          pdfUrl={pdfUrl}
-          pdfRef={pdfRef}
-          score={score}
-          ticker={ticker}
-          stockData={stockData}
-          chartData={chartData}
-          stockError={stockError}
-          sessionId={sessionId}
-          initialMessages={initialMessages}
-          starterQuestions={starterQuestions}
-        />
+        {mounted && (
+          <DesktopSplitPane
+            documentId={documentId}
+            explanation={explanation}
+            pdfUrl={pdfUrl}
+            pdfRef={pdfRef}
+            score={score}
+            ticker={ticker}
+            stockData={stockData}
+            chartData={chartData}
+            stockError={stockError}
+            sessionId={sessionId}
+            initialMessages={initialMessages}
+            starterQuestions={starterQuestions}
+          />
+        )}
       </div>
     </main>
   );
