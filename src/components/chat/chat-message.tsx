@@ -1,12 +1,11 @@
 "use client";
 
-import React, { Fragment } from "react";
+import React from "react";
 import type { Message } from "ai";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-import { CitationInline } from "@/components/doc/citation-inline";
-import { parseCitations } from "@/lib/citations/parse-citations";
+import { renderInlineWithCitations } from "@/lib/citations/render-inline-citations";
 import { CHAT_DEFLECTION_MESSAGE } from "@/lib/prompts";
 import { GuardrailDeflection } from "./guardrail-deflection";
 
@@ -56,7 +55,11 @@ export function ChatMessage(props: {
   }
 
   const renderInline = (children: React.ReactNode): React.ReactNode =>
-    renderInlineWithCitations(children, message.id, documentId, onGoToPage);
+    renderInlineWithCitations(children, {
+      keyPrefix: message.id,
+      docId: documentId,
+      onGoToPage,
+    });
 
   const components: Components = {
     p: ({ children }) => (
@@ -105,39 +108,3 @@ export function ChatMessage(props: {
   );
 }
 
-/**
- * Walk inline children from react-markdown and substitute CitationInline pills
- * for every [p.N] token found in any string leaf. Non-string children (already-
- * rendered React elements from nested markdown like <strong> inside a <p>) are
- * passed through unchanged — react-markdown's recursive descent means our
- * `strong` / `em` / etc. overrides will run on them in turn.
- *
- * Kept local to this file: no other consumer needs this today. Hoist when a
- * second consumer appears.
- */
-function renderInlineWithCitations(
-  children: React.ReactNode,
-  messageId: string,
-  docId: string,
-  onGoToPage: (page: number) => void,
-): React.ReactNode {
-  return React.Children.map(children, (child, childIdx) => {
-    if (typeof child !== "string") return child;
-    const tokens = parseCitations(child);
-    if (tokens.length === 0) return child;
-    return tokens.map((tok, tokIdx) => {
-      const key = `${messageId}.c${childIdx}.t${tokIdx}`;
-      if (tok.kind === "citation") {
-        return (
-          <CitationInline
-            key={key}
-            page={tok.page}
-            docId={docId}
-            onGoToPage={onGoToPage}
-          />
-        );
-      }
-      return <Fragment key={key}>{tok.value}</Fragment>;
-    });
-  });
-}
