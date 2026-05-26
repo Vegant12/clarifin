@@ -1,8 +1,9 @@
 "use client";
 
-import { Fragment } from "react";
+import ReactMarkdown, { type Components } from "react-markdown";
+import remarkGfm from "remark-gfm";
 
-import { parseCitations } from "@/lib/citations/parse-citations";
+import { renderInlineWithCitations } from "@/lib/citations/render-inline-citations";
 import type { ExplanationResult } from "@/lib/explain/explanation-schema";
 import type { ScoreResult } from "@/lib/explain/score-schema";
 import { jargonDictionary } from "@/lib/jargon";
@@ -10,7 +11,6 @@ import { cn } from "@/lib/utils";
 
 import type { ChartDataPoint, StockData } from "@/lib/stock/stock-schema";
 
-import { CitationInline } from "./citation-inline";
 import { JargonTooltip } from "./jargon-tooltip";
 import { ScoreCard } from "./score-card";
 import { StockWidget } from "./stock-widget";
@@ -145,32 +145,57 @@ export function ExplanationPanel(props: {
 
       {SECTION_ORDER.map((sectionKey) => {
         const sectionText = explanation[sectionKey];
-        const tokens = parseCitations(sectionText);
+
+        const renderInline = (children: React.ReactNode): React.ReactNode =>
+          renderInlineWithCitations(children, {
+            keyPrefix: sectionKey,
+            docId: documentId,
+            onGoToPage,
+            transformText: (text, key) => wrapJargon(text, key),
+          });
+
+        const components: Components = {
+          p: ({ children }) => (
+            <p className="text-foreground text-base leading-relaxed">
+              {renderInline(children)}
+            </p>
+          ),
+          strong: ({ children }) => <strong>{renderInline(children)}</strong>,
+          em: ({ children }) => <em>{renderInline(children)}</em>,
+          ul: ({ children }) => (
+            <ul className="list-disc pl-5 my-2 space-y-1">{children}</ul>
+          ),
+          ol: ({ children }) => (
+            <ol className="list-decimal pl-5 my-2 space-y-1">{children}</ol>
+          ),
+          li: ({ children }) => (
+            <li className="leading-relaxed">{renderInline(children)}</li>
+          ),
+          h1: ({ children }) => (
+            <h1 className="text-lg font-semibold mt-2">{renderInline(children)}</h1>
+          ),
+          h2: ({ children }) => (
+            <h2 className="text-base font-semibold mt-2">{renderInline(children)}</h2>
+          ),
+          h3: ({ children }) => (
+            <h3 className="text-sm font-semibold mt-1">{renderInline(children)}</h3>
+          ),
+          code: ({ children }) => (
+            <code className="bg-muted px-1 rounded text-sm font-mono">{children}</code>
+          ),
+          pre: ({ children }) => (
+            <pre className="bg-muted p-2 rounded my-2 overflow-x-auto text-sm">{children}</pre>
+          ),
+        };
 
         return (
           <section key={sectionKey} className="flex flex-col gap-4">
             <h2 className="font-semibold text-foreground text-xl leading-tight">
               {SECTION_LABELS[sectionKey]}
             </h2>
-            <p className="text-foreground text-base leading-relaxed">
-              {tokens.map((tok, idx) => {
-                if (tok.kind === "citation") {
-                  return (
-                    <CitationInline
-                      key={`${sectionKey}.cite.${idx}`}
-                      page={tok.page}
-                      docId={documentId}
-                      onGoToPage={onGoToPage}
-                    />
-                  );
-                }
-                return (
-                  <Fragment key={`${sectionKey}.text.${idx}`}>
-                    {wrapJargon(tok.value, `${sectionKey}.${idx}`)}
-                  </Fragment>
-                );
-              })}
-            </p>
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+              {sectionText}
+            </ReactMarkdown>
           </section>
         );
       })}
