@@ -66,11 +66,49 @@ export async function POST(request: Request): Promise<Response> {
     // Verify the storage object actually exists AND has bytes. `info()` reads
     // real object metadata (size, lastModified) so a missing or zero-byte upload
     // is caught here instead of failing downstream in the parse batch.
+    //
+    // ALSO do a `download()` HEAD-style sanity check: there's a known failure
+    // mode where the `storage.objects` Postgres row is created (so info()
+    // returns size) but the actual byte payload never lands in the S3-backed
+    // store — a later download/createSignedUrl 404s. Catching both here.
     const storageInfo = await supabaseAdmin.storage
       .from("pdfs")
       .info(docRes.data.storage_path);
     const storedSize = storageInfo.data?.size ?? 0;
-    if (storageInfo.error || storedSize <= 0) {
+    console.log(
+      "[upload-complete] info() result for",
+      doc_id,
+      "path:",
+      docRes.data.storage_path,
+      "size:",
+      storedSize,
+      "error:",
+      storageInfo.error?.message ?? null,
+      "raw_data:",
+      storageInfo.data,
+    );
+
+    // Second check: ensure createSignedUrl would succeed too. This is what the
+    // doc-page RSC uses to display the PDF — if it 404s here, the object is
+    // truly missing despite info() reporting metadata.
+    const signedProbe = await supabaseAdmin.storage
+      .from("pdfs")
+      .createSignedUrl(docRes.data.storage_path, 60);
+    console.log(
+      "[upload-complete] createSignedUrl probe for",
+      doc_id,
+      "ok:",
+      Boolean(signedProbe.data?.signedUrl),
+      "error:",
+      signedProbe.error?.message ?? null,
+    );
+
+    if (
+      storageInfo.error ||
+      storedSize <= 0 ||
+      signedProbe.error ||
+      !signedProbe.data?.signedUrl
+    ) {
       console.error(
         "[upload-complete] storage object missing or empty for",
         doc_id,
@@ -78,8 +116,10 @@ export async function POST(request: Request): Promise<Response> {
         docRes.data.storage_path,
         "size:",
         storedSize,
-        "error:",
+        "info_error:",
         storageInfo.error,
+        "signed_error:",
+        signedProbe.error,
       );
       const incompleteMessage =
         "Upload incomplete — the PDF was not stored. Please try uploading again.";
