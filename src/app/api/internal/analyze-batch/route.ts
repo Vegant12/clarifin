@@ -13,7 +13,8 @@ import { runAnalyzeBatch } from "@/lib/ingest/analyze-document-batch";
  * Does NOT self-chain — runAnalyzeBatch is a single Gemini call per invocation.
  */
 
-export const maxDuration = 300;
+// Vercel Hobby hard cap is 60 s — Gemini analyze call must complete within this window.
+export const maxDuration = 60;
 
 function timingSafeStringEq(a: string, b: string): boolean {
   const ba = Buffer.from(a, "utf8");

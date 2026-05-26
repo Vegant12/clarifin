@@ -8,6 +8,8 @@ import { env } from "@/lib/env";
 import { runParseBatch } from "@/lib/ingest/parse-document-batch";
 import { scheduleParseBatchesForDoc } from "@/lib/ingest/trigger-parse-batch";
 
+export const maxDuration = 60;
+
 /**
  * Internal ingestion worker. Authenticated via `INTERNAL_PARSE_SECRET` using either:
  * - `Authorization: Bearer <secret>` (server `after()`), or

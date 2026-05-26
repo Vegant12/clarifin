@@ -8,6 +8,8 @@ import { env } from "@/lib/env";
 import { runEmbedBatch } from "@/lib/ingest/embed-document-batch";
 import { scheduleEmbedBatchesForDoc } from "@/lib/ingest/trigger-parse-batch";
 
+export const maxDuration = 60;
+
 /**
  * Internal embedding worker. Same auth model as parse-batch (`INTERNAL_PARSE_SECRET`).
  * Chains partial batches via `after()` like parse-batch when `done: false`.

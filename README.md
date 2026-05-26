@@ -103,4 +103,41 @@ pnpm dev                     # start Next.js at http://localhost:3000
 5. **Stock context** — ticker symbol is extracted from the document; yahoo-finance2 fetches live IDX data and historical financials.
 6. **Chat** — follow-up questions use RAG: top-K relevant chunks are retrieved from pgvector and passed to Gemini with the question. Answers are streamed via Vercel AI SDK.
 
+---
+
+## Deploying to Vercel
+
+### 1. Push to GitHub
+Ensure your repo is on GitHub and connected to Vercel.
+
+### 2. Set environment variables
+In Vercel → **Project Settings → Environment Variables**, add:
+
+| Variable | Value |
+|---|---|
+| `SUPABASE_URL` | Your Supabase project URL |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key |
+| `NEXT_PUBLIC_SUPABASE_URL` | Same as `SUPABASE_URL` |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key |
+| `GEMINI_API_KEY` | Google AI Studio API key |
+| `INTERNAL_PARSE_SECRET` | `openssl rand -hex 32` |
+| `CRON_SECRET` | **Same value** as `INTERNAL_PARSE_SECRET` |
+| `LANGFUSE_SECRET_KEY` | Langfuse secret key |
+| `LANGFUSE_PUBLIC_KEY` | Langfuse public key |
+
+> `CRON_SECRET` is Vercel's built-in mechanism — it automatically adds `Authorization: Bearer <CRON_SECRET>` to every cron request. Setting it equal to `INTERNAL_PARSE_SECRET` means the batch routes accept it with no extra code.
+
+### 3. Provision the Supabase Storage bucket
+The `pdfs` bucket must be created manually on the hosted project (not applied by migrations):
+
+1. Supabase dashboard → **Storage** → **New bucket**
+2. Name: `pdfs` | **Private** | File size limit: `20 MB` | MIME type: `application/pdf`
+
+### 4. Deploy
+Vercel auto-deploys on every push to `main`. The `vercel.json` at the repo root registers two cron jobs (parse-batch + embed-batch) that run every minute to drive the ingestion pipeline.
+
+### Notes
+- Vercel Hobby functions are capped at **60 seconds**. Large PDFs that exceed the analyze window will be retried on the next cron tick.
+- Cron logs appear in Vercel dashboard → **Functions → Logs**.
+- Supabase free tier pauses after 1 week of inactivity — regular uploads and cron activity will keep it awake.
 

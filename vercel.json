@@ -1,16 +1,12 @@
 {
   "crons": [
     {
-      "path": "/api/internal/parse-batch?secret=${INTERNAL_PARSE_SECRET}",
+      "path": "/api/internal/parse-batch",
       "schedule": "* * * * *"
     },
     {
-      "path": "/api/internal/embed-batch?secret=${INTERNAL_PARSE_SECRET}",
+      "path": "/api/internal/embed-batch",
       "schedule": "* * * * *"
-    },
-    {
-      "path": "/api/cron/keep-alive",
-      "schedule": "0 0 * * 0"
     }
   ]
 }
