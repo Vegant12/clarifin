@@ -3,6 +3,24 @@ import { z } from "zod";
 
 import { supabaseAdmin } from "@/db/client";
 import { env } from "@/lib/env";
+import {
+  scheduleAnalyzeBatchForDoc,
+  scheduleEmbedBatchesForDoc,
+  scheduleParseBatchesForDoc,
+} from "@/lib/ingest/trigger-parse-batch";
+
+/**
+ * If a doc has been idle in an in-progress state for this many ms, the next
+ * browser poll on /api/status will fire after() → the matching internal batch
+ * route. This drives the pipeline forward across Vercel Hobby's 60s per-function
+ * limit without using same-URL self-fetch chains (which Vercel blocks as 508
+ * INFINITE_LOOP_DETECTED). Browser polling effectively becomes the scheduler.
+ *
+ * Must be larger than the longest inter-batch gap within one runParseBatch /
+ * runEmbedBatch invocation to avoid firing a duplicate concurrent invocation
+ * while one is already running.
+ */
+const STALL_THRESHOLD_MS = 30_000;
 
 const querySchema = z.object({
   doc_id: z.string().uuid(),
@@ -109,6 +127,21 @@ export async function GET(request: Request): Promise<Response> {
       if (!docQuery.error && docQuery.data) {
         row = docQuery.data;
       }
+    }
+  }
+
+  // If the document is sitting in an in-progress state and no batch has touched
+  // it for STALL_THRESHOLD_MS, fire after() → the matching internal batch route.
+  // This is how browser polling drives the pipeline forward across Vercel
+  // Hobby's 60s per-function limit (no sub-daily cron, no same-URL self-chain).
+  const idleMs = Date.now() - new Date(row.updated_at).getTime();
+  if (idleMs >= STALL_THRESHOLD_MS) {
+    if (row.status === "parsing") {
+      scheduleParseBatchesForDoc(doc_id);
+    } else if (row.status === "embedding") {
+      scheduleEmbedBatchesForDoc(doc_id);
+    } else if (row.status === "analyzing") {
+      scheduleAnalyzeBatchForDoc(doc_id);
     }
   }
 
