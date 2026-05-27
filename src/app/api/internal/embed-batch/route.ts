@@ -6,13 +6,13 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/db/client";
 import { env } from "@/lib/env";
 import { runEmbedBatch } from "@/lib/ingest/embed-document-batch";
-import { scheduleEmbedBatchesForDoc } from "@/lib/ingest/trigger-parse-batch";
 
 export const maxDuration = 60;
 
 /**
  * Internal embedding worker. Same auth model as parse-batch (`INTERNAL_PARSE_SECRET`).
- * Chains partial batches via `after()` like parse-batch when `done: false`.
+ * Loops `runEmbedBatch` internally until done or out of time. We do NOT self-fetch
+ * via `after()` — Vercel returns 508 INFINITE_LOOP_DETECTED on same-URL chains.
  */
 
 function timingSafeStringEq(a: string, b: string): boolean {
@@ -80,9 +80,12 @@ async function handleEmbedBatch(request: Request): Promise<Response> {
     docId = pick.data.id;
   }
 
-  const result = await runEmbedBatch({ docId });
-  if (!result.done) {
-    scheduleEmbedBatchesForDoc(docId);
+  // Loop batches inside this single invocation — see parse-batch route for
+  // the rationale (Vercel 508 INFINITE_LOOP_DETECTED on self-fetch chains).
+  const overallDeadline = Date.now() + 55_000;
+  let result = await runEmbedBatch({ docId });
+  while (!result.done && Date.now() < overallDeadline) {
+    result = await runEmbedBatch({ docId });
   }
   return NextResponse.json({ ok: true, doc_id: docId, done: result.done });
 }

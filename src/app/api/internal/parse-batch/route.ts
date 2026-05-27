@@ -6,7 +6,6 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/db/client";
 import { env } from "@/lib/env";
 import { runParseBatch } from "@/lib/ingest/parse-document-batch";
-import { scheduleParseBatchesForDoc } from "@/lib/ingest/trigger-parse-batch";
 
 export const maxDuration = 60;
 
@@ -15,8 +14,11 @@ export const maxDuration = 60;
  * - `Authorization: Bearer <secret>` (server `after()`), or
  * - `?secret=<secret>` (Vercel Cron — GET by default, cannot send custom headers).
  *
- * When parsing is partial (`done: false`), schedules another batch via `after()` so
- * local dev (no cron) and large PDFs advance without waiting for the next cron tick.
+ * Loops `runParseBatch` internally until done or out of time. We do NOT self-fetch
+ * via `after()` to advance partial batches — Vercel detects the same-URL chain and
+ * returns 508 INFINITE_LOOP_DETECTED. Instead, all batches for one document run
+ * inside this single invocation. If we hit the deadline, the cron (daily) or a
+ * follow-up call to this route will pick up where parse_next_page left off.
  */
 
 function timingSafeStringEq(a: string, b: string): boolean {
@@ -84,9 +86,14 @@ async function handleParseBatch(request: Request): Promise<Response> {
     docId = pick.data.id;
   }
 
-  const result = await runParseBatch({ docId });
-  if (!result.done) {
-    scheduleParseBatchesForDoc(docId);
+  // Loop batches inside this single invocation. Each runParseBatch processes
+  // up to MAX_PAGES_PER_BATCH pages. We keep iterating until the document is
+  // done or we're close to the function's 60s wall clock. We can't self-fetch
+  // via after() — Vercel returns 508 INFINITE_LOOP_DETECTED on same-URL chains.
+  const overallDeadline = Date.now() + 55_000;
+  let result = await runParseBatch({ docId });
+  while (!result.done && Date.now() < overallDeadline) {
+    result = await runParseBatch({ docId });
   }
   return NextResponse.json({ ok: true, doc_id: docId, done: result.done });
 }
