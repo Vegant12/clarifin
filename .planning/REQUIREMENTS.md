@@ -13,7 +13,7 @@ All REQ-IDs use `TA-` prefix to distinguish from archived v1.0 IDs.
 ### Data Ingestion (TA-INGEST · TA-DATA)
 
 - [x] **TA-INGEST-01**: System fetches and caches IDX-listed OHLCV data via yahoo-finance2 for `.JK` tickers with response validation (reject bars where `high < low`, `close < 0`, `volume < 0`, or single-bar return >50%); IDX trading calendar enforced (no expected bars on Indonesian holidays); data gaps surfaced in UI rather than silently interpolated
-- [ ] **TA-DATA-01**: A one-off backfill script populates 5yr+ historical OHLCV for top-100 IDX tickers (prerequisite for T3 ML training data)
+- [x] **TA-DATA-01**: A one-off backfill script populates 5yr+ historical OHLCV for top-100 IDX tickers (prerequisite for T3 ML training data)
 
 ### Ticker Identification (TA-TICKER)
 
@@ -35,10 +35,10 @@ All REQ-IDs use `TA-` prefix to distinguish from archived v1.0 IDs.
 
 ### Indicators (TA-IND)
 
-- [ ] **TA-IND-01**: An RSI(14) subpanel renders with 30/70 reference lines
-- [ ] **TA-IND-02**: A MACD(12,26,9) subpanel renders with histogram visible
-- [ ] **TA-IND-03**: Bollinger Bands(20, 2σ) render as a togglable overlay on the price chart
-- [ ] **TA-IND-04**: EMA-20, EMA-50, EMA-200 render as togglable overlays on the price chart (defaults: EMA-50 and EMA-200 ON; EMA-20 OFF)
+- [x] **TA-IND-01**: An RSI(14) subpanel renders with 30/70 reference lines
+- [x] **TA-IND-02**: A MACD(12,26,9) subpanel renders with histogram visible
+- [x] **TA-IND-03**: Bollinger Bands(20, 2σ) render as a togglable overlay on the price chart
+- [x] **TA-IND-04**: EMA-20, EMA-50, EMA-200 render as togglable overlays on the price chart (defaults: EMA-50 and EMA-200 ON; EMA-20 OFF)
 - [ ] **TA-IND-05**: An indicator snapshot strip translates the most-recent values into one-line plain-English directional summaries (e.g., "MACD: Bullish crossover yesterday" not "MACD: 1.23 / 0.98 / 0.25")
 - [ ] **TA-IND-06**: Each indicator value surfaces a plain-English interpretation hint on hover/click
 - [ ] **TA-IND-07**: Overlay toggle controls render as chip selectors above the chart
@@ -154,7 +154,7 @@ Every v2.0 requirement is mapped to exactly one phase (Phases 13–16). Coverage
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | TA-INGEST-01 | Phase 13 (T1) | Complete |
-| TA-DATA-01 | Phase 13 (T1) | Pending |
+| TA-DATA-01 | Phase 13 (T1) | Complete |
 | TA-TICKER-01 | Phase 13 (T1) | Pending |
 | TA-TICKER-02 | Phase 13 (T1) | Pending |
 | TA-CHART-01 | Phase 13 (T1) | Pending |
@@ -167,10 +167,10 @@ Every v2.0 requirement is mapped to exactly one phase (Phases 13–16). Coverage
 | TA-CHART-08 | Phase 13 (T1) | Pending |
 | TA-CHART-09 | Phase 14 (T2) | Pending |
 | TA-CHART-10 | Phase 14 (T2) | Pending |
-| TA-IND-01 | Phase 13 (T1) | Pending |
-| TA-IND-02 | Phase 13 (T1) | Pending |
-| TA-IND-03 | Phase 13 (T1) | Pending |
-| TA-IND-04 | Phase 13 (T1) | Pending |
+| TA-IND-01 | Phase 13 (T1) | Complete |
+| TA-IND-02 | Phase 13 (T1) | Complete |
+| TA-IND-03 | Phase 13 (T1) | Complete |
+| TA-IND-04 | Phase 13 (T1) | Complete |
 | TA-IND-05 | Phase 13 (T1) | Pending |
 | TA-IND-06 | Phase 13 (T1) | Pending |
 | TA-IND-07 | Phase 13 (T1) | Pending |
