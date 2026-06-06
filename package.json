@@ -36,6 +36,7 @@
     "lightweight-charts": "5.2.0",
     "lucide-react": "^1.14.0",
     "next": "^15.5.15",
+    "onnxruntime-node": "^1.26.0",
     "radix-ui": "^1.4.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -77,6 +78,7 @@
       "@biomejs/biome",
       "@tailwindcss/oxide",
       "esbuild",
+      "onnxruntime-node",
       "sharp",
       "supabase",
       "unrs-resolver"

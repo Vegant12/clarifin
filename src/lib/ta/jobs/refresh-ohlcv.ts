@@ -93,5 +93,7 @@ export async function runTaRefreshOhlcv(
     `[runTaRefreshOhlcv] done — processed=${result.tickersProcessed} skipped=${result.tickersSkippedForDeadline} errors=${result.tickersWithError}`,
   );
 
-  return result;
+  // Spread into a plain object so the return satisfies Record<string, unknown>
+  // (TypeScript strict mode does not widen a typed interface to an index-signature type).
+  return { ...result };
 }

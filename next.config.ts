@@ -15,7 +15,15 @@ const nextConfig: NextConfig = {
   // Bundling it causes WASM/worker reference failures on Vercel's serverless
   // runtime — the module fails to initialise, the parse-batch function crashes
   // before it can update the document status, and uploads get stuck at "parsing".
-  serverExternalPackages: ["unpdf"],
+  //
+  // onnxruntime-node: native module — must not be bundled (same reason as unpdf).
+  // runtime="nodejs" on the onnx-smoke route is also required (TA-INFRA-04).
+  serverExternalPackages: ["unpdf", "onnxruntime-node"],
+  // Bundle the dummy ONNX model into the onnx-smoke function deployment.
+  // This ensures process.cwd()/public/ta/dummy-model.onnx is available on Vercel.
+  outputFileTracingIncludes: {
+    "/api/ta/onnx-smoke": ["./public/ta/dummy-model.onnx"],
+  },
   experimental: {},
 };
 
