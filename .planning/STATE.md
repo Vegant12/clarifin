@@ -1,50 +1,41 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: v1.0 milestone complete
-stopped_at: Completed 12-03-PLAN.md (per-IP rate limiting)
-last_updated: "2026-06-06T05:42:39.054Z"
-last_activity: 2026-06-06
+milestone: v2.0
+milestone_name: TA Module
+status: Defining requirements
+stopped_at: null
+last_updated: "2026-06-06T05:50:00.000Z"
+last_activity: 2026-06-06 — Started v2.0 TA Module milestone
 progress:
-  total_phases: 17
-  completed_phases: 9
-  total_plans: 36
-  completed_plans: 36
-  percent: 100
+  total_phases: 4
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
 
 **Project:** Clarifin
-**Last updated:** 2026-05-24
+**Last updated:** 2026-06-06
 
-## Current Phase
+## Current Position
 
-**Phase 12: Polish & Public Launch — In Progress**
-**Plan 01 (12-01) complete** — inline disclaimer labels (DISCLAIM-01)
-
-## Session Record
-
-- **Stopped at:** Completed 12-03-PLAN.md (per-IP rate limiting)
-- **Resume file:** None
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements for v2.0 TA Module
+Last activity: 2026-06-06 — Milestone v2.0 started
 
 ## Phase Progress
 
+v2.0 phases (13–16) will be created by the roadmapper. Pre-defined target structure from seed `seeds/ta-module-standalone.md`:
+
 | Phase | Status |
 |-------|--------|
-| 1: Project Setup & Foundation | Complete (2026-05-06) |
-| 2: PDF Upload & Storage | Complete (2026-05-06) |
-| 3: PDF Parsing & Chunking | Complete (2026-05-08) |
-| 4: Embeddings & Vector Store | Complete (2026-05-08) |
-| 5: Indonesian Eval Harness | Complete (2026-05-17) — VERIFICATION passed |
-| 6: AI Explanation Generation | Complete (2026-05-18) |
-| 7: Citation UI & PDF Viewer | Complete (2026-05-19) — human-verify approved |
-| 8: AI Score & Drill-Down | In Progress — Plans 01-03 complete, Plan 04 pending |
-| 9 | Not started |
-| 10: Chat Interface | In Progress — Plans 01-04 complete, Plan 05 pending |
-| 11: Observability & Reliability | Complete (2026-05-24) — all 4 plans, VERIFICATION passed |
-| 12: Polish & Public Launch | In Progress — Plan 01 complete (2026-05-24) |
+| 13 (T1): Data & Indicators | Not started |
+| 14 (T2): Patterns & Explanation | Not started |
+| 15 (T3): ML Probability Layer | Not started — Blocks on Q1, Q2 in research/questions.md |
+| 16 (T4): Polish | Not started — Blocks on Q3 in research/questions.md |
 
 ## Key Decisions
 

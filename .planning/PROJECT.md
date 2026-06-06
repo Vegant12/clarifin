@@ -12,18 +12,29 @@ A web app where English-fluent Indonesian retail investors upload an IDX-listed 
 
 **Shipped:** v1.0 MVP on 2026-06-06. See [MILESTONES.md](MILESTONES.md) and [milestones/v1.0-MILESTONE-AUDIT.md](milestones/v1.0-MILESTONE-AUDIT.md).
 
-The full wedge is live in code: upload PDF → parse → embed → Gemini explanation with page citations → AI score with 4-dimension drill-down → stock context + multi-year trend → grounded chat with buy/sell hard-block. Six end-to-end flows verified by `gsd-integration-checker`. 25/60 v1 requirements satisfied; 34/60 partial (wired but lacking formal verification); 1/60 unsatisfied (session-ownership TODO).
+The fundamentals wedge is live in code: upload PDF → parse → embed → Gemini explanation with page citations → AI score with 4-dimension drill-down → stock context + multi-year trend → grounded chat with buy/sell hard-block. 25/60 v1 requirements satisfied; 34/60 partial; 1/60 unsatisfied.
 
-**Known v1.0 launch blockers (R1–R4 in audit):** vercel.json cron auth mismatch, missing analyze-batch + keep-alive crons, session-ownership privacy gap. Estimated 2–4 hours of code work to clear. Tracked in ROADMAP.md backlog 999.6.
+**v1.0 launch blockers (R1–R4) explicitly deferred to permanent backlog** at v2.0 milestone start. See ROADMAP backlog 999.6. Future maintenance milestones may pick them up.
 
-## Next Milestone Goals
+## Current Milestone: v2.0 TA Module
 
-v1.1 has not been formally defined. The immediate candidates surfaced by the v1.0 audit:
-- **Stabilization:** R1–R4 code fixes + Phase 8 HUMAN-UAT + backfill missing VERIFICATION.md for Phases 6/7/9/10/12 (paperwork debt)
-- **Trust hardening:** adversarial CHAT-06 testing (buy/sell guardrail); INFRA-02 burst-load rate-limit testing
-- **Live launch readiness:** model substitution override documentation; Supabase keep-alive cron actually registered
+**Goal:** Add a standalone Technical Analysis surface at `/ta/{ticker}` that detects chart patterns, computes indicators, generates probabilistic outlooks (no buy/sell calls), and explains everything in plain English — expanding Clarifin beyond its v1.0 fundamentals wedge into a fundamentals + technicals product.
 
-Run `/gsd-new-milestone` to define v1.1 scope formally.
+**Target features (4 internal phases T1–T4, mapped to roadmap Phases 13–16):**
+- **Phase 13 (T1) — Data & Indicators:** OHLCV ingest via yahoo-finance2 (EOD only), 10 indicators (RSI, MACD, Bollinger, EMA/SMA, ATR, Stochastic, OBV), ticker autocomplete, basic candlestick chart at `/ta/{ticker}`
+- **Phase 14 (T2) — Patterns & Explanation:** 12 candlestick patterns + chart patterns (double top/bottom, H&S, S/R, flags), pattern markers on chart, Gemini streaming explanation, three-tier disclaimer framework
+- **Phase 15 (T3) — ML Probability Layer:** XGBoost classifier trained offline on 5yr IDX OHLCV, ONNX inference in Node.js (no Python runtime in production), calibrated probability distribution UI, pattern outcome logging
+- **Phase 16 (T4) — Polish:** Follow-up RAG chat over TA context, nightly pre-warm cron for top 50 tickers, Langfuse observability, mobile layout, rate limiting
+
+**Key constraints carried from v1.0:**
+- $0/month budget — EOD data only (no real-time IDX feeds)
+- Probabilistic framing only — no buy/sell/directional calls (reuses Phase 10 CHAT-06 guardrail pattern)
+- Plain-English output — same audience as v1.0 explanation feature
+
+**Pre-existing research questions (blocking T3 and T4):**
+- See `.planning/research/questions.md` — Q1 (IDX training data sufficiency), Q2 (XGBoost calibration), Q3 (Gemini quota under combined v1.0 + TA load)
+
+**Audience change accepted at this milestone:** v1.0 served "the fundamentals-curious beginner who can't read a balance sheet." v2.0 broadens to "investors who also want to understand what the chart is doing." The TA module is positioned as analysis (probabilities + history), not advice (directional calls).
 
 ## Requirements
 
@@ -63,7 +74,7 @@ Run `/gsd-new-milestone` to define v1.1 scope formally.
 
 - **Auto-fetch documents from idx.co.id by ticker** — v1 is upload-only; auto-fetch is a v2 expansion that requires scraping/integration infra
 - **DCF or other complex valuation models** — too complex for the beginner audience; comparable-companies / current ratios are sufficient
-- **Technical analysis indicators (RSI, MACD, candlesticks, etc.)** — different mental model; serves traders, not the fundamentals-curious beginner persona
+- ~~**Technical analysis indicators (RSI, MACD, candlesticks, etc.)** — different mental model; serves traders, not the fundamentals-curious beginner persona~~ **REVERSED 2026-06-06 at v2.0 milestone start.** TA is now in scope as a standalone module at `/ta/{ticker}`. The fundamentals wedge remains as v1.0; v2.0 adds technicals as a sibling surface. See "Current Milestone: v2.0 TA Module" above.
 - **Real-time IDX market data** — paid feeds; delayed/free data is acceptable for research-mode usage
 - **Bahasa Indonesia UI** — v1 ships English-only; ID translation is a future expansion
 - **Native mobile app** — web-only for v1; product is positioned as a "sit-down research session" experience, desktop-first
