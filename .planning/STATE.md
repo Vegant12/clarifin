@@ -2,11 +2,12 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to execute
+status: v1.0 milestone complete
 stopped_at: Completed 12-03-PLAN.md (per-IP rate limiting)
-last_updated: "2026-05-24T15:23:59.178Z"
+last_updated: "2026-06-06T05:42:39.054Z"
+last_activity: 2026-06-06
 progress:
-  total_phases: 12
+  total_phases: 17
   completed_phases: 9
   total_plans: 36
   completed_plans: 36
@@ -67,4 +68,22 @@ progress:
 |------|--------|----------|--------|-------|
 | pdf-upload-missing-storage | resolved | 2026-05-26 | b8a808b | INFRA-04 cleanup conflicted with Phase 7 viewer — cleanup removed, regression test added. See `.planning/debug/resolved/pdf-upload-missing-storage.md`. |
 
-Last activity: 2026-05-26 - Completed quick task 260526-c5k (explanation markdown + multi-page citations; cumulative 4 quick tasks touching rendering paths — consider consolidation/regression pass before more polish)
+Last activity: 2026-06-06
+
+## Deferred Items
+
+Items acknowledged and deferred at milestone close on 2026-06-06 (force-close via `/gsd-complete-milestone 1.0 --force` accepting `gaps_found` audit; see `milestones/v1.0-MILESTONE-AUDIT.md` and ROADMAP `## Backlog` entries 999.1–999.5):
+
+| Category | Item | Status |
+|----------|------|--------|
+| quick_task | 260525-dl3-fix-four-pre-phase-12-bugs-post-analysis | missing close-out doc |
+| quick_task | 260525-eq2-chat-markdown-rendering-verify-chat-cita | missing close-out doc |
+| quick_task | 260526-c5k-explanationpanel-markdown-rendering-mult | missing close-out doc |
+| uat_gap | Phase 08 HUMAN-UAT.md status=partial (4 open scenarios, 18 days stale since 2026-05-19) | partial |
+| verification_gap | Phase 04 VERIFICATION.md status=human_needed (E2E embedding pipeline + HNSW <500ms smoke) | human_needed |
+| verification_gap | Phase 08 VERIFICATION.md status=human_needed (interactive accordion + PDF scroll callback) | human_needed |
+| code_blocker_R1 | vercel.json cron auth method mismatch — handlers accept ?secret=, crons hit bare path → 401 | critical, see audit |
+| code_blocker_R2 | No cron for /api/internal/analyze-batch — analyze soft-fails never auto-resume | critical, see audit |
+| code_blocker_R3 | No cron for /api/cron/keep-alive — Supabase free-tier inactivity risk | high, see audit |
+| code_blocker_R4 | Session-ownership TODO in src/app/doc/[documentId]/page.tsx:84 — privacy gap | critical, see audit |
+| backlog_999.1..5 | Phase 8 HUMAN-UAT + Phases 9/10/12 missing VERIFICATION + STATE/ROADMAP drift sync | see ROADMAP.md Backlog |

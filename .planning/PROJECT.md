@@ -8,30 +8,54 @@ A web app where English-fluent Indonesian retail investors upload an IDX-listed 
 
 **Make IDX financial documents understandable in plain English to investors who don't speak finance.** Every other feature (scoring, valuation context, chat) supports this one job. If the explanation layer isn't trustworthy and clear, nothing else matters.
 
+## Current State
+
+**Shipped:** v1.0 MVP on 2026-06-06. See [MILESTONES.md](MILESTONES.md) and [milestones/v1.0-MILESTONE-AUDIT.md](milestones/v1.0-MILESTONE-AUDIT.md).
+
+The full wedge is live in code: upload PDF → parse → embed → Gemini explanation with page citations → AI score with 4-dimension drill-down → stock context + multi-year trend → grounded chat with buy/sell hard-block. Six end-to-end flows verified by `gsd-integration-checker`. 25/60 v1 requirements satisfied; 34/60 partial (wired but lacking formal verification); 1/60 unsatisfied (session-ownership TODO).
+
+**Known v1.0 launch blockers (R1–R4 in audit):** vercel.json cron auth mismatch, missing analyze-batch + keep-alive crons, session-ownership privacy gap. Estimated 2–4 hours of code work to clear. Tracked in ROADMAP.md backlog 999.6.
+
+## Next Milestone Goals
+
+v1.1 has not been formally defined. The immediate candidates surfaced by the v1.0 audit:
+- **Stabilization:** R1–R4 code fixes + Phase 8 HUMAN-UAT + backfill missing VERIFICATION.md for Phases 6/7/9/10/12 (paperwork debt)
+- **Trust hardening:** adversarial CHAT-06 testing (buy/sell guardrail); INFRA-02 burst-load rate-limit testing
+- **Live launch readiness:** model substitution override documentation; Supabase keep-alive cron actually registered
+
+Run `/gsd-new-milestone` to define v1.1 scope formally.
+
 ## Requirements
 
 ### Validated
 
 <!-- Shipped and confirmed valuable. -->
 
-- [x] System parses the PDF preserving page boundaries so every claim can be cited back to a specific page — Phase 3 (unpdf per-page extraction) + Phase 4 (chunks embedded with page_number, source_page_start/end metadata confirmed non-null in live test, 2026-05-12)
+- ✓ User can upload an IDX financial PDF (annual report, quarterly filing, balance sheet, income statement, cash flow statement) from a web interface — v1.0 (Phase 2: browser-direct upload to Supabase Storage, INGEST-01/02)
+- ✓ System parses the PDF preserving page boundaries so every claim can be cited back to a specific page — v1.0 (Phase 3: unpdf per-page extraction + Phase 4: chunks embedded with page_number/source_page_start/end metadata)
+- ✓ System detects the company/ticker from the uploaded document (or lets the user specify it) — v1.0 (Phase 9: pure-regex IDX ticker detector wired into parse-document-batch, TICKER-01)
+- ✓ AI generates a plain-English explanation of the document's contents — written for a financially-illiterate but intelligent reader — v1.0 (Phase 6: Gemini Files API, 5-section output, EXPLAIN-01..05)
+- ✓ Every factual claim in the explanation includes a page-level citation the user can click to verify — v1.0 (Phase 6 inline `[p.N]` + Phase 7 click-to-jump + hover popover, EXPLAIN-02/VIEWER-02/03)
+- ✓ AI generates a holistic 1-10 score with reasoning (clearly labeled as AI opinion, not financial advice) — v1.0 (Phase 8: schema-validated `generateObject`, SCORE-01/06; integration-verified, HUMAN-UAT pending)
+- ✓ Score breakdown shows what drove the verdict (profitability signals, balance-sheet health, growth trend, valuation context) — v1.0 (Phase 8: 4-dimension drill-down with 1–3 cited snippets, SCORE-02/04)
+- ✓ System fetches current stock price and key ratios (P/E, P/B, dividend yield) from a free data source — v1.0 (Phase 9: server-only yahoo-finance2 fetcher with 24h Supabase cache + exponential backoff, STOCK-01/02/05)
+- ✓ System renders a multi-year financial trend chart (revenue, net income, margins) — v1.0 (Phase 9: Recharts multi-year trend with IDR formatting, CHART-01/02)
+- ✓ User can chat with the document — ask follow-up questions and get grounded, cited answers — v1.0 (Phase 10: streaming RAG chat with PSAK glossary, CHAT-01..05, integration-verified)
+- ✓ Prominent "Not financial advice" disclaimers throughout the AI-generated experience — v1.0 (Phase 12 DISCLAIM-01 inline labels on 5 surfaces + Phase 12 DISCLAIM-03 first-time onboarding modal)
+- ✓ Buy/sell hard-block on chat — v1.0 (Phase 10 CHAT-06: `isInvestmentAdviceQuery` pre-LLM guardrail in `/api/chat/route.ts:116`)
+- ✓ All AI output is in English; underlying source documents may be in Bahasa Indonesia and the system handles ID→EN faithfully — v1.0 (Phase 6: Gemini Files API with PSAK glossary in system prompt, TRANSLATE-01/02; eval harness measured 97.8% numeric / 92.6% citation on 9 IDX docs)
 
 ### Active
 
-<!-- Current scope. Building toward these. Hypotheses until validated by usage. -->
+<!-- Current scope for next milestone. -->
 
-- [ ] User can upload an IDX financial PDF (annual report, quarterly filing, balance sheet, income statement, cash flow statement) from a web interface
-- [ ] System parses the PDF preserving page boundaries so every claim can be cited back to a specific page
-- [ ] System detects the company/ticker from the uploaded document (or lets the user specify it)
-- [ ] AI generates a plain-English explanation of the document's contents — written for a financially-illiterate but intelligent reader
-- [ ] Every factual claim in the explanation includes a page-level citation the user can click to verify
-- [ ] AI generates a holistic 1-10 score with reasoning (clearly labeled as AI opinion, not financial advice)
-- [ ] Score breakdown shows what drove the verdict (profitability signals, balance-sheet health, growth trend, valuation context)
-- [ ] System fetches current stock price and key ratios (P/E, P/B, dividend yield) from a free data source and shows them vs the sector
-- [ ] System renders a multi-year financial trend chart (revenue, net income, margins) from the uploaded document and prior periods if available
-- [ ] User can chat with the document — ask follow-up questions and get grounded, cited answers
-- [ ] Prominent "Not financial advice" disclaimers throughout the AI-generated experience
-- [ ] All AI output is in English; underlying source documents may be in Bahasa Indonesia and the system handles ID→EN faithfully
+- [ ] R1: `vercel.json` cron auth method mismatch — append `?secret=` to cron paths or change handlers to also accept Bearer
+- [ ] R2: Register `/api/internal/analyze-batch` in `vercel.json` crons
+- [ ] R3: Register `/api/cron/keep-alive` in `vercel.json` crons
+- [ ] R4: Close session-ownership TODO at `src/app/doc/[documentId]/page.tsx:84` — gate explanation + signed PDF URL behind session-owner check
+- [ ] Backfill VERIFICATION.md for Phases 6, 7, 9, 10, 12 (paperwork debt)
+- [ ] Resume Phase 8 HUMAN-UAT (4 open interactive scenarios since 2026-05-19)
+- [ ] Adversarial CHAT-06 testing (prove buy/sell guardrail survives prompt-injection attempts)
 
 ### Out of Scope
 
@@ -78,15 +102,16 @@ A web app where English-fluent Indonesian retail investors upload an IDX-listed 
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Upload-only ingestion in v1 (no IDX auto-fetch) | Keeps v1 scope tight; works for ANY company; defers scraping/legal complexity | — Pending |
-| English-first UI and output | Targets the underserved English-fluent-but-financially-illiterate Indonesian professional segment; simpler eval surface than bilingual; ID UI is a future expansion | — Pending |
-| Desktop-first web (not mobile) | Product is a "sit-down research session" — not a quote-checker; serious analysis benefits from screen real estate | — Pending |
-| Free-tier-only AI/data stack | Side-project ambition, no commercial pressure, hobby budget; forces good prompting over expensive models | — Pending |
-| AI-driven holistic 1-10 score (vs Piotroski/Altman frameworks) | More useful and intuitive for beginners; established frameworks can be added later if AI score is well-received | — Pending |
-| Tiered output: facts cited from source, AI commentary clearly labeled as opinion | Highest-trust path given the "Rich insights" ambition; lets users distinguish ground truth from AI judgment | — Pending |
-| Page-level citations are mandatory, not optional | Trust is the moat; users will not believe AI-generated financial commentary without verifiable source links | — Pending |
-| Chat with document is in scope for v1 | Users will have follow-up questions after the initial explanation; one-shot output is incomplete | — Pending |
-| No buy/sell recommendations | Regulatory caution + ethical responsibility; "explain and contextualize" is the line | — Pending |
+| Upload-only ingestion in v1 (no IDX auto-fetch) | Keeps v1 scope tight; works for ANY company; defers scraping/legal complexity | ✓ Good (v1.0) — no scope creep observed during 35-day build |
+| English-first UI and output | Targets the underserved English-fluent-but-financially-illiterate Indonesian professional segment; simpler eval surface than bilingual; ID UI is a future expansion | ✓ Good (v1.0) — eval harness scored 97.8% numeric / 92.6% citation on ID-language sources with EN output |
+| Desktop-first web (not mobile) | Product is a "sit-down research session" — not a quote-checker; serious analysis benefits from screen real estate | ✓ Good (v1.0) — split-pane reader required desktop; 375px tab-fallback shipped for incidental mobile access |
+| Free-tier-only AI/data stack | Side-project ambition, no commercial pressure, hobby budget; forces good prompting over expensive models | ⚠️ Revisit (v1.0) — INFRA-03 concurrency cap shipped to stay within Gemini quota; combined load with future TA module untested (see seeds/ta-module-standalone.md Q3) |
+| AI-driven holistic 1-10 score (vs Piotroski/Altman frameworks) | More useful and intuitive for beginners; established frameworks can be added later if AI score is well-received | ✓ Good (v1.0) — schema-validated `generateObject` shipped; user resonance untested until public launch |
+| Tiered output: facts cited from source, AI commentary clearly labeled as opinion | Highest-trust path given the "Rich insights" ambition; lets users distinguish ground truth from AI judgment | ✓ Good (v1.0) — DISCLAIM-01 inline labels live on score/explanation/chat surfaces (5 total) |
+| Page-level citations are mandatory, not optional | Trust is the moat; users will not believe AI-generated financial commentary without verifiable source links | ✓ Good (v1.0) — `[p.N]` format enforced from chunk metadata through `parseCitations` → click-to-jump |
+| Chat with document is in scope for v1 | Users will have follow-up questions after the initial explanation; one-shot output is incomplete | ✓ Good (v1.0) — Phase 10 RAG chat with PSAK glossary; 7-day session restore |
+| No buy/sell recommendations | Regulatory caution + ethical responsibility; "explain and contextualize" is the line | ✓ Good (v1.0) — CHAT-06 pre-LLM guardrail in `/api/chat/route.ts:116` returns deflection at zero LLM cost; adversarial UAT pending |
+| Force-close v1.0 with `gaps_found` audit | User accepted 33 partial / 1 unsatisfied REQ-IDs and 4 code-level launch blockers (R1–R4); shipping debt is tracked in ROADMAP backlog 999.1–999.6 | ⚠️ Revisit (v1.0) — first public deploy will reveal whether R1/R2 cron gaps cause silent pipeline stalls |
 | Use `gemini-embedding-001` (not `text-embedding-004`) | `text-embedding-004` returns 404 on `v1beta/batchEmbedContents`; `gemini-embedding-001` is the stable production endpoint with identical 768-dim output | — Phase 4 (2026-05-12) |
 | HNSW over IVFFlat for pgvector index | At ≤100K vectors HNSW gives consistent low latency (~107ms measured) without the IVFFlat list-tuning overhead; simpler to operate | — Phase 4 (2026-05-12) |
 | `match_document_chunks` RPC restricted to service_role only | Public anon key must never be able to call the RPC directly; REVOKE from public + GRANT to service_role enforced at migration level | — Phase 4 (2026-05-12) |
@@ -109,4 +134,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-12 after Phase 4 complete (embeddings & vector store)*
+*Last updated: 2026-06-06 after v1.0 MVP milestone close (force-closed with documented gaps; see milestones/v1.0-MILESTONE-AUDIT.md)*
