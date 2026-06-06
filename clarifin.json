@@ -1,0 +1,45 @@
+{
+  "_id": {
+    "$oid": "a1f84c2d9e3b7f05c6821d94"
+  },
+  "name": "Clarifin",
+  "type": "web",
+  "summary": "Clarifin is a web app that helps English-fluent Indonesian retail investors understand IDX-listed company financial documents. Users upload annual reports or financial statements and receive plain-English explanations, an AI-generated holistic score with reasoning, light valuation context, and a chat interface to ask follow-up questions.",
+  "description": "Clarifin bridges the gap between complex IDX financial documents and the urban Indonesian professional who invests in IDX stocks but cannot read financial statements. Users upload a PDF — annual report, quarterly filing, balance sheet, cash flow, or income statement — and Clarifin returns a plain-English breakdown of the document, a holistic 1–10 health score with AI-generated reasoning, current financial ratios compared against sector benchmarks and multi-year trends, and an interactive chat interface for follow-up questions. Every AI-generated factual claim is traced back to a specific page in the source PDF, ensuring full transparency. The platform is built entirely on free-tier infrastructure (Vercel Hobby, Supabase, Gemini 2.5 Flash, Groq) to keep operating costs at zero at low traffic, making it a sustainable solo-built side project. All output is clearly labeled as analysis and explanation — not investment advice — with prominent disclaimers throughout the interface.",
+  "technologies_used": [
+    "Next.js",
+    "React",
+    "TypeScript",
+    "Tailwind CSS",
+    "Supabase",
+    "pgvector",
+    "Gemini 2.5 Flash",
+    "Groq",
+    "Vercel AI SDK",
+    "Recharts",
+    "yahoo-finance2",
+    "unpdf",
+    "Langfuse"
+  ],
+  "github": "https://github.com/Vegant12/clarifin",
+  "key_features": [
+    {
+      "title": "Plain-English Financial Explanation",
+      "feature": "Uploads IDX financial documents (PDF) and generates a plain-English breakdown readable by non-finance professionals, with every claim cited back to a specific page in the source document."
+    },
+    {
+      "title": "AI Holistic Score",
+      "feature": "Produces a 1–10 financial health score with structured reasoning powered by Gemini 2.5 Flash, giving investors a quick at-a-glance signal backed by transparent justification."
+    },
+    {
+      "title": "Valuation Context & Charts",
+      "feature": "Fetches live IDX stock data via yahoo-finance2 and displays current ratios (P/E, P/B, dividend yield) against sector benchmarks and multi-year trends using Recharts."
+    },
+    {
+      "title": "RAG-Powered Chat Interface",
+      "feature": "Lets users ask follow-up questions about the uploaded document using a retrieval-augmented generation pipeline built on Supabase pgvector and the Vercel AI SDK."
+    }
+  ],
+  "images": [],
+  "created_at": "2026-05-27T00:00:00.000Z"
+}
