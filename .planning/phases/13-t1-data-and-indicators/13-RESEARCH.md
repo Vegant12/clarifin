@@ -713,27 +713,31 @@ The `?secret=` auth param is added by the dispatcher reading `env.INTERNAL_PARSE
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **lightweight-charts v5 API changes from v4**
    - What we know: v5.2.0 published 2026-04-24; v4 tutorials are the dominant online resource.
    - What's unclear: Specific API changes between v4 and v5 (method renames, option shape changes).
    - Recommendation: Before writing `candlestick-chart.tsx`, fetch the v5 changelog from the lightweight-charts GitHub and verify subpanel sync API. Use Context7 or the GitHub releases page.
+   - RESOLVED: Plan 05 Task 1 Step 1 instructs executor to verify installed v5 API before writing.
 
 2. **seed-and-backfill.ts: market cap ranking via yahoo-finance2**
    - What we know: yahoo-finance2 supports `.JK` tickers and returns `marketCap` via `quote()`.
    - What's unclear: Whether yahoo-finance2 supports a bulk "top-N by market cap" query or requires individual ticker lookups. A pre-known list (e.g., LQ45 + IDX30 + IDX80) may be a more reliable seed source.
    - Recommendation: Use a known IDX index list as the starting candidate set (these are public and stable), then run yahoo-finance2 `quote()` on each to get marketCap + firstTradeDate for filtering. This avoids dependency on a bulk market-cap API that may not exist in yahoo-finance2.
+   - RESOLVED: Plan 02 uses static LQ45+IDX30+IDX80 candidate set filtered by market cap.
 
 3. **Cron migration: hard cutover vs. one-deploy fallback**
    - What we know: vercel.json can only have 2 crons; the dispatcher must replace the existing 2.
    - What's unclear: Whether to keep old routes active as direct HTTP fallback for one deploy, or do a clean cutover.
    - Recommendation (for planner to document): Hard cutover in the same deploy where the dispatcher is verified via preview deploy smoke. The old routes remain as valid API endpoints (can be manually triggered) but are no longer cron-scheduled. This minimizes the transition window.
+   - RESOLVED: Plan 07 Task 3 — hard cutover with Vercel preview verification.
 
 4. **ONNX hello-world smoke measurement protocol**
    - What we know: TA-INFRA-04 requires measuring cold INIT_DURATION on a Vercel preview deploy.
    - What's unclear: Exact curl count, time-of-day window, how to force a cold start (may require waiting for instance to freeze or deploying to a new region).
    - Recommendation (for planner to document): (a) Deploy preview; (b) Wait 15 minutes since last invocation to maximize cold-start probability; (c) curl the analysis route 5 times in sequence; (d) Read Vercel function logs for INIT_DURATION on first invocation. If INIT_DURATION > 5000ms on 3 of 5 curls, flag for T3 architecture revisit.
+   - RESOLVED: Plan 07 Task 4 — 5 cold curls with >=15-min gap; flag if >5s on >=3/5.
 
 ---
 
