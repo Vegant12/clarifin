@@ -1,10 +1,9 @@
-import { timingSafeEqual } from "node:crypto";
-
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { supabaseAdmin } from "@/db/client";
 import { env } from "@/lib/env";
+import { timingSafeStringEq, resolveCandidate } from "@/lib/internal-auth";
 import { runEmbedBatch } from "@/lib/ingest/embed-document-batch";
 
 export const maxDuration = 60;
@@ -15,36 +14,13 @@ export const maxDuration = 60;
  * via `after()` — Vercel returns 508 INFINITE_LOOP_DETECTED on same-URL chains.
  */
 
-function timingSafeStringEq(a: string, b: string): boolean {
-  const ba = Buffer.from(a, "utf8");
-  const bb = Buffer.from(b, "utf8");
-  // Pad both to the same length so the timingSafeEqual call always runs.
-  const len = Math.max(ba.length, bb.length);
-  const padA = Buffer.alloc(len);
-  const padB = Buffer.alloc(len);
-  ba.copy(padA);
-  bb.copy(padB);
-  // Still do explicit length check, but only AFTER constant-time compare.
-  return timingSafeEqual(padA, padB) && ba.length === bb.length;
-}
-
-function extractBearer(request: Request): string | null {
-  const h = request.headers.get("authorization");
-  if (!h?.startsWith("Bearer ")) {
-    return null;
-  }
-  return h.slice(7);
-}
-
 const bodySchema = z.object({
   doc_id: z.string().uuid().optional(),
 });
 
 async function handleEmbedBatch(request: Request): Promise<Response> {
   const url = new URL(request.url);
-  const headerSecret = extractBearer(request);
-  const querySecret = url.searchParams.get("secret");
-  const candidate = headerSecret ?? querySecret ?? "";
+  const candidate = resolveCandidate(request);
   if (!timingSafeStringEq(candidate, env.INTERNAL_PARSE_SECRET)) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
