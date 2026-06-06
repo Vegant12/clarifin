@@ -149,11 +149,84 @@ Explicitly excluded. Documented to prevent scope creep.
 
 ## Traceability
 
+Every v2.0 requirement is mapped to exactly one phase (Phases 13–16). Coverage: **62/62**.
+
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (filled by roadmapper) | | |
+| TA-INGEST-01 | Phase 13 (T1) | Pending |
+| TA-DATA-01 | Phase 13 (T1) | Pending |
+| TA-TICKER-01 | Phase 13 (T1) | Pending |
+| TA-TICKER-02 | Phase 13 (T1) | Pending |
+| TA-CHART-01 | Phase 13 (T1) | Pending |
+| TA-CHART-02 | Phase 13 (T1) | Pending |
+| TA-CHART-03 | Phase 13 (T1) | Pending |
+| TA-CHART-04 | Phase 13 (T1) | Pending |
+| TA-CHART-05 | Phase 13 (T1) | Pending |
+| TA-CHART-06 | Phase 13 (T1) | Pending |
+| TA-CHART-07 | Phase 13 (T1) | Pending |
+| TA-CHART-08 | Phase 13 (T1) | Pending |
+| TA-CHART-09 | Phase 14 (T2) | Pending |
+| TA-CHART-10 | Phase 14 (T2) | Pending |
+| TA-IND-01 | Phase 13 (T1) | Pending |
+| TA-IND-02 | Phase 13 (T1) | Pending |
+| TA-IND-03 | Phase 13 (T1) | Pending |
+| TA-IND-04 | Phase 13 (T1) | Pending |
+| TA-IND-05 | Phase 13 (T1) | Pending |
+| TA-IND-06 | Phase 13 (T1) | Pending |
+| TA-IND-07 | Phase 13 (T1) | Pending |
+| TA-PAT-01 | Phase 14 (T2) | Pending |
+| TA-PAT-02 | Phase 14 (T2) | Pending |
+| TA-PAT-03 | Phase 14 (T2) | Pending |
+| TA-PAT-04 | Phase 14 (T2) | Pending |
+| TA-PAT-05 | Phase 14 (T2) | Pending |
+| TA-PAT-06 | Phase 14 (T2) | Pending |
+| TA-PAT-07 | Phase 14 (T2) | Pending |
+| TA-PROB-01 | Phase 15 (T3) | Pending — blocks on Q1, Q2 |
+| TA-PROB-02 | Phase 15 (T3) | Pending — blocks on Q1, Q2 |
+| TA-PROB-03 | Phase 15 (T3) | Pending — blocks on Q1, Q2 |
+| TA-PROB-04 | Phase 15 (T3) | Pending — blocks on Q1, Q2 |
+| TA-PROB-05 | Phase 15 (T3) | Pending — blocks on Q1, Q2 |
+| TA-PROB-06 | Phase 15 (T3) | Pending — blocks on Q1, Q2 |
+| TA-PROB-07 | Phase 15 (T3) | Pending — blocks on Q1, Q2 |
+| TA-EXP-01 | Phase 14 (T2) | Pending |
+| TA-EXP-02 | Phase 14 (T2) | Pending |
+| TA-EXP-03 | Phase 14 (T2) | Pending |
+| TA-EXP-04 | Phase 14 (T2) | Pending |
+| TA-EXP-05 | Phase 14 (T2) | Pending |
+| TA-CHAT-01 | Phase 16 (T4) | Pending — blocks on Q3 |
+| TA-CHAT-02 | Phase 16 (T4) | Pending — blocks on Q3 |
+| TA-CHAT-03 | Phase 16 (T4) | Pending — blocks on Q3 |
+| TA-CHAT-04 | Phase 16 (T4) | Pending — blocks on Q3 |
+| TA-CHAT-05 | Phase 16 (T4) | Pending — blocks on Q3 |
+| TA-CHAT-06 | Phase 16 (T4) | Pending — blocks on Q3 |
+| TA-DISCLAIM-01 | Phase 14 (T2) | Pending |
+| TA-DISCLAIM-02 | Phase 14 (T2) | Pending |
+| TA-DISCLAIM-03 | Phase 14 (T2) | Pending |
+| TA-DISCLAIM-04 | Phase 14 (T2) | Pending |
+| TA-INFRA-01 | Phase 16 (T4) | Pending — blocks on Q3 |
+| TA-INFRA-02 | Phase 13 (T1) | Pending — Wave 3; implicitly closes v1.0 R1 |
+| TA-INFRA-03 | Phase 14 (T2) | Pending — Wave 0 |
+| TA-INFRA-04 | Phase 13 (T1) | Pending — Wave 3 (must complete before T3 begins) |
+| TA-INFRA-05 | Phase 15 (T3) | Pending — ship/no-ship gate |
+| TA-INFRA-06 | Process-level (all phase transitions) | Cross-cutting — surfaced in Roadmap Overview, not a phase requirement |
+| TA-INFRA-07 | Phase 14 (T2) + Phase 16 (T4) | Pending — HUMAN-UAT in both phases |
+| TA-INFRA-08 | Phase 16 (T4) | Pending — Wave 0 prerequisite |
+| TA-OBS-01 | Phase 14 (T2) | Pending |
+| TA-OBS-02 | Phase 14 (T2) | Pending |
+| TA-UX-01 | Phase 13 (T1) | Pending |
+| TA-UX-02 | Phase 16 (T4) | Pending — blocks on Q3 |
+
+**Coverage summary:**
+- Phase 13 (T1): 22 requirements (12 CHART + 7 IND + 2 TICKER + 1 INGEST + 1 DATA + 1 UX + TA-INFRA-02 + TA-INFRA-04). *Counted with shared rows: TA-INFRA-02 and TA-INFRA-04 owned by T1.*
+- Phase 14 (T2): 20 requirements (2 CHART markers + 7 PAT + 5 EXP + 4 DISCLAIM + 2 OBS + TA-INFRA-03 + TA-INFRA-07 T2 half).
+- Phase 15 (T3): 8 requirements (7 PROB + TA-INFRA-05). Blocks on Q1, Q2.
+- Phase 16 (T4): 10 requirements (6 CHAT + TA-INFRA-01 + TA-INFRA-08 + TA-UX-02 + TA-INFRA-07 T4 half). Blocks on Q3.
+- Process-level (no phase): 1 requirement (TA-INFRA-06 — VERIFICATION gate, applies across all phase transitions).
+
+Total: 62/62 mapped. TA-INFRA-07 is split across Phase 14 (T2 HUMAN-UAT) and Phase 16 (T4 HUMAN-UAT) per SUMMARY.md §9.
 
 ---
 *Requirements defined: 2026-06-06 (v2.0 milestone start)*
+*Traceability filled by roadmapper: 2026-06-06*
 *Total v2.0 requirements: 62*
 *Categories: TA-INGEST(1), TA-DATA(1), TA-TICKER(2), TA-CHART(10), TA-IND(7), TA-PAT(7), TA-PROB(7), TA-EXP(5), TA-CHAT(6), TA-DISCLAIM(4), TA-INFRA(8), TA-OBS(2), TA-UX(2)*

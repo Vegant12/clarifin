@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: TA Module
-status: Defining requirements
+status: Roadmap defined — ready for plan-phase
 stopped_at: null
-last_updated: "2026-06-06T05:50:00.000Z"
-last_activity: 2026-06-06 — Started v2.0 TA Module milestone
+last_updated: "2026-06-06T06:30:00.000Z"
+last_activity: 2026-06-06 — v2.0 ROADMAP.md created (Phases 13–16); 62/62 REQ-IDs mapped
 progress:
   total_phases: 4
   completed_phases: 0
@@ -21,21 +21,29 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: Not started (roadmap defined; awaiting `/gsd-plan-phase 13`)
 Plan: —
-Status: Defining requirements for v2.0 TA Module
-Last activity: 2026-06-06 — Milestone v2.0 started
+Status: v2.0 TA Module roadmap defined — ready for plan-phase on Phase 13 (T1)
+Last activity: 2026-06-06 — ROADMAP.md extended with Phases 13–16; REQUIREMENTS.md traceability populated (62/62 coverage)
 
 ## Phase Progress
 
-v2.0 phases (13–16) will be created by the roadmapper. Pre-defined target structure from seed `seeds/ta-module-standalone.md`:
+v2.0 phases (13–16) — derived from `seeds/ta-module-standalone.md` T1–T4 design. Plan counts populate as each phase enters `/gsd-plan-phase`.
 
-| Phase | Status |
-|-------|--------|
-| 13 (T1): Data & Indicators | Not started |
-| 14 (T2): Patterns & Explanation | Not started |
-| 15 (T3): ML Probability Layer | Not started — Blocks on Q1, Q2 in research/questions.md |
-| 16 (T4): Polish | Not started — Blocks on Q3 in research/questions.md |
+| Phase | Name | Plans | Status |
+|-------|------|-------|--------|
+| 13 (T1) | Data & Indicators | 0/TBD | Not started — ready for plan-phase |
+| 14 (T2) | Patterns & Explanation | 0/TBD | Not started — gated on Phase 13 VERIFICATION.md (TA-INFRA-06) |
+| 15 (T3) | ML Probability Layer | 0/TBD | Not started — gated on Phase 13 VERIFICATION.md + Q1 + Q2; Waves 0–1 may parallelize with T2 |
+| 16 (T4) | Polish | 0/TBD | Not started — gated on Phases 13–15 VERIFICATION.md + Q3 (TA-INFRA-08 Langfuse RPD measurement before planning) |
+
+## Blocking Research Questions
+
+| Question | Blocks | Resolution Method |
+|----------|--------|-------------------|
+| Q1: IDX training data sufficiency (5yr × 100 tickers × 12 patterns; N>1000 per cell; cycle diversity) | Phase 15 (T3) ship | Documented findings in `research/questions.md` before T3 verification |
+| Q2: XGBoost calibration method (Platt / isotonic / multinomial; ECE target) | Phase 15 (T3) ship | Documented findings in `research/questions.md`; method recorded in `model-version.json` |
+| Q3: Gemini quota under combined v1.0 + TA load (P95 RPD from Langfuse) | Phase 16 (T4) plan-phase entry | TA-INFRA-08 — read Phase 11 Langfuse traces for 7+ days; route TA chat to Groq if P95 >150, add SWR cache if P95 >200 |
 
 ## Key Decisions
 
@@ -44,6 +52,9 @@ v2.0 phases (13–16) will be created by the roadmapper. Pre-defined target stru
 | Chat library module paths | 10-02 | Files placed at src/lib/ root (not src/lib/chat/) to match ../guardrail relative import from test files in src/lib/chat/ |
 | PSAK_GLOSSARY reuse | 10-02 | Imported from explain-prompts.ts, not redefined — avoids drift between explanation and chat glossaries |
 | session-restore.ts deferred | 10-02 | Not in Plan 02 scope; requires Supabase I/O (not pure function); will be implemented in Plan 03 |
+| v2.0 phase structure (T1–T4 → Phases 13–16) | v2.0 roadmap | Derived from `seeds/ta-module-standalone.md`; 62/62 REQ-IDs mapped; numbering continues from v1.0 Phase 12 |
+| T3 Waves 0–1 parallel with T2 Waves 0–2 | v2.0 roadmap | Per ARCHITECTURE.md §7.2 — shared state is `ohlcv_cache` + indicators; handoff is `ta_analysis_cache.probabilities` JSONB placeholder shape |
+| TA-INFRA-02 implicitly closes v1.0 R1 | Phase 13 | Dispatcher cron consolidation replaces v1.0 parse-batch + embed-batch crons with single dispatcher using one agreed auth path — vercel.json↔handler mismatch goes away as a side-effect |
 
 ### Quick Tasks Completed
 
@@ -63,7 +74,7 @@ Last activity: 2026-06-06
 
 ## Deferred Items
 
-Items acknowledged and deferred at milestone close on 2026-06-06 (force-close via `/gsd-complete-milestone 1.0 --force` accepting `gaps_found` audit; see `milestones/v1.0-MILESTONE-AUDIT.md` and ROADMAP `## Backlog` entries 999.1–999.5):
+Items acknowledged and deferred at v1.0 milestone close on 2026-06-06 (force-close via `/gsd-complete-milestone 1.0 --force` accepting `gaps_found` audit; see `milestones/v1.0-MILESTONE-AUDIT.md` and ROADMAP `## Backlog` entries 999.1–999.6):
 
 | Category | Item | Status |
 |----------|------|--------|
@@ -73,8 +84,8 @@ Items acknowledged and deferred at milestone close on 2026-06-06 (force-close vi
 | uat_gap | Phase 08 HUMAN-UAT.md status=partial (4 open scenarios, 18 days stale since 2026-05-19) | partial |
 | verification_gap | Phase 04 VERIFICATION.md status=human_needed (E2E embedding pipeline + HNSW <500ms smoke) | human_needed |
 | verification_gap | Phase 08 VERIFICATION.md status=human_needed (interactive accordion + PDF scroll callback) | human_needed |
-| code_blocker_R1 | vercel.json cron auth method mismatch — handlers accept ?secret=, crons hit bare path → 401 | critical, see audit |
+| code_blocker_R1 | vercel.json cron auth method mismatch — handlers accept ?secret=, crons hit bare path → 401 | critical; implicitly closed as v2.0 Phase 13 TA-INFRA-02 side-effect |
 | code_blocker_R2 | No cron for /api/internal/analyze-batch — analyze soft-fails never auto-resume | critical, see audit |
 | code_blocker_R3 | No cron for /api/cron/keep-alive — Supabase free-tier inactivity risk | high, see audit |
 | code_blocker_R4 | Session-ownership TODO in src/app/doc/[documentId]/page.tsx:84 — privacy gap | critical, see audit |
-| backlog_999.1..5 | Phase 8 HUMAN-UAT + Phases 9/10/12 missing VERIFICATION + STATE/ROADMAP drift sync | see ROADMAP.md Backlog |
+| backlog_999.1..6 | Phase 8 HUMAN-UAT + Phases 9/10/12 missing VERIFICATION + STATE/ROADMAP drift sync + R1–R4 launch blockers | see ROADMAP.md Backlog |
