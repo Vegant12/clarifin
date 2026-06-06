@@ -28,7 +28,7 @@ All REQ-IDs use `TA-` prefix to distinguish from archived v1.0 IDs.
 - [x] **TA-CHART-04**: Hovering a bar shows a tooltip with date and OHLCV values
 - [x] **TA-CHART-05**: User can zoom and pan the chart (wheel/drag on desktop, pinch on mobile)
 - [x] **TA-CHART-06**: A crosshair tracks the cursor showing the value at the hovered position
-- [ ] **TA-CHART-07**: Invalid or unrecognized tickers show a friendly error; data fetch in flight shows a skeleton loader (no raw exceptions to UI)
+- [x] **TA-CHART-07**: Invalid or unrecognized tickers show a friendly error; data fetch in flight shows a skeleton loader (no raw exceptions to UI)
 - [x] **TA-CHART-08**: Tickers with <30 candles of history (recent IPOs) show an explicit sparse-data state with no false indicator/pattern output: "Insufficient price history to compute reliable technical indicators"
 - [ ] **TA-CHART-09**: Detected patterns render as overlay markers (▲ bullish reversal, ▼ bearish reversal, ◆ continuation/neutral) at the relevant candle range
 - [ ] **TA-CHART-10**: Clicking a pattern marker opens the corresponding pattern explanation card
@@ -105,7 +105,7 @@ All REQ-IDs use `TA-` prefix to distinguish from archived v1.0 IDs.
 
 ### UX & Responsive (TA-UX)
 
-- [ ] **TA-UX-01**: A shared site header is mounted in `RootLayout` exposing surface switching between `Upload Document` (v1.0 `/`) and `TA Analysis` (v2.0 `/ta`)
+- [x] **TA-UX-01**: A shared site header is mounted in `RootLayout` exposing surface switching between `Upload Document` (v1.0 `/`) and `TA Analysis` (v2.0 `/ta`)
 - [ ] **TA-UX-02**: All `/ta/{ticker}` content renders on a 375px mobile viewport without horizontal overflow or unusable UI elements
 
 ## v2.1+ Requirements (Deferred — not in v2.0)
@@ -163,7 +163,7 @@ Every v2.0 requirement is mapped to exactly one phase (Phases 13–16). Coverage
 | TA-CHART-04 | Phase 13 (T1) | Complete |
 | TA-CHART-05 | Phase 13 (T1) | Complete |
 | TA-CHART-06 | Phase 13 (T1) | Complete |
-| TA-CHART-07 | Phase 13 (T1) | Pending |
+| TA-CHART-07 | Phase 13 (T1) | Complete |
 | TA-CHART-08 | Phase 13 (T1) | Complete |
 | TA-CHART-09 | Phase 14 (T2) | Pending |
 | TA-CHART-10 | Phase 14 (T2) | Pending |
@@ -213,7 +213,7 @@ Every v2.0 requirement is mapped to exactly one phase (Phases 13–16). Coverage
 | TA-INFRA-08 | Phase 16 (T4) | Pending — Wave 0 prerequisite |
 | TA-OBS-01 | Phase 14 (T2) | Pending |
 | TA-OBS-02 | Phase 14 (T2) | Pending |
-| TA-UX-01 | Phase 13 (T1) | Pending |
+| TA-UX-01 | Phase 13 (T1) | Complete |
 | TA-UX-02 | Phase 16 (T4) | Pending — blocks on Q3 |
 
 **Coverage summary:**

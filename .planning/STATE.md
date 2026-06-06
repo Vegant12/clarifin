@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: TA Module
 status: executing
-last_updated: "2026-06-06T15:46:44.055Z"
+last_updated: "2026-06-06T15:54:03.936Z"
 last_activity: 2026-06-06
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 7
-  completed_plans: 5
-  percent: 71
+  completed_plans: 6
+  percent: 86
 ---
 
 # Project State
@@ -21,7 +21,7 @@ progress:
 ## Current Position
 
 Phase: 13 (t1-data-and-indicators) — EXECUTING
-Plan: 6 of 7
+Plan: 7 of 7
 Status: Ready to execute
 Last activity: 2026-06-06
 
@@ -66,6 +66,10 @@ v2.0 phases (13–16) — derived from `seeds/ta-module-standalone.md` T1–T4 d
 | SnapshotCopy typed interface | 13-04 | Added typed interface for buildSnapshotCopy return — avoids Record<string,string> destructuring producing string\|undefined in TypeScript strict mode |
 | Analysis route reads cache only | 13-04 | GET /api/ta/analysis/[ticker] reads ohlcv_cache only, never calls yahoo-finance2 — keeps route within budget and avoids per-request external calls |
 | normalizeTickerParam shared helper | 13-04 | Pure helper in ticker-route.ts shared between Plan 07 RSC page and unit tests — no redirect logic drift possible |
+| NEXT_PUBLIC_TA_ENABLED string comparison | 13-06 | Stored as z.string().optional() — NEXT_PUBLIC_ vars are always strings; compared === "true" not coerced to boolean |
+| SiteHeader above SessionProvider | 13-06 | SiteHeader mounted above SessionProvider in layout.tsx to avoid hydration mismatches (UI-SPEC note) |
+| TAErrorCard variant prop | 13-06 | Single component with variant prop for not-found vs fetch-error — avoids code duplication for two similar error states |
+| TickerSearch shouldFilter=false | 13-06 | cmdk client-side filtering disabled — filtering is server-side via /api/ta/search; client filter would hide valid results |
 
 ### Quick Tasks Completed
 
