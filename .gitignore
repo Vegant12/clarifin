@@ -53,5 +53,7 @@ Thumbs.db
 .idea/
 .vscode/
 
-# planning & local tooling
-.claude/worktrees/
+# planning & local tooling (kept local, not for GitHub)
+.planning/
+.claude/
+CLAUDE.md
