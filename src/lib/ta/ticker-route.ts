@@ -39,3 +39,18 @@ export function normalizeTickerParam(raw: string): NormalizeTickerResult {
   // Already uppercase
   return { redirectTo: null, valid };
 }
+
+/**
+ * TA-CHART-08: Gate helper for sparse-data state.
+ *
+ * Returns true if the AnalysisPayload does not have enough candles to render
+ * chart indicators (< 30 bars). Used by the RSC page and its unit tests.
+ *
+ * @param payload - minimal shape of the payload returned by /api/ta/analysis/[ticker]
+ */
+export function shouldRenderSparse(payload: {
+  candle_count: number;
+  sparse: boolean;
+}): boolean {
+  return payload.sparse === true || payload.candle_count < 30;
+}
