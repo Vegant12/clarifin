@@ -7,11 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "14.5"
-  }
   public: {
     Tables: {
       chat_messages: {
@@ -251,6 +246,78 @@ export type Database = {
           },
         ]
       }
+      ohlcv_cache: {
+        Row: {
+          adj_close: number
+          close: number
+          date: string
+          fetched_at: string
+          high: number
+          id: string
+          low: number
+          open: number
+          ticker: string
+          volume: number
+        }
+        Insert: {
+          adj_close: number
+          close: number
+          date: string
+          fetched_at?: string
+          high: number
+          id?: string
+          low: number
+          open: number
+          ticker: string
+          volume: number
+        }
+        Update: {
+          adj_close?: number
+          close?: number
+          date?: string
+          fetched_at?: string
+          high?: number
+          id?: string
+          low?: number
+          open?: number
+          ticker?: string
+          volume?: number
+        }
+        Relationships: []
+      }
+      ticker_metadata: {
+        Row: {
+          created_at: string
+          first_trade_date: string | null
+          id: string
+          market_cap: number | null
+          name_en: string
+          name_id: string | null
+          sector: string | null
+          ticker: string
+        }
+        Insert: {
+          created_at?: string
+          first_trade_date?: string | null
+          id?: string
+          market_cap?: number | null
+          name_en: string
+          name_id?: string | null
+          sector?: string | null
+          ticker: string
+        }
+        Update: {
+          created_at?: string
+          first_trade_date?: string | null
+          id?: string
+          market_cap?: number | null
+          name_en?: string
+          name_id?: string | null
+          sector?: string | null
+          ticker?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -273,6 +340,8 @@ export type Database = {
           source_page_start: number
         }[]
       }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
       chunk_type_enum: "prose" | "table" | "heading" | "list"
@@ -422,3 +491,4 @@ export const Constants = {
     },
   },
 } as const
+
