@@ -1,0 +1,13 @@
+{
+  "rsi14Last": 64.13,
+  "macdLine": 2.5358,
+  "macdSignal": -3.6308,
+  "macdHistogram": 6.1666,
+  "bbUpper": 1112.1103,
+  "bbLower": 1052.8857,
+  "bbMiddle": 1082.498,
+  "ema20Last": 1091.5271,
+  "ema50Last": 1094.6092,
+  "ema200Last": 1072.0418,
+  "macdWarmupFirstIndex": 25
+}
