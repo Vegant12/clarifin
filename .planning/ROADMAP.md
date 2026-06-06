@@ -29,7 +29,7 @@
 
 ### 🚧 v2.0 TA Module (Phases 13–16) — opened 2026-06-06
 
-- [ ] **Phase 13 (T1): Data & Indicators** — OHLCV ingest, 10 indicators, ticker autocomplete, basic candlestick chart at `/ta/{ticker}`, cron dispatcher consolidation (implicitly closes v1.0 R1 as side-effect)
+- [x] **Phase 13 (T1): Data & Indicators** — OHLCV ingest, 10 indicators, ticker autocomplete, basic candlestick chart at `/ta/{ticker}`, cron dispatcher consolidation (implicitly closes v1.0 R1 as side-effect) (completed 2026-06-06)
 - [ ] **Phase 14 (T2): Patterns & Explanation** — 12 candlestick patterns + 5 chart patterns with liquidity/volume/ATR/multi-bar gates, pattern markers, streaming Gemini explanation, three-tier disclaimer framework, bilingual buy/sell sanitizer extraction
 - [ ] **Phase 15 (T3): ML Probability Layer** — XGBoost trained offline on 5yr+ IDX OHLCV, ONNX inference in Node.js, calibrated probability widget (ECE-gated), pattern outcome logging, model-accuracy card
 - [ ] **Phase 16 (T4): Polish** — TA follow-up RAG chat, mobile layout, per-IP rate limiting on `/api/ta/*`, Langfuse instrumentation on TA Gemini calls, 30-prompt adversarial CHAT-06 red-team
@@ -114,7 +114,7 @@ Phase 13 (T1) ─┬─→ Phase 14 (T2) ──┐
 - [x] 13-04-PLAN.md — Wave 2: /api/ta/analysis + /api/ta/search + snapshot copy + AnalysisPayload contract
 - [x] 13-05-PLAN.md — Wave 2: lightweight-charts candlestick + synced subpanels + range/overlay controls + snapshot strip
 - [x] 13-06-PLAN.md — Wave 2: SiteHeader (RootLayout) + ticker-search + skeleton/error/sparse/mobile state cards
-- [ ] 13-07-PLAN.md — Wave 3: /ta page wiring + dispatcher cron + vercel.json cutover + ONNX smoke (TA-INFRA-04)
+- [x] 13-07-PLAN.md — Wave 3: /ta page wiring + dispatcher cron + vercel.json cutover + ONNX smoke (TA-INFRA-04)
 **UI hint**: yes
 
 ---
@@ -221,7 +221,7 @@ Phase 13 (T1) ─┬─→ Phase 14 (T2) ──┐
 | 10. Chat Interface | v1.0 | 5/5 | Complete (no VERIFICATION.md) | 2026-05-24 |
 | 11. Observability & Reliability | v1.0 | 4/4 | Complete | 2026-05-24 |
 | 12. Polish & Public Launch | v1.0 | 4/4 | Complete (no VERIFICATION.md) | 2026-05-24 |
-| 13. T1 Data & Indicators | v2.0 | 6/7 | In Progress|  |
+| 13. T1 Data & Indicators | v2.0 | 7/7 | Complete   | 2026-06-06 |
 | 14. T2 Patterns & Explanation | v2.0 | 0/TBD | Not started (gated on Phase 13 VERIFICATION.md) | — |
 | 15. T3 ML Probability Layer | v2.0 | 0/TBD | Not started (gated on Phase 13 VERIFICATION.md + Q1 + Q2; Waves 0–1 may parallelize with T2) | — |
 | 16. T4 Polish | v2.0 | 0/TBD | Not started (gated on Phases 13–15 VERIFICATION.md + Q3) | — |

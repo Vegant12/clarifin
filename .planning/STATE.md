@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: TA Module
-status: executing
-last_updated: "2026-06-06T15:54:03.936Z"
+status: verifying
+last_updated: "2026-06-06T16:09:15.199Z"
 last_activity: 2026-06-06
 progress:
   total_phases: 1
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 7
-  completed_plans: 6
-  percent: 86
+  completed_plans: 7
+  percent: 100
 ---
 
 # Project State
@@ -22,7 +22,7 @@ progress:
 
 Phase: 13 (t1-data-and-indicators) — EXECUTING
 Plan: 7 of 7
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-06-06
 
 ## Phase Progress
@@ -70,6 +70,10 @@ v2.0 phases (13–16) — derived from `seeds/ta-module-standalone.md` T1–T4 d
 | SiteHeader above SessionProvider | 13-06 | SiteHeader mounted above SessionProvider in layout.tsx to avoid hydration mismatches (UI-SPEC note) |
 | TAErrorCard variant prop | 13-06 | Single component with variant prop for not-found vs fetch-error — avoids code duplication for two similar error states |
 | TickerSearch shouldFilter=false | 13-06 | cmdk client-side filtering disabled — filtering is server-side via /api/ta/search; client filter would hide valid results |
+| CSS mobile gate in RSC page | 13-07 | block sm:hidden / hidden sm:block avoids UA-sniffing; SSR-safe without server-side headers() call |
+| Dispatcher adapter sweep pattern | 13-07 | v1.0 jobs (parse/embed/analyze) wrapped in sweep functions inside dispatch/route.ts; original runParseBatch/runEmbedBatch/runAnalyzeBatch signatures unchanged |
+| outputFileTracingIncludes top-level | 13-07 | Placed at top-level NextConfig (not inside experimental) — ExperimentalConfig does not include this field in Next.js 15 |
+| Vercel CRON_SECRET delivery | 13-07 | vercel.json cron paths have no ?secret=; Vercel injects Authorization: Bearer ${CRON_SECRET} on scheduled calls; resolveCandidate() handles Bearer; CRON_SECRET must equal INTERNAL_PARSE_SECRET in project env |
 
 ### Quick Tasks Completed
 
