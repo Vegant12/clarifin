@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: TA Module
 status: executing
-last_updated: "2026-06-06T15:14:31.580Z"
+last_updated: "2026-06-06T22:40:00.000Z"
 last_activity: 2026-06-06
 progress:
   total_phases: 1
@@ -59,6 +59,8 @@ v2.0 phases (13–16) — derived from `seeds/ta-module-standalone.md` T1–T4 d
 | alignIndicator self-correcting padding | 13-03 | Pads by (totalBars - values.length) not theoretical warmup constant — self-corrects if library output deviates from formula |
 | yahoo-finance2 import style | 13-03 | Use import yahooFinance not new YahooFinance() — test mock provides plain object not constructor |
 | OBV warmup=1 not 0 | 13-03 | technicalindicators OBV outputs n-1 values (needs prevClose for direction); alignIndicator self-corrects to bars.length |
+| Static IDX candidate list as seed input | 13-02 | Used committed LQ45+IDX80 JSON (111 tickers) instead of yahoo-finance2 bulk ranking — no bulk market-cap endpoint exists in the library |
+| 'sector' removed from quote() fields | 13-02 | yahoo-finance2 field validation rejects 'sector' for .JK tickers; sector is nullable in ticker_metadata, backfillable separately |
 
 ### Quick Tasks Completed
 

@@ -12,8 +12,10 @@ requires:
 provides:
   - scripts/ta/idx-candidates.json: 111 LQ45/IDX80 candidate tickers (committed, deterministic input universe)
   - scripts/ta/seed-and-backfill.ts: one-shot seed + 5yr OHLCV backfill pipeline (TA-DATA-01)
-  - scripts/ta/seed-tickers.json: written at runtime, committed after human runs pnpm ta:seed (D-02)
+  - scripts/ta/seed-tickers.json: 100 tickers committed (D-02) — BBCA/TLKM/GOTO present
   - package.json ta:seed script entry
+  - ticker_metadata: 100 rows populated
+  - ohlcv_cache: 117,577 rows backfilled (5yr OHLCV per seeded ticker)
 
 affects: [13-03, 13-04, 13-05, 13-06, 13-07, 15-T3-training-data]
 
@@ -28,6 +30,7 @@ key-files:
   created:
     - scripts/ta/idx-candidates.json
     - scripts/ta/seed-and-backfill.ts
+    - scripts/ta/seed-tickers.json (written by script, committed by human after run)
   modified:
     - package.json (added ta:seed script)
 
@@ -36,25 +39,26 @@ key-decisions:
   - "firstTradeDateMilliseconds used for ≥2yr filter (D-03) — yahoo-finance2 quote() exposes this field; converted to Date for comparison"
   - "Bar validation inlined in seed script with comment 'keep in sync with fetch-ohlcv.ts TA-INGEST-01 rules' — avoids circular import from lib into scripts/"
   - "withBackoff (500/1000/2000ms) applied to both quote() and historical() calls — rate-limit resilience per T-13-06 threat"
+  - "'sector' field removed from quote() fields array — yahoo-finance2 field validation rejects it; sector is nullable in ticker_metadata and can be backfilled separately"
 
 metrics:
-  duration: ~5min (Task 1 only; Task 2 awaiting human run)
+  duration: ~25min total (Task 1: ~5min executor; Task 2: ~2min script runtime + human verification)
   completed: 2026-06-06
-  tasks: 1/2 (Task 2 is checkpoint:human-action — blocked on live credentials)
-  files: 2 created, 1 modified
+  tasks: 2/2
+  files: 3 created, 1 modified
 ---
 
 # Phase 13 Plan 02: Seed + Backfill Script Summary
 
-**One-shot seed + 5yr OHLCV backfill pipeline: `pnpm ta:seed` ranks 111 IDX candidates by market cap, filters ≥2yr history, writes committed JSON list, upserts ticker_metadata, and backfills validated 5yr OHLCV into ohlcv_cache with log-and-continue gap handling.**
+**One-shot seed + 5yr OHLCV backfill pipeline: `pnpm ta:seed` ranked 111 IDX candidates by market cap, filtered ≥2yr history, seeded 100 tickers into ticker_metadata, and backfilled 117,577 validated OHLCV bars into ohlcv_cache. BBCA shows 1,203 bars (~5yr of trading days). Zero high<low violations.**
 
 ## Performance
 
-- **Duration:** ~5 min (executor time; script runtime ~2 min when run by human)
+- **Duration:** ~25 min total (Task 1: ~5min build, Task 2: ~2min script + human verify)
 - **Started:** 2026-06-06T15:07:41Z
-- **Completed (Task 1):** 2026-06-06T15:13:00Z
-- **Tasks:** 1/2 complete (Task 2 is human-action checkpoint)
-- **Files modified:** 2 created, 1 modified
+- **Completed:** 2026-06-06T22:32:28Z (seed-tickers.json committed)
+- **Tasks:** 2/2 complete
+- **Files modified:** 3 created, 1 modified
 
 ## Accomplishments
 
@@ -71,7 +75,7 @@ metrics:
 - `withBackoff` (500/1000/2000ms) on rate-limit errors — mitigates T-13-06
 - Per-candidate `quote("${code}.JK")` to fetch `marketCap` + `firstTradeDateMilliseconds`
 - `≥2yr filter`: drops tickers where `firstTradeDate > twoYearsAgo` (D-03)
-- Sorts by `market_cap` desc, takes top 100 — expected 85-100 pass filter
+- Sorts by `market_cap` desc, takes top 100 — exactly 100 tickers passed filter
 - Writes `scripts/ta/seed-tickers.json` sorted by ticker code (stable git diffs, D-02)
 - Upserts into `ticker_metadata` with `onConflict: "ticker"` — idempotent re-runs (T-13-07)
 - Per-ticker `historical("${ticker}.JK", { period1: 5yr, period2: today, interval: "1d" })` (withBackoff)
@@ -81,6 +85,20 @@ metrics:
 - `main().catch((e) => { console.error(e); process.exit(1); })`
 
 **`package.json`** — added `"ta:seed": "tsx scripts/ta/seed-and-backfill.ts"`
+
+### Task 2: Run the seed + backfill — DB population verified
+
+Script executed successfully. DB counts confirmed by human:
+
+| Check | Result | Acceptance Threshold | Status |
+|-------|--------|----------------------|--------|
+| `select count(*) from ticker_metadata` | **100** | 85-100 | PASS |
+| `select count(*) from ohlcv_cache` | **117,577** | ~100k-126k | PASS |
+| `select count(*) from ohlcv_cache where ticker='BBCA'` | **1,203** | ≥400 (expected ~1200) | PASS |
+| `select count(*) from ohlcv_cache where high < low` | **0** | 0 | PASS |
+| seed-tickers.json committed with BBCA/TLKM/GOTO | confirmed | required | PASS |
+
+All Task 2 acceptance criteria met.
 
 ## Deviations from Plan
 
@@ -96,54 +114,55 @@ metrics:
 **2. [Rule 1 - Bug] `yahooFinance.options.validation` not on typed API**
 - **Found during:** Task 1 typecheck
 - **Issue:** Attempted to silence yahoo-finance2 schema validation warnings via `yahooFinance.options.validation` but this property is not typed on the `YahooFinance` class
-- **Fix:** Removed the silencing line — validation warnings will appear in console output when running the script (acceptable for a one-shot ops script)
+- **Fix:** Removed the silencing line
 - **Files modified:** scripts/ta/seed-and-backfill.ts
 - **Commit:** e10e98a
 
 **3. [Rule 1 - Bug] Duplicate GJLT entry in idx-candidates.json**
 - **Found during:** Task 1 candidate list construction
 - **Issue:** Initial draft included both `GJLT` (typo) and `GJTL` (correct ticker)
-- **Fix:** Removed `GJLT` entry; final list has 111 unique tickers all in valid `[A-Z]{1,5}` format
+- **Fix:** Removed `GJLT` entry; final list has 111 unique tickers
 - **Files modified:** scripts/ta/idx-candidates.json
 - **Commit:** e10e98a
 
+**4. [Rule 1 - Bug] 'sector' field rejected by yahoo-finance2 quote() validation**
+- **Found during:** Task 2 human run
+- **Issue:** `quote()` with `fields: ["sector"]` triggers a yahoo-finance2 schema validation warning/error; sector field not reliably exposed via quote() for .JK tickers
+- **Fix:** Removed `"sector"` from the quote() fields array. Sector remains nullable in `ticker_metadata` (all 100 rows have `sector: null`). Can be backfilled from a separate data source if needed.
+- **Files modified:** scripts/ta/seed-and-backfill.ts
+- **Commit:** de6a62c
+
 ### Pre-existing Typecheck Errors (Out of Scope)
 
-`src/lib/chat/session-restore.test.ts` (lines 69) — 2 pre-existing TS errors documented in Plan 01 SUMMARY.md as out-of-scope; unchanged by this plan.
-
-## Task 2 Status: Awaiting Human Action
-
-Task 2 is a `checkpoint:human-action` — the script requires live `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` and network access to yahoo-finance2. These are not available to the autonomous executor.
-
-**To complete Task 2:**
-1. Ensure Plan 01 migration is applied (ohlcv_cache + ticker_metadata exist)
-2. With env vars set: `pnpm ta:seed` (~2 min runtime for ~100 tickers)
-3. Commit the generated `scripts/ta/seed-tickers.json`
-4. Verify DB population (see Task 2 how-to-verify in PLAN.md)
+`src/lib/chat/session-restore.test.ts` (line 69) — 2 pre-existing TS errors documented in Plan 01 SUMMARY.md as out-of-scope; unchanged by this plan.
 
 ## Known Stubs
 
-None — the seed script is fully implemented. `seed-tickers.json` will be written at script runtime (Task 2).
+None — all deliverables are fully populated. `seed-tickers.json` is committed with 100 entries.
 
 ## Threat Surface Scan
 
-No new network endpoints or auth paths introduced. Script uses service_role key from env (T-13-08: accepted risk, standard for one-shot ops scripts per existing smoke-vector-perf.ts pattern). All four STRIDE mitigations from the plan's threat register are implemented:
-- T-13-05: Four-rule bar validation implemented in `isValidBar()`
-- T-13-06: `withBackoff` on both quote() and historical() calls
-- T-13-07: Both upsert calls use `onConflict` keys
-- T-13-08: Service-role key read from env via `requireEnv()`, never hardcoded
+No new network endpoints or auth paths introduced. Script uses service_role key from env (T-13-08: accepted risk, standard for one-shot ops scripts per existing smoke-vector-perf.ts pattern). All four STRIDE mitigations from the plan's threat register are implemented and verified:
+- T-13-05: Four-rule bar validation in `isValidBar()` — 0 high<low violations in 117,577 rows confirms effectiveness
+- T-13-06: `withBackoff` on both `quote()` and `historical()` calls
+- T-13-07: Both upserts use `onConflict` keys — re-running `pnpm ta:seed` is safe
+- T-13-08: Service-role key read from env via `requireEnv()`, never committed
 
 ## Self-Check: PASSED
 
 ```
 FOUND: scripts/ta/seed-and-backfill.ts
 FOUND: scripts/ta/idx-candidates.json (111 tickers, BBCA/TLKM/GOTO present)
-FOUND: onConflict:"ticker" (line 229)
-FOUND: onConflict:"ticker,date" (line 323)
-FOUND: historical( (line 256)
-FOUND: ticker_metadata upsert (line 228)
-FOUND: ≥2yr filter — twoYearsAgo + firstTradeDateMilliseconds (lines 123-174)
-FOUND: four-rule validation — high<low, close<=0, volume<0, >50% (lines 82-90)
-FOUND: ta:seed in package.json (line 19)
+FOUND: scripts/ta/seed-tickers.json (100 entries, BBCA/TLKM/GOTO present)
+FOUND: onConflict:"ticker" in seed-and-backfill.ts
+FOUND: onConflict:"ticker,date" in seed-and-backfill.ts
+FOUND: historical( in seed-and-backfill.ts
+FOUND: ticker_metadata upsert in seed-and-backfill.ts
+FOUND: ≥2yr filter (twoYearsAgo + firstTradeDateMilliseconds)
+FOUND: four-rule validation (high<low, close<=0, volume<0, >50%)
+FOUND: ta:seed in package.json
 FOUND: e10e98a (Task 1 commit)
+FOUND: 4330f01 (seed-tickers.json committed)
+FOUND: de6a62c (sector field fix)
+DB: ticker_metadata=100, ohlcv_cache=117577, BBCA=1203, high<low=0
 ```
