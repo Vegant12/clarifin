@@ -278,6 +278,65 @@ Clarifin is built in 12 phases, flowing from infrastructure to intelligence to p
 
 ---
 
+## Backlog
+
+Deferred work that should be resolved before the milestone is genuinely shippable.
+Numbering follows the `999.x` convention for deferred-from-main-roadmap entries.
+
+### Phase 999.1: Follow-up — Phase 8 HUMAN-UAT incomplete (BACKLOG)
+
+**Goal:** Complete the pending human-UAT for Phase 8 (AI Score & Drill-Down).
+**Source phase:** 8
+**Deferred at:** 2026-06-06 during /gsd-next force-advance
+**Pending tests:**
+- [ ] Score card renders correctly on a real document (`.planning/phases/08-ai-score-drill-down/08-HUMAN-UAT.md`)
+- [ ] Null score fallback visible
+- [ ] All remaining tests in `08-HUMAN-UAT.md` (currently `status: partial`, `[awaiting human testing]` since 2026-05-19)
+**Why deferred:** Verification report status is `human_needed` — auditor cannot exercise interactive accordion / PDF scroll callbacks in headless mode. Force-advanced without human confirmation.
+**Risk:** Score card may have visual/interaction defects not caught by automated checks.
+
+### Phase 999.2: Follow-up — Phase 9 verification never run (BACKLOG)
+
+**Goal:** Run `/gsd-verify-work 9` to produce `09-VERIFICATION.md` for Stock Data & Trend Chart.
+**Source phase:** 9
+**Deferred at:** 2026-06-06 during /gsd-next force-advance
+**State on disk:** 4/4 plans implemented, 4 SUMMARY.md files present, no VERIFICATION.md, no UAT.
+**Why deferred:** Force-advanced without verification gate.
+**Risk:** Goal-backward verification has not confirmed delivery of TICKER-01/02, STOCK-01..05, CHART-01/02 requirements.
+
+### Phase 999.3: Follow-up — Phase 10 verification never run (BACKLOG)
+
+**Goal:** Run `/gsd-verify-work 10` to produce `10-VERIFICATION.md` for Chat Interface.
+**Source phase:** 10
+**Deferred at:** 2026-06-06 during /gsd-next force-advance
+**State on disk:** 5/5 plans implemented, 5 SUMMARY.md files present, no VERIFICATION.md.
+**Why deferred:** Force-advanced without verification gate. ROADMAP table also says "4/5 In Progress" while disk shows 5/5 — STATE/ROADMAP drift.
+**Risk:** Goal-backward verification has not confirmed delivery of CHAT-01..06 requirements. CHAT-06 (buy/sell hard-block) is compliance-critical.
+
+### Phase 999.4: Follow-up — Phase 12 verification never run (BACKLOG)
+
+**Goal:** Run `/gsd-verify-work 12` to produce `12-VERIFICATION.md` for Polish & Public Launch.
+**Source phase:** 12
+**Deferred at:** 2026-06-06 during /gsd-next force-advance
+**State on disk:** 4/4 plans implemented, 4 SUMMARY.md files present, no VERIFICATION.md.
+**Why deferred:** Force-advanced without verification gate. ROADMAP table claims "Complete 2026-05-24" but no verification artifact backs that claim.
+**Risk:** Goal-backward verification has not confirmed DISCLAIM-01/03, UX-03, INFRA-02 delivery. Public-launch readiness is unverified.
+
+### Phase 999.5: Sync STATE.md and ROADMAP table with disk reality (BACKLOG)
+
+**Goal:** Reconcile `.planning/STATE.md` and `.planning/ROADMAP.md` Progress table against actual phase-directory contents.
+**Source phase:** N/A (cross-cutting bookkeeping)
+**Deferred at:** 2026-06-06
+**Drift observed:**
+- STATE.md `current_phase` field is stale (claims Phase 12 in progress; multiple phases past plan completion)
+- ROADMAP Progress table claims Phases 5/6/7/8/9 are "Not started / Planned · 0 plans" but Phases 5/6/7/8 are fully implemented with SUMMARY.md files
+- Phase 10 row shows 4/5 but disk has 5/5
+- Phase 12 row claims "Complete 2026-05-24" without a VERIFICATION.md
+**Why deferred:** Out-of-scope for current routing decision; surfaced during /gsd-next completeness scan.
+**Risk:** Future /gsd-next runs will route incorrectly until drift is reconciled.
+
+---
+
 ## Progress
 
 **Execution Order:** 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 (parallel with 7–8) → 10 → 11 → 12
