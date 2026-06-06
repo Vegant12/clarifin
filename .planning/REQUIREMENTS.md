@@ -22,12 +22,12 @@ All REQ-IDs use `TA-` prefix to distinguish from archived v1.0 IDs.
 
 ### Candlestick Chart (TA-CHART)
 
-- [ ] **TA-CHART-01**: System renders an interactive candlestick chart (OHLC bars with up/down coloring) for the selected ticker
-- [ ] **TA-CHART-02**: A volume subpanel renders below the price chart with bars colored by up/down day
-- [ ] **TA-CHART-03**: Range selector lets user switch between 1M / 3M / 6M / 1Y / 2Y preset windows
-- [ ] **TA-CHART-04**: Hovering a bar shows a tooltip with date and OHLCV values
-- [ ] **TA-CHART-05**: User can zoom and pan the chart (wheel/drag on desktop, pinch on mobile)
-- [ ] **TA-CHART-06**: A crosshair tracks the cursor showing the value at the hovered position
+- [x] **TA-CHART-01**: System renders an interactive candlestick chart (OHLC bars with up/down coloring) for the selected ticker
+- [x] **TA-CHART-02**: A volume subpanel renders below the price chart with bars colored by up/down day
+- [x] **TA-CHART-03**: Range selector lets user switch between 1M / 3M / 6M / 1Y / 2Y preset windows
+- [x] **TA-CHART-04**: Hovering a bar shows a tooltip with date and OHLCV values
+- [x] **TA-CHART-05**: User can zoom and pan the chart (wheel/drag on desktop, pinch on mobile)
+- [x] **TA-CHART-06**: A crosshair tracks the cursor showing the value at the hovered position
 - [ ] **TA-CHART-07**: Invalid or unrecognized tickers show a friendly error; data fetch in flight shows a skeleton loader (no raw exceptions to UI)
 - [ ] **TA-CHART-08**: Tickers with <30 candles of history (recent IPOs) show an explicit sparse-data state with no false indicator/pattern output: "Insufficient price history to compute reliable technical indicators"
 - [ ] **TA-CHART-09**: Detected patterns render as overlay markers (▲ bullish reversal, ▼ bearish reversal, ◆ continuation/neutral) at the relevant candle range
@@ -39,9 +39,9 @@ All REQ-IDs use `TA-` prefix to distinguish from archived v1.0 IDs.
 - [x] **TA-IND-02**: A MACD(12,26,9) subpanel renders with histogram visible
 - [x] **TA-IND-03**: Bollinger Bands(20, 2σ) render as a togglable overlay on the price chart
 - [x] **TA-IND-04**: EMA-20, EMA-50, EMA-200 render as togglable overlays on the price chart (defaults: EMA-50 and EMA-200 ON; EMA-20 OFF)
-- [ ] **TA-IND-05**: An indicator snapshot strip translates the most-recent values into one-line plain-English directional summaries (e.g., "MACD: Bullish crossover yesterday" not "MACD: 1.23 / 0.98 / 0.25")
-- [ ] **TA-IND-06**: Each indicator value surfaces a plain-English interpretation hint on hover/click
-- [ ] **TA-IND-07**: Overlay toggle controls render as chip selectors above the chart
+- [x] **TA-IND-05**: An indicator snapshot strip translates the most-recent values into one-line plain-English directional summaries (e.g., "MACD: Bullish crossover yesterday" not "MACD: 1.23 / 0.98 / 0.25")
+- [x] **TA-IND-06**: Each indicator value surfaces a plain-English interpretation hint on hover/click
+- [x] **TA-IND-07**: Overlay toggle controls render as chip selectors above the chart
 
 ### Pattern Detection (TA-PAT)
 
@@ -157,12 +157,12 @@ Every v2.0 requirement is mapped to exactly one phase (Phases 13–16). Coverage
 | TA-DATA-01 | Phase 13 (T1) | Complete |
 | TA-TICKER-01 | Phase 13 (T1) | Pending |
 | TA-TICKER-02 | Phase 13 (T1) | Pending |
-| TA-CHART-01 | Phase 13 (T1) | Pending |
-| TA-CHART-02 | Phase 13 (T1) | Pending |
-| TA-CHART-03 | Phase 13 (T1) | Pending |
-| TA-CHART-04 | Phase 13 (T1) | Pending |
-| TA-CHART-05 | Phase 13 (T1) | Pending |
-| TA-CHART-06 | Phase 13 (T1) | Pending |
+| TA-CHART-01 | Phase 13 (T1) | Complete |
+| TA-CHART-02 | Phase 13 (T1) | Complete |
+| TA-CHART-03 | Phase 13 (T1) | Complete |
+| TA-CHART-04 | Phase 13 (T1) | Complete |
+| TA-CHART-05 | Phase 13 (T1) | Complete |
+| TA-CHART-06 | Phase 13 (T1) | Complete |
 | TA-CHART-07 | Phase 13 (T1) | Pending |
 | TA-CHART-08 | Phase 13 (T1) | Pending |
 | TA-CHART-09 | Phase 14 (T2) | Pending |
@@ -171,9 +171,9 @@ Every v2.0 requirement is mapped to exactly one phase (Phases 13–16). Coverage
 | TA-IND-02 | Phase 13 (T1) | Complete |
 | TA-IND-03 | Phase 13 (T1) | Complete |
 | TA-IND-04 | Phase 13 (T1) | Complete |
-| TA-IND-05 | Phase 13 (T1) | Pending |
-| TA-IND-06 | Phase 13 (T1) | Pending |
-| TA-IND-07 | Phase 13 (T1) | Pending |
+| TA-IND-05 | Phase 13 (T1) | Complete |
+| TA-IND-06 | Phase 13 (T1) | Complete |
+| TA-IND-07 | Phase 13 (T1) | Complete |
 | TA-PAT-01 | Phase 14 (T2) | Pending |
 | TA-PAT-02 | Phase 14 (T2) | Pending |
 | TA-PAT-03 | Phase 14 (T2) | Pending |

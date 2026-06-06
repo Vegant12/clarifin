@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: TA Module
 status: executing
-last_updated: "2026-06-06T22:40:00.000Z"
+last_updated: "2026-06-06T15:43:03.021Z"
 last_activity: 2026-06-06
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 7
-  completed_plans: 3
-  percent: 43
+  completed_plans: 4
+  percent: 57
 ---
 
 # Project State
@@ -21,7 +21,7 @@ progress:
 ## Current Position
 
 Phase: 13 (t1-data-and-indicators) — EXECUTING
-Plan: 4 of 7
+Plan: 5 of 7
 Status: Ready to execute
 Last activity: 2026-06-06
 
@@ -61,6 +61,8 @@ v2.0 phases (13–16) — derived from `seeds/ta-module-standalone.md` T1–T4 d
 | OBV warmup=1 not 0 | 13-03 | technicalindicators OBV outputs n-1 values (needs prevClose for direction); alignIndicator self-corrects to bars.length |
 | Static IDX candidate list as seed input | 13-02 | Used committed LQ45+IDX80 JSON (111 tickers) instead of yahoo-finance2 bulk ranking — no bulk market-cap endpoint exists in the library |
 | 'sector' removed from quote() fields | 13-02 | yahoo-finance2 field validation rejects 'sector' for .JK tickers; sector is nullable in ticker_metadata, backfillable separately |
+| lightweight-charts v5 series API | 13-05 | chart.addSeries(CandlestickSeries, opts) — NOT v4 addCandlestickSeries(); LineWidth is integer-only (1\|2\|3\|4); confirmed via node introspection |
+| Task 3 browser smoke deferred to Plan 07 | 13-05 | Requires full /ta/{ticker} page wiring + seeded data; Plan 07 mounts chart subtree and runs end-to-end browser verification |
 
 ### Quick Tasks Completed
 
