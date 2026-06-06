@@ -148,7 +148,6 @@ async function main() {
           "shortName",
           "marketCap",
           "firstTradeDateMilliseconds",
-          "sector",
         ] as const,
       }),
     );
