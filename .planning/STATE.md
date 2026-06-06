@@ -56,6 +56,9 @@ v2.0 phases (13–16) — derived from `seeds/ta-module-standalone.md` T1–T4 d
 | TA-INFRA-02 implicitly closes v1.0 R1 | Phase 13 | Dispatcher cron consolidation replaces v1.0 parse-batch + embed-batch crons with single dispatcher using one agreed auth path — vercel.json↔handler mismatch goes away as a side-effect |
 | internal-auth.ts extraction | 13-01 | Extracted triplicated timingSafeStringEq/extractBearer/resolveCandidate from 3 internal routes into src/lib/internal-auth.ts — single source of truth |
 | MACD warmup = 25 not 33 | 13-01 | technicalindicators MACD(12,26,9) outputs first value at warmup=25 (not formula slow+signal-2=33); ground truth fixtures use measured library value |
+| alignIndicator self-correcting padding | 13-03 | Pads by (totalBars - values.length) not theoretical warmup constant — self-corrects if library output deviates from formula |
+| yahoo-finance2 import style | 13-03 | Use import yahooFinance not new YahooFinance() — test mock provides plain object not constructor |
+| OBV warmup=1 not 0 | 13-03 | technicalindicators OBV outputs n-1 values (needs prevClose for direction); alignIndicator self-corrects to bars.length |
 
 ### Quick Tasks Completed
 
