@@ -1,0 +1,802 @@
+[
+  {
+    "ticker": "AALI",
+    "name_en": "PT Astra Agro Lestari Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 12269887946752,
+    "first_trade_date": "2001-04-05"
+  },
+  {
+    "ticker": "ACES",
+    "name_en": "PT Aspirasi Hidup Indonesia Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 5649728536576,
+    "first_trade_date": "2007-11-06"
+  },
+  {
+    "ticker": "ADRO",
+    "name_en": "PT Alamtri Resources Indonesia Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 64513105723392,
+    "first_trade_date": "2008-07-16"
+  },
+  {
+    "ticker": "AGRO",
+    "name_en": "PT Bank Raya Indonesia Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 3503077457920,
+    "first_trade_date": "2004-06-18"
+  },
+  {
+    "ticker": "AKRA",
+    "name_en": "PT AKR Corporindo Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 24155718156288,
+    "first_trade_date": "2005-09-29"
+  },
+  {
+    "ticker": "AMMN",
+    "name_en": "PT Amman Mineral Internasional Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 238236836298752,
+    "first_trade_date": "2023-07-07"
+  },
+  {
+    "ticker": "AMRT",
+    "name_en": "PT Sumber Alfaria Trijaya Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 51570251137024,
+    "first_trade_date": "2009-01-15"
+  },
+  {
+    "ticker": "ANTM",
+    "name_en": "PT Antam (Persero) Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 66084602380288,
+    "first_trade_date": "2005-09-29"
+  },
+  {
+    "ticker": "ASII",
+    "name_en": "PT Astra International Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 183091637256192,
+    "first_trade_date": "2000-10-17"
+  },
+  {
+    "ticker": "ASSA",
+    "name_en": "PT Adi Sarana Armada Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 2030125580288,
+    "first_trade_date": "2012-11-12"
+  },
+  {
+    "ticker": "BBCA",
+    "name_en": "PT Bank Central Asia Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 623596904906752,
+    "first_trade_date": "2004-06-08"
+  },
+  {
+    "ticker": "BBNI",
+    "name_en": "PT Bank Negara Indonesia (Persero) Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 119594320658432,
+    "first_trade_date": "2003-12-23"
+  },
+  {
+    "ticker": "BBRI",
+    "name_en": "PT Bank Rakyat Indonesia (Persero) Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 412575296651264,
+    "first_trade_date": "2003-11-10"
+  },
+  {
+    "ticker": "BBTN",
+    "name_en": "PT Bank Tabungan Negara (Persero) Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 15999266979840,
+    "first_trade_date": "2009-12-17"
+  },
+  {
+    "ticker": "BFIN",
+    "name_en": "PT BFI Finance Indonesia Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 9218365063168,
+    "first_trade_date": "2001-05-15"
+  },
+  {
+    "ticker": "BJBR",
+    "name_en": "PT Bank Pembangunan Daerah Jawa Barat dan Banten Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 7733261107200,
+    "first_trade_date": "2010-07-08"
+  },
+  {
+    "ticker": "BJTM",
+    "name_en": "PT Bank Pembangunan Daerah Jawa Timur Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 7507749109760,
+    "first_trade_date": "2012-07-12"
+  },
+  {
+    "ticker": "BKSL",
+    "name_en": "PT Sentul City Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 9727116312576,
+    "first_trade_date": "2005-09-29"
+  },
+  {
+    "ticker": "BMRI",
+    "name_en": "PT Bank Mandiri (Persero) Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 358399988465664,
+    "first_trade_date": "2003-07-14"
+  },
+  {
+    "ticker": "BMTR",
+    "name_en": "PT Global Mediacom Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 1815128834048,
+    "first_trade_date": "2005-09-29"
+  },
+  {
+    "ticker": "BNGA",
+    "name_en": "PT Bank CIMB Niaga Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 39192323162112,
+    "first_trade_date": "2002-12-11"
+  },
+  {
+    "ticker": "BRPT",
+    "name_en": "PT Barito Pacific Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 138693385912320,
+    "first_trade_date": "2002-06-26"
+  },
+  {
+    "ticker": "BSDE",
+    "name_en": "PT Bumi Serpong Damai Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 11711501303808,
+    "first_trade_date": "2008-06-06"
+  },
+  {
+    "ticker": "BTPS",
+    "name_en": "PT Bank BTPN Syariah Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 6586663698432,
+    "first_trade_date": "2018-05-08"
+  },
+  {
+    "ticker": "BUKA",
+    "name_en": "PT Bukalapak.com Tbk.",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 10137633816576,
+    "first_trade_date": "2021-08-06"
+  },
+  {
+    "ticker": "BUMI",
+    "name_en": "PT Bumi Resources Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 51615620923392,
+    "first_trade_date": "2001-06-07"
+  },
+  {
+    "ticker": "CPIN",
+    "name_en": "PT Charoen Pokphand Indonesia Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 55425240137728,
+    "first_trade_date": "2005-09-29"
+  },
+  {
+    "ticker": "CTRA",
+    "name_en": "PT Ciputra Development Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 10287310700544,
+    "first_trade_date": "2000-11-01"
+  },
+  {
+    "ticker": "DMAS",
+    "name_en": "PT Puradelta Lestari Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 7133320445952,
+    "first_trade_date": "2015-05-29"
+  },
+  {
+    "ticker": "DNET",
+    "name_en": "PT Indoritel Makmur Internasional Tbk.",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 142903796039680,
+    "first_trade_date": "2000-12-12"
+  },
+  {
+    "ticker": "ELSA",
+    "name_en": "PT Elnusa Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 4196637605888,
+    "first_trade_date": "2008-02-06"
+  },
+  {
+    "ticker": "EMTK",
+    "name_en": "PT Elang Mahkota Teknologi Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 31814903136256,
+    "first_trade_date": "2010-01-12"
+  },
+  {
+    "ticker": "ENRG",
+    "name_en": "PT Energi Mega Persada Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 31615476563968,
+    "first_trade_date": "2004-06-07"
+  },
+  {
+    "ticker": "ERAA",
+    "name_en": "PT Erajaya Swasembada Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 5161958244352,
+    "first_trade_date": "2011-12-14"
+  },
+  {
+    "ticker": "ESSA",
+    "name_en": "PT ESSA Industries Indonesia Tbk.",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 10077780049920,
+    "first_trade_date": "2012-02-01"
+  },
+  {
+    "ticker": "EXCL",
+    "name_en": "PT XLSMART Telecom Sejahtera Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 48229638995968,
+    "first_trade_date": "2005-09-29"
+  },
+  {
+    "ticker": "FILM",
+    "name_en": "PT.MD Entertainment Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 19379867615232,
+    "first_trade_date": "2018-08-07"
+  },
+  {
+    "ticker": "GGRM",
+    "name_en": "PT Gudang Garam Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 28091686584320,
+    "first_trade_date": "2001-06-07"
+  },
+  {
+    "ticker": "GJTL",
+    "name_en": "PT. Gajah Tunggal Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 3658681417728,
+    "first_trade_date": "2002-05-30"
+  },
+  {
+    "ticker": "GMFI",
+    "name_en": "PT Garuda Maintenance Facility Aero Asia Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 6241762934784,
+    "first_trade_date": "2017-10-10"
+  },
+  {
+    "ticker": "GOTO",
+    "name_en": "PT GoTo Gojek Tokopedia Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 53100509396992,
+    "first_trade_date": "2022-04-11"
+  },
+  {
+    "ticker": "HEAL",
+    "name_en": "PT Medikaloka Hermina Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 12255226757120,
+    "first_trade_date": "2018-05-17"
+  },
+  {
+    "ticker": "HMSP",
+    "name_en": "PT Hanjaya Mandala Sampoerna Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 73280388071424,
+    "first_trade_date": "2001-09-25"
+  },
+  {
+    "ticker": "HRUM",
+    "name_en": "PT Harum Energy Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 8941017759744,
+    "first_trade_date": "2010-10-06"
+  },
+  {
+    "ticker": "ICBP",
+    "name_en": "PT Indofood CBP Sukses Makmur Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 75219305758720,
+    "first_trade_date": "2000-10-02"
+  },
+  {
+    "ticker": "INCO",
+    "name_en": "PT Vale Indonesia Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 48166812516352,
+    "first_trade_date": "2005-09-29"
+  },
+  {
+    "ticker": "INDF",
+    "name_en": "PT Indofood Sukses Makmur Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 53121577385984,
+    "first_trade_date": "2000-10-02"
+  },
+  {
+    "ticker": "INDY",
+    "name_en": "PT. Indika Energy Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 10405384552448,
+    "first_trade_date": "2008-06-11"
+  },
+  {
+    "ticker": "INKP",
+    "name_en": "PT Indah Kiat Pulp & Paper Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 36655587131392,
+    "first_trade_date": "2000-12-14"
+  },
+  {
+    "ticker": "INTP",
+    "name_en": "PT Indocement Tunggal Prakarsa Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 13299083116544,
+    "first_trade_date": "2000-12-06"
+  },
+  {
+    "ticker": "IPCC",
+    "name_en": "PT Indonesia Kendaraan Terminal Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 1982039457792,
+    "first_trade_date": "2018-07-09"
+  },
+  {
+    "ticker": "ISAT",
+    "name_en": "PT Indosat Ooredoo Hutchison Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 60631524835328,
+    "first_trade_date": "2004-03-18"
+  },
+  {
+    "ticker": "ITMG",
+    "name_en": "PT Indo Tambangraya Megah Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 24416289292288,
+    "first_trade_date": "2007-12-18"
+  },
+  {
+    "ticker": "JSMR",
+    "name_en": "PT Jasa Marga (Persero) Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 20394618650624,
+    "first_trade_date": "2007-11-12"
+  },
+  {
+    "ticker": "JSPT",
+    "name_en": "PT Jakarta Setiabudi Internasional Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 2770889342976,
+    "first_trade_date": "2002-05-06"
+  },
+  {
+    "ticker": "KIJA",
+    "name_en": "PT Kawasan Industri Jababeka Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 2412432588800,
+    "first_trade_date": "2001-09-25"
+  },
+  {
+    "ticker": "KLBF",
+    "name_en": "PT Kalbe Farma Tbk.",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 31447958159360,
+    "first_trade_date": "2003-12-15"
+  },
+  {
+    "ticker": "LINK",
+    "name_en": "PT Link Net Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 3247248506880,
+    "first_trade_date": "2014-09-01"
+  },
+  {
+    "ticker": "LPKR",
+    "name_en": "PT Lippo Karawaci Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 4394393534464,
+    "first_trade_date": "2005-09-29"
+  },
+  {
+    "ticker": "LSIP",
+    "name_en": "PT Perusahaan Perkebunan London Sumatra Indonesia Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 7842958409728,
+    "first_trade_date": "2002-04-22"
+  },
+  {
+    "ticker": "MAPI",
+    "name_en": "PT. Mitra Adiperkasa Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 24651000446976,
+    "first_trade_date": "2004-11-10"
+  },
+  {
+    "ticker": "MBMA",
+    "name_en": "PT Merdeka Battery Materials Tbk.",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 46870013411328,
+    "first_trade_date": "2023-04-18"
+  },
+  {
+    "ticker": "MBSS",
+    "name_en": "PT Mitrabahtera Segara Sejati Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 4025061212160,
+    "first_trade_date": "2011-04-06"
+  },
+  {
+    "ticker": "MDKA",
+    "name_en": "PT Merdeka Copper Gold Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 62751435128832,
+    "first_trade_date": "2015-06-19"
+  },
+  {
+    "ticker": "MEDC",
+    "name_en": "PT Medco Energi Internasional Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 29740148719616,
+    "first_trade_date": "2000-06-06"
+  },
+  {
+    "ticker": "MIKA",
+    "name_en": "PT Mitra Keluarga Karyasehat Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 21207642537984,
+    "first_trade_date": "2015-03-24"
+  },
+  {
+    "ticker": "MLPT",
+    "name_en": "PT Multipolar Technology Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 25875001114624,
+    "first_trade_date": "2013-07-08"
+  },
+  {
+    "ticker": "MNCN",
+    "name_en": "PT. Media Nusantara Citra Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 2671886729216,
+    "first_trade_date": "2007-06-22"
+  },
+  {
+    "ticker": "MTEL",
+    "name_en": "PT Dayamitra Telekomunikasi Tbk.",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 40348227207168,
+    "first_trade_date": "2021-11-22"
+  },
+  {
+    "ticker": "NCKL",
+    "name_en": "PT Trimegah Bangun Persada Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 49445475450880,
+    "first_trade_date": "2023-04-12"
+  },
+  {
+    "ticker": "NISP",
+    "name_en": "PT Bank OCBC NISP Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 26845997170688,
+    "first_trade_date": "2003-02-10"
+  },
+  {
+    "ticker": "PGAS",
+    "name_en": "PT Perusahaan Gas Negara (Persero) Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 36847090663424,
+    "first_trade_date": "2003-12-15"
+  },
+  {
+    "ticker": "PGEO",
+    "name_en": "PT Pertamina Geothermal Energy Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 34567117340672,
+    "first_trade_date": "2023-02-24"
+  },
+  {
+    "ticker": "PNBN",
+    "name_en": "PT Bank Pan Indonesia Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 20581451825152,
+    "first_trade_date": "2002-09-03"
+  },
+  {
+    "ticker": "PTBA",
+    "name_en": "PT Bukit Asam (Persero) Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 29822183014400,
+    "first_trade_date": "2002-12-23"
+  },
+  {
+    "ticker": "PWON",
+    "name_en": "PT Pakuwon Jati Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 12810454040576,
+    "first_trade_date": "2005-09-29"
+  },
+  {
+    "ticker": "RAJA",
+    "name_en": "PT Rukun Raharja Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 12427622088704,
+    "first_trade_date": "2003-01-22"
+  },
+  {
+    "ticker": "RALS",
+    "name_en": "PT Ramayana Lestari Sentosa Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 2233058983936,
+    "first_trade_date": "2004-10-22"
+  },
+  {
+    "ticker": "SCMA",
+    "name_en": "PT Surya Citra Media Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 12256407453696,
+    "first_trade_date": "2002-07-16"
+  },
+  {
+    "ticker": "SIDO",
+    "name_en": "PT Industri Jamu dan Farmasi Sido Muncul Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 10714412482560,
+    "first_trade_date": "2013-12-18"
+  },
+  {
+    "ticker": "SMCB",
+    "name_en": "PT Solusi Bangun Indonesia Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 6990021001216,
+    "first_trade_date": "2002-01-04"
+  },
+  {
+    "ticker": "SMGR",
+    "name_en": "PT Semen Indonesia (Persero) Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 10473771630592,
+    "first_trade_date": "2005-09-29"
+  },
+  {
+    "ticker": "SMRA",
+    "name_en": "PT Summarecon Agung Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 4457313599488,
+    "first_trade_date": "2002-08-13"
+  },
+  {
+    "ticker": "SOCI",
+    "name_en": "PT Soechi Lines Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 2047109890048,
+    "first_trade_date": "2014-12-03"
+  },
+  {
+    "ticker": "SRTG",
+    "name_en": "PT Saratoga Investama Sedaya Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 18631020773376,
+    "first_trade_date": "2013-06-26"
+  },
+  {
+    "ticker": "SSMS",
+    "name_en": "PT Sawit Sumbermas Sarana Tbk.",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 6667499995136,
+    "first_trade_date": "2013-12-12"
+  },
+  {
+    "ticker": "TBIG",
+    "name_en": "PT Tower Bersama Infrastructure Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 32872060682240,
+    "first_trade_date": "2010-10-26"
+  },
+  {
+    "ticker": "TINS",
+    "name_en": "PT TIMAH Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 23460422090752,
+    "first_trade_date": "2001-03-14"
+  },
+  {
+    "ticker": "TKIM",
+    "name_en": "PT Pabrik Kertas Tjiwi Kimia Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 14694415859712,
+    "first_trade_date": "2000-11-28"
+  },
+  {
+    "ticker": "TLKM",
+    "name_en": "Perusahaan Perseroan (Persero) PT Telekomunikasi Indonesia Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 272440848547840,
+    "first_trade_date": "2004-09-28"
+  },
+  {
+    "ticker": "TOWR",
+    "name_en": "PT Sarana Menara Nusantara Tbk.",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 19209822142464,
+    "first_trade_date": "2010-03-08"
+  },
+  {
+    "ticker": "TPIA",
+    "name_en": "PT Chandra Asri Pacific Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 112872420016128,
+    "first_trade_date": "2002-08-23"
+  },
+  {
+    "ticker": "TRIM",
+    "name_en": "PT Trimegah Sekuritas Indonesia Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 3455119785984,
+    "first_trade_date": "2000-04-24"
+  },
+  {
+    "ticker": "ULTJ",
+    "name_en": "PT Ultrajaya Milk Industry & Trading Company Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 13413646336000,
+    "first_trade_date": "2005-09-29"
+  },
+  {
+    "ticker": "UNTR",
+    "name_en": "PT United Tractors Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 74946768273408,
+    "first_trade_date": "2000-09-05"
+  },
+  {
+    "ticker": "UNVR",
+    "name_en": "PT Unilever Indonesia Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 59630537408512,
+    "first_trade_date": "2003-09-03"
+  },
+  {
+    "ticker": "VKTR",
+    "name_en": "PT VKTR Teknologi Mobilitas Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 26468748886016,
+    "first_trade_date": "2023-06-19"
+  },
+  {
+    "ticker": "WIIM",
+    "name_en": "PT Wismilak Inti Makmur Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 2921665396736,
+    "first_trade_date": "2012-12-26"
+  },
+  {
+    "ticker": "WIKA",
+    "name_en": "PT Wijaya Karya (Persero) Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 8133880578048,
+    "first_trade_date": "2007-10-29"
+  },
+  {
+    "ticker": "WSKT",
+    "name_en": "PT Waskita Karya (Persero) Tbk",
+    "name_id": null,
+    "sector": null,
+    "market_cap": 5818974994432,
+    "first_trade_date": "2012-12-19"
+  }
+]
