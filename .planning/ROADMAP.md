@@ -111,7 +111,7 @@ Phase 13 (T1) ─┬─→ Phase 14 (T2) ──┐
 - [x] 13-01-PLAN.md — Wave 0: install deps + ohlcv_cache/ticker_metadata migration + internal-auth.ts extraction + red test stubs + [BLOCKING] db push
 - [x] 13-02-PLAN.md — Wave 1: seed-and-backfill.ts (market-cap top-100, >=2yr filter, 5yr OHLCV backfill)
 - [x] 13-03-PLAN.md — Wave 1 (TDD): fetch-ohlcv + upsert-ohlcv + compute-indicators (10 indicators, warmup-aligned)
-- [ ] 13-04-PLAN.md — Wave 2: /api/ta/analysis + /api/ta/search + snapshot copy + AnalysisPayload contract
+- [x] 13-04-PLAN.md — Wave 2: /api/ta/analysis + /api/ta/search + snapshot copy + AnalysisPayload contract
 - [x] 13-05-PLAN.md — Wave 2: lightweight-charts candlestick + synced subpanels + range/overlay controls + snapshot strip
 - [ ] 13-06-PLAN.md — Wave 2: SiteHeader (RootLayout) + ticker-search + skeleton/error/sparse/mobile state cards
 - [ ] 13-07-PLAN.md — Wave 3: /ta page wiring + dispatcher cron + vercel.json cutover + ONNX smoke (TA-INFRA-04)
@@ -221,7 +221,7 @@ Phase 13 (T1) ─┬─→ Phase 14 (T2) ──┐
 | 10. Chat Interface | v1.0 | 5/5 | Complete (no VERIFICATION.md) | 2026-05-24 |
 | 11. Observability & Reliability | v1.0 | 4/4 | Complete | 2026-05-24 |
 | 12. Polish & Public Launch | v1.0 | 4/4 | Complete (no VERIFICATION.md) | 2026-05-24 |
-| 13. T1 Data & Indicators | v2.0 | 4/7 | In Progress|  |
+| 13. T1 Data & Indicators | v2.0 | 5/7 | In Progress|  |
 | 14. T2 Patterns & Explanation | v2.0 | 0/TBD | Not started (gated on Phase 13 VERIFICATION.md) | — |
 | 15. T3 ML Probability Layer | v2.0 | 0/TBD | Not started (gated on Phase 13 VERIFICATION.md + Q1 + Q2; Waves 0–1 may parallelize with T2) | — |
 | 16. T4 Polish | v2.0 | 0/TBD | Not started (gated on Phases 13–15 VERIFICATION.md + Q3) | — |

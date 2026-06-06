@@ -17,8 +17,8 @@ All REQ-IDs use `TA-` prefix to distinguish from archived v1.0 IDs.
 
 ### Ticker Identification (TA-TICKER)
 
-- [ ] **TA-TICKER-01**: User can search by ticker code or company name (English or Bahasa) via debounced autocomplete; results ranked across top-N IDX tickers from `ticker_metadata` table
-- [ ] **TA-TICKER-02**: Ticker URLs are uppercase without `.JK` suffix (e.g., `/ta/BBCA`); lowercase redirects to uppercase
+- [x] **TA-TICKER-01**: User can search by ticker code or company name (English or Bahasa) via debounced autocomplete; results ranked across top-N IDX tickers from `ticker_metadata` table
+- [x] **TA-TICKER-02**: Ticker URLs are uppercase without `.JK` suffix (e.g., `/ta/BBCA`); lowercase redirects to uppercase
 
 ### Candlestick Chart (TA-CHART)
 
@@ -29,7 +29,7 @@ All REQ-IDs use `TA-` prefix to distinguish from archived v1.0 IDs.
 - [x] **TA-CHART-05**: User can zoom and pan the chart (wheel/drag on desktop, pinch on mobile)
 - [x] **TA-CHART-06**: A crosshair tracks the cursor showing the value at the hovered position
 - [ ] **TA-CHART-07**: Invalid or unrecognized tickers show a friendly error; data fetch in flight shows a skeleton loader (no raw exceptions to UI)
-- [ ] **TA-CHART-08**: Tickers with <30 candles of history (recent IPOs) show an explicit sparse-data state with no false indicator/pattern output: "Insufficient price history to compute reliable technical indicators"
+- [x] **TA-CHART-08**: Tickers with <30 candles of history (recent IPOs) show an explicit sparse-data state with no false indicator/pattern output: "Insufficient price history to compute reliable technical indicators"
 - [ ] **TA-CHART-09**: Detected patterns render as overlay markers (▲ bullish reversal, ▼ bearish reversal, ◆ continuation/neutral) at the relevant candle range
 - [ ] **TA-CHART-10**: Clicking a pattern marker opens the corresponding pattern explanation card
 
@@ -155,8 +155,8 @@ Every v2.0 requirement is mapped to exactly one phase (Phases 13–16). Coverage
 |-------------|-------|--------|
 | TA-INGEST-01 | Phase 13 (T1) | Complete |
 | TA-DATA-01 | Phase 13 (T1) | Complete |
-| TA-TICKER-01 | Phase 13 (T1) | Pending |
-| TA-TICKER-02 | Phase 13 (T1) | Pending |
+| TA-TICKER-01 | Phase 13 (T1) | Complete |
+| TA-TICKER-02 | Phase 13 (T1) | Complete |
 | TA-CHART-01 | Phase 13 (T1) | Complete |
 | TA-CHART-02 | Phase 13 (T1) | Complete |
 | TA-CHART-03 | Phase 13 (T1) | Complete |
@@ -164,7 +164,7 @@ Every v2.0 requirement is mapped to exactly one phase (Phases 13–16). Coverage
 | TA-CHART-05 | Phase 13 (T1) | Complete |
 | TA-CHART-06 | Phase 13 (T1) | Complete |
 | TA-CHART-07 | Phase 13 (T1) | Pending |
-| TA-CHART-08 | Phase 13 (T1) | Pending |
+| TA-CHART-08 | Phase 13 (T1) | Complete |
 | TA-CHART-09 | Phase 14 (T2) | Pending |
 | TA-CHART-10 | Phase 14 (T2) | Pending |
 | TA-IND-01 | Phase 13 (T1) | Complete |

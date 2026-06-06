@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: TA Module
 status: executing
-last_updated: "2026-06-06T15:43:03.021Z"
+last_updated: "2026-06-06T15:46:44.055Z"
 last_activity: 2026-06-06
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 7
-  completed_plans: 4
-  percent: 57
+  completed_plans: 5
+  percent: 71
 ---
 
 # Project State
@@ -21,7 +21,7 @@ progress:
 ## Current Position
 
 Phase: 13 (t1-data-and-indicators) — EXECUTING
-Plan: 5 of 7
+Plan: 6 of 7
 Status: Ready to execute
 Last activity: 2026-06-06
 
@@ -63,6 +63,9 @@ v2.0 phases (13–16) — derived from `seeds/ta-module-standalone.md` T1–T4 d
 | 'sector' removed from quote() fields | 13-02 | yahoo-finance2 field validation rejects 'sector' for .JK tickers; sector is nullable in ticker_metadata, backfillable separately |
 | lightweight-charts v5 series API | 13-05 | chart.addSeries(CandlestickSeries, opts) — NOT v4 addCandlestickSeries(); LineWidth is integer-only (1\|2\|3\|4); confirmed via node introspection |
 | Task 3 browser smoke deferred to Plan 07 | 13-05 | Requires full /ta/{ticker} page wiring + seeded data; Plan 07 mounts chart subtree and runs end-to-end browser verification |
+| SnapshotCopy typed interface | 13-04 | Added typed interface for buildSnapshotCopy return — avoids Record<string,string> destructuring producing string\|undefined in TypeScript strict mode |
+| Analysis route reads cache only | 13-04 | GET /api/ta/analysis/[ticker] reads ohlcv_cache only, never calls yahoo-finance2 — keeps route within budget and avoids per-request external calls |
+| normalizeTickerParam shared helper | 13-04 | Pure helper in ticker-route.ts shared between Plan 07 RSC page and unit tests — no redirect logic drift possible |
 
 ### Quick Tasks Completed
 
