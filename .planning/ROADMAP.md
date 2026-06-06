@@ -107,7 +107,14 @@ Phase 13 (T1) ─┬─→ Phase 14 (T2) ──┐
 5. Exactly 2 Vercel cron jobs exist on Hobby (dispatcher daily + dispatcher weekly), and the dispatcher invokes job handlers via direct function imports (no HTTP self-fetch); a manual `curl` to the cron auth path returns 200 with the correct secret and 401 without (R1 implicitly closed).
 6. ONNX hello-world preview-deploy smoke (TA-INFRA-04) has been executed and the measured cold INIT_DURATION is recorded in VERIFICATION.md; if measured >5s consistently, T3 architecture is flagged for revisit before Phase 15 begins.
 
-**Plans**: TBD
+**Plans** (7 plans, 4 waves):
+- [ ] 13-01-PLAN.md — Wave 0: install deps + ohlcv_cache/ticker_metadata migration + internal-auth.ts extraction + red test stubs + [BLOCKING] db push
+- [ ] 13-02-PLAN.md — Wave 1: seed-and-backfill.ts (market-cap top-100, >=2yr filter, 5yr OHLCV backfill)
+- [ ] 13-03-PLAN.md — Wave 1 (TDD): fetch-ohlcv + upsert-ohlcv + compute-indicators (10 indicators, warmup-aligned)
+- [ ] 13-04-PLAN.md — Wave 2: /api/ta/analysis + /api/ta/search + snapshot copy + AnalysisPayload contract
+- [ ] 13-05-PLAN.md — Wave 2: lightweight-charts candlestick + synced subpanels + range/overlay controls + snapshot strip
+- [ ] 13-06-PLAN.md — Wave 2: SiteHeader (RootLayout) + ticker-search + skeleton/error/sparse/mobile state cards
+- [ ] 13-07-PLAN.md — Wave 3: /ta page wiring + dispatcher cron + vercel.json cutover + ONNX smoke (TA-INFRA-04)
 **UI hint**: yes
 
 ---
