@@ -10,7 +10,7 @@ requires:
 
 provides:
   - lightweight-charts@5.2.0 and technicalindicators@3.1.0 installed and importable
-  - ohlcv_cache + ticker_metadata Supabase tables with UNIQUE(ticker,date) constraint (migration ready to apply)
+  - ohlcv_cache + ticker_metadata Supabase tables with UNIQUE(ticker,date) constraint (applied remotely and locally)
   - src/lib/internal-auth.ts as single source of timingSafeStringEq/extractBearer/resolveCandidate
   - three existing internal routes updated to import from internal-auth.ts (no duplicate definitions)
   - src/lib/ta/ohlcv-schema.ts with OHLCVBar Zod schema and type
@@ -48,6 +48,7 @@ key-files:
     - src/app/api/internal/parse-batch/route.ts (import from internal-auth)
     - src/app/api/internal/embed-batch/route.ts (import from internal-auth)
     - src/app/api/internal/analyze-batch/route.ts (import from internal-auth)
+    - src/db/database.types.ts (regenerated — ohlcv_cache + ticker_metadata added)
 
 key-decisions:
   - "Extracted triplicated auth helpers from 3 internal routes into src/lib/internal-auth.ts — single source of truth for timingSafeEqual-based auth"
@@ -60,7 +61,7 @@ patterns-established:
   - "Fixture-based indicator testing: 250-bar deterministic series + pre-computed ground truth using same library to catch alignment regressions"
 
 requirements-completed: [TA-INGEST-01, TA-INFRA-02]
-duration: 25min
+duration: 35min
 completed: 2026-06-06
 ---
 
@@ -73,8 +74,8 @@ completed: 2026-06-06
 - **Duration:** ~25 min
 - **Started:** 2026-06-06T21:00:00Z
 - **Completed:** 2026-06-06T21:25:00Z
-- **Tasks:** 3/4 complete (Task 4 is a human-action checkpoint — migration push required)
-- **Files modified:** 14 files created, 5 modified
+- **Tasks:** 4/4 complete
+- **Files modified:** 14 files created, 6 modified
 
 ## Accomplishments
 
@@ -156,9 +157,12 @@ completed: 2026-06-06
 
 These stubs are intentional — Wave 0 TDD pattern. Plan 03 will fill all three.
 
-## Blocking Checkpoint
-
-**Task 4 (human-action):** The migration `supabase/migrations/20260606130000_ta_t1_schema.sql` must be applied to Supabase before Plans 02/03 can run against a live DB. The migration file is committed and ready; the schema push is a human action (Supabase CLI or dashboard).
+### Task 4: Apply TA schema migration to Supabase (human-action, now complete)
+- Migration applied to remote Supabase (user confirmed: both tables exist)
+- Migration applied to local Supabase via `npx supabase migration up`
+- `pnpm db:types` regenerated `src/db/database.types.ts` from local DB
+- `ohlcv_cache` and `ticker_metadata` type entries confirmed present in generated file
+- All Plan 01 success criteria met
 
 ## Self-Check: PASSED
 
@@ -167,7 +171,10 @@ FOUND: supabase/migrations/20260606130000_ta_t1_schema.sql
 FOUND: src/lib/internal-auth.ts
 FOUND: src/lib/ta/ohlcv-schema.ts
 FOUND: tests/ta/fixtures/ohlcv-250.json (250 bars)
+FOUND: ohlcv_cache in src/db/database.types.ts (line 249)
+FOUND: ticker_metadata in src/db/database.types.ts (line 288)
 FOUND: c8c585e (Task 1 commit)
 FOUND: e64c395 (Task 2 commit)
 FOUND: 22b6b52 (Task 3 commit)
+FOUND: d60769b (Task 4 commit)
 ```
