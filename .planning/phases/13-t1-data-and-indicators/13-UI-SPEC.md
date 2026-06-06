@@ -1,7 +1,8 @@
 ---
 phase: 13
 slug: 13-t1-data-and-indicators
-status: draft
+status: approved
+reviewed_at: 2026-06-06
 shadcn_initialized: true
 preset: "new-york / zinc / emerald"
 created: 2026-06-06
@@ -58,11 +59,13 @@ All sizes and weights are inherited from the v1.0 design system already in `glob
 | Body | 14px (text-sm) | 400 (regular) | 1.5 | Indicator snapshot strip one-liners, search results, autocomplete items, error state body text |
 | Label | 12px (text-xs) | 400 (regular) | 1.4 | Chart axis tick labels, subpanel axis values, range selector button text, badge text |
 | Heading | 20px (text-xl) | 600 (semibold) | 1.2 | Page heading "BBCA — Bank Central Asia" on `/ta/{ticker}` page |
-| Display | 28px (text-2xl) | 700 (bold) | 1.1 | Not used in Phase 13 — reserved for T3 probability widget (Phase 15) |
+
+Weight scale for this phase: exactly 2 weights — 400 (regular) and 600 (semibold). No other weights are used.
 
 Additional:
 - Ticker code in page heading and autocomplete results: `font-mono` (Geist Mono), text-sm, font-semibold (600). This visually distinguishes codes from names at a glance.
-- Indicator snapshot labels: text-sm, font-medium (500) for the indicator name prefix ("RSI:", "MACD:"), then font-normal (400) for the plain-English description.
+- Indicator snapshot label prefix ("RSI:", "MACD:"): text-xs (12px), font-semibold (600), text-muted-foreground. The plain-English description that follows: text-sm (14px), font-normal (400). This uses only the 2 declared weights.
+- Display/28px is NOT used in Phase 13 — deferred to T3 probability widget (Phase 15).
 
 ---
 
@@ -111,8 +114,8 @@ Components this phase introduces or modifies. All are built with shadcn/ui primi
 | `<CandlestickChart />` | `src/components/ta/candlestick-chart.tsx` | `lightweight-charts` (client component, `"use client"`) | Main price panel. Volume subpanel. RSI subpanel. MACD subpanel. All synced via `subscribeVisibleTimeRangeChange`. Accepts `ohlcv: OHLCVBar[]`, `indicators: IndicatorSnapshot`, `range: RangeKey`. |
 | `<RangeSelector />` | `src/components/ta/range-selector.tsx` | shadcn `<Button>` (variant="outline" inactive, variant="default" active) | 5 buttons: 1M / 3M / 6M / 1Y / 2Y. Active state: filled emerald. Compact row above chart. |
 | `<OverlayToggles />` | `src/components/ta/overlay-toggles.tsx` | shadcn `<Button size="sm" variant="outline">` styled as chip | BB / EMA-20 / EMA-50 / EMA-200 toggles. EMA-50 and EMA-200 default ON. EMA-20 and BB default OFF. Rendered as a chip row above the chart, below RangeSelector. Active chip: filled outline with colored left-border matching the series color. |
-| `<IndicatorSnapshotStrip />` | `src/components/ta/indicator-snapshot-strip.tsx` | shadcn `<Card>` | Scrollable horizontal strip (or wrap on narrow desktop). One card/chip per indicator. Shows indicator name (font-medium) + plain-English one-liner (font-normal). Tooltip on hover shows definition (TA-IND-06). |
-| `<IndicatorTooltip />` | `src/components/ta/indicator-tooltip.tsx` | shadcn `<Tooltip>` + `<TooltipContent>` | Plain-English interpretation shown on hover/click of indicator chip. Body text 12px. |
+| `<IndicatorSnapshotStrip />` | `src/components/ta/indicator-snapshot-strip.tsx` | shadcn `<Card>` | Scrollable horizontal strip (or wrap on narrow desktop). One card/chip per indicator. Shows indicator name (text-xs font-semibold) + plain-English one-liner (text-sm font-normal). Tooltip on hover shows definition (TA-IND-06). |
+| `<IndicatorTooltip />` | `src/components/ta/indicator-tooltip.tsx` | shadcn `<Tooltip>` + `<TooltipContent>` | Plain-English interpretation shown on hover/click of indicator chip. Body text 12px (Label role). |
 | `<TAPageSkeleton />` | `src/components/ta/ta-page-skeleton.tsx` | shadcn `<Skeleton>` | Shown while `/api/ta/analysis/[ticker]` is in flight. Three skeleton blocks: search bar, chart area (300px tall), indicator strip (48px). Uses `animate-pulse bg-muted`. |
 | `<MobileInfoCard />` | `src/components/ta/mobile-info-card.tsx` | shadcn `<Card>` + `<Button asChild>` | Shown on `<640px` viewports only (CSS `sm:hidden`). Copy specified in Copywriting section. Desktop link to v1.0. |
 | `<TAErrorCard />` | `src/components/ta/ta-error-card.tsx` | shadcn `<Card>` | Shown for invalid tickers or API failures. Copy specified in Copywriting section. |
@@ -223,7 +226,7 @@ Chart, indicator strip, range selector, overlay toggles — all hidden on <640px
 - Rendered inside a `"use client"` wrapper component. The parent page is an RSC that passes serialized OHLCV + indicator data as props.
 - Chart background: `--color-background` (white).
 - Grid lines: `--color-border` (zinc-200), 1px.
-- Axis text: `--color-muted-foreground` (zinc-500), 11px.
+- Axis text: `--color-muted-foreground` (zinc-500), Label/12px role. lightweight-charts renders canvas text and may approximate to 11px internally — do not add 11px as a separate type scale entry; keep the contract at 12px (Label).
 - Crosshair: `--color-muted-foreground`, thin dashed.
 - Hover tooltip: floating div with `bg-background border border-border rounded-md shadow-sm px-3 py-2 text-sm` — shows date + OHLCV values + volume. Matches v1.0 `TrendTooltip` styling.
 - Candlestick up color: `var(--color-primary)` (emerald-600).
@@ -241,8 +244,8 @@ Chart, indicator strip, range selector, overlay toggles — all hidden on <640px
 ### IndicatorSnapshotStrip
 
 - Scrollable horizontal row (flex-wrap on wider screens, flex-nowrap + overflow-x-auto on narrow desktop).
-- Each chip: `<Card>` with `px-3 py-2`, `flex-col gap-0.5`, `cursor-default`. Min-width: 120px.
-- Chip structure: `<p class="text-xs font-medium text-muted-foreground">{indicatorName}</p>` + `<p class="text-sm text-foreground">{oneLineSummary}</p>`.
+- Each chip: `<Card>` with `px-3 py-2`, `flex-col gap-1`, `cursor-default`. Min-width: 120px.
+- Chip structure: `<p class="text-xs font-semibold text-muted-foreground">{indicatorName}</p>` + `<p class="text-sm text-foreground">{oneLineSummary}</p>`.
 - On hover of chip: `<Tooltip>` opens with plain-English definition of the indicator (TA-IND-06).
 - One-liner format (locked by ROADMAP success criterion #2): `"{Indicator}: {plain-English description}"`. Never raw numbers. Examples:
   - "RSI: Near oversold territory (39)"
@@ -290,7 +293,7 @@ Chart, indicator strip, range selector, overlay toggles — all hidden on <640px
 - Right: nav links.
   - "Upload Document" — `<Button variant="ghost" asChild>` wrapping `<Link href="/">`.
   - "TA Analysis" — conditionally rendered only when `NEXT_PUBLIC_TA_ENABLED === 'true'`. Uses `<Button variant="ghost" asChild>`. Active state (on `/ta/*`): underline decoration or `text-primary` color to indicate current surface.
-- On `<640px`: "TA Analysis" text is hidden (icon only, `lucide-react` `<LineChart>` icon) to save space.
+- On `<640px`: "TA Analysis" text label is hidden; render icon only (`lucide-react` `<LineChart>` icon). Add `aria-label="TA Analysis"` to the icon-only button so screen readers announce the destination correctly.
 
 ---
 
@@ -313,8 +316,8 @@ Chart, indicator strip, range selector, overlay toggles — all hidden on <640px
 | Sparse data heading | "Insufficient price history" |
 | Sparse data body | "Technical indicators need at least 30 trading days of data to be reliable. '{TICKER}' was recently listed and doesn't have enough history yet. Check back in a few weeks." |
 | Fetch error heading | "Could not load chart data" |
-| Fetch error body | "Something went wrong loading data for '{TICKER}'. This is usually temporary — try refreshing the page." |
-| Fetch error CTA | "Refresh" (triggers reload) |
+| Fetch error body | "Something went wrong loading data for '{TICKER}'. This is usually temporary." |
+| Fetch error CTA | "Try again" (triggers reload) |
 | Last updated suffix | "Last updated: {date, e.g. 5 Jun 2026}" (below ticker heading, text-xs muted-foreground) |
 | Page `<title>` | "{TICKER} — TA Analysis · Clarifin" |
 | Indicator tooltip trigger label (screen reader) | "What is {indicatorName}?" |
@@ -334,6 +337,7 @@ Destructive actions in Phase 13: none. No delete or irreversible user action exi
 - Indicator chip tooltips: triggered on focus as well as hover (keyboard-accessible).
 - Range selector: active button gets `aria-pressed="true"`.
 - Color is never the sole indicator of state — candle direction is also conveyed by the candle shape (hollow body = up, filled = down in lightweight-charts default).
+- SiteHeader "TA Analysis" nav link on <640px (icon-only): add `aria-label="TA Analysis"` to the button element so screen readers announce the destination when the text label is hidden.
 
 ---
 
