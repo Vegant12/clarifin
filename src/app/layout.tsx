@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import { OnboardingModal } from "@/components/onboarding-modal";
 import { SessionProvider } from "@/components/session-provider";
+import { SiteHeader } from "@/components/site-header";
 
 import "./globals.css";
 
@@ -26,6 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <SiteHeader />
         <SessionProvider>{children}</SessionProvider>
         <OnboardingModal />
       </body>
