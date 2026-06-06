@@ -14,6 +14,13 @@ import { ohlcvBarSchema } from "./ohlcv-schema";
 import { indicatorSetSchema } from "./indicator-schema";
 
 /**
+ * Typed snapshot copy schema — one string per indicator key.
+ * Matches the SnapshotCopy interface in snapshot-copy.ts.
+ * Using z.record() allows empty snapshot for sparse payloads.
+ */
+const snapshotSchema = z.record(z.string(), z.string());
+
+/**
  * AnalysisPayload — full response from GET /api/ta/analysis/[ticker].
  *
  * Fields:
@@ -22,7 +29,7 @@ import { indicatorSetSchema } from "./indicator-schema";
  * - last_updated: ISO date of the latest OHLCV bar ("YYYY-MM-DD")
  * - ohlcv: up to 2 years of OHLCV bars, ascending by date
  * - indicators: all 10 computed indicators, null-padded to ohlcv.length (TA-IND-01..04)
- * - snapshot: plain-English one-liner per indicator (TA-IND-05)
+ * - snapshot: plain-English one-liner per indicator (TA-IND-05); empty when sparse
  * - candle_count: number of OHLCV bars available
  * - sparse: true if candle_count < 30 — page gates rendering on this flag (TA-CHART-08)
  */
@@ -32,7 +39,7 @@ export const analysisPayloadSchema = z.object({
   last_updated: z.string(), // ISO date "YYYY-MM-DD"
   ohlcv: z.array(ohlcvBarSchema),
   indicators: indicatorSetSchema,
-  snapshot: z.record(z.string(), z.string()), // Record<string, string> — key per indicator
+  snapshot: snapshotSchema,
   candle_count: z.number().int().nonnegative(),
   sparse: z.boolean(),
 });
