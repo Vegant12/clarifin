@@ -12,7 +12,7 @@ All REQ-IDs use `TA-` prefix to distinguish from archived v1.0 IDs.
 
 ### Data Ingestion (TA-INGEST · TA-DATA)
 
-- [ ] **TA-INGEST-01**: System fetches and caches IDX-listed OHLCV data via yahoo-finance2 for `.JK` tickers with response validation (reject bars where `high < low`, `close < 0`, `volume < 0`, or single-bar return >50%); IDX trading calendar enforced (no expected bars on Indonesian holidays); data gaps surfaced in UI rather than silently interpolated
+- [x] **TA-INGEST-01**: System fetches and caches IDX-listed OHLCV data via yahoo-finance2 for `.JK` tickers with response validation (reject bars where `high < low`, `close < 0`, `volume < 0`, or single-bar return >50%); IDX trading calendar enforced (no expected bars on Indonesian holidays); data gaps surfaced in UI rather than silently interpolated
 - [ ] **TA-DATA-01**: A one-off backfill script populates 5yr+ historical OHLCV for top-100 IDX tickers (prerequisite for T3 ML training data)
 
 ### Ticker Identification (TA-TICKER)
@@ -90,7 +90,7 @@ All REQ-IDs use `TA-` prefix to distinguish from archived v1.0 IDs.
 ### Infrastructure & Engineering Hygiene (TA-INFRA — the 8 locked roadmapper constraints)
 
 - [ ] **TA-INFRA-01**: All public `/api/ta/*` routes enforce per-IP daily rate limiting (reuses Phase 12 INFRA-02 limiter; failure to reuse is a verification finding)
-- [ ] **TA-INFRA-02**: All Vercel cron jobs (existing v1.0 + new v2.0) are consolidated under a **single dispatcher cron** to stay within the Hobby 2-cron limit; the dispatcher invokes job handlers as direct function imports (not HTTP self-fetch — see `parse-batch/route.ts:13-22` 508 INFINITE_LOOP_DETECTED warning); each job accepts `{ deadline }` and self-limits within the 60s function budget
+- [x] **TA-INFRA-02**: All Vercel cron jobs (existing v1.0 + new v2.0) are consolidated under a **single dispatcher cron** to stay within the Hobby 2-cron limit; the dispatcher invokes job handlers as direct function imports (not HTTP self-fetch — see `parse-batch/route.ts:13-22` 508 INFINITE_LOOP_DETECTED warning); each job accepts `{ deadline }` and self-limits within the 60s function budget
 - [ ] **TA-INFRA-03**: The Phase 10 CHAT-06 `isInvestmentAdviceQuery` guardrail is extracted from `src/lib/guardrail.ts` to a shared `src/lib/safety/buy-sell-filter.ts` and extended bilingual (EN + Indonesian forbidden phrases); both v1.0 `/api/chat` and v2.0 `/api/ta/chat` import the same shared module
 - [ ] **TA-INFRA-04**: A Vercel preview-deploy ONNX smoke test runs before T3 commits to the ONNX architecture: deploy a hello-world TA route loading a 5MB dummy `.onnx`, measure cold INIT_DURATION via Vercel function logs; if cold-start >5s consistently, T3 architecture is revisited (smaller model, async probability, or separate runtime)
 - [ ] **TA-INFRA-05**: T3 ships with a model-accuracy floor: if held-out 2024 accuracy <45%, T3 falls back to a "historical stats only" probability card (no ONNX output); the UI must support this fallback shape from day one
@@ -153,7 +153,7 @@ Every v2.0 requirement is mapped to exactly one phase (Phases 13–16). Coverage
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TA-INGEST-01 | Phase 13 (T1) | Pending |
+| TA-INGEST-01 | Phase 13 (T1) | Complete |
 | TA-DATA-01 | Phase 13 (T1) | Pending |
 | TA-TICKER-01 | Phase 13 (T1) | Pending |
 | TA-TICKER-02 | Phase 13 (T1) | Pending |

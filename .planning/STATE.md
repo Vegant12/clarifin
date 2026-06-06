@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: TA Module
 status: executing
-last_updated: "2026-06-06T14:09:41.176Z"
-last_activity: 2026-06-06 -- Phase 13 planning complete
+last_updated: "2026-06-06T14:22:26.450Z"
+last_activity: 2026-06-06
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 7
-  completed_plans: 0
-  percent: 0
+  completed_plans: 1
+  percent: 14
 ---
 
 # Project State
@@ -20,10 +20,10 @@ progress:
 
 ## Current Position
 
-Phase: Not started (roadmap defined; awaiting `/gsd-plan-phase 13`)
-Plan: —
+Phase: 13 (t1-data-and-indicators) — EXECUTING
+Plan: 2 of 7
 Status: Ready to execute
-Last activity: 2026-06-06 -- Phase 13 planning complete
+Last activity: 2026-06-06
 
 ## Phase Progress
 
@@ -54,6 +54,8 @@ v2.0 phases (13–16) — derived from `seeds/ta-module-standalone.md` T1–T4 d
 | v2.0 phase structure (T1–T4 → Phases 13–16) | v2.0 roadmap | Derived from `seeds/ta-module-standalone.md`; 62/62 REQ-IDs mapped; numbering continues from v1.0 Phase 12 |
 | T3 Waves 0–1 parallel with T2 Waves 0–2 | v2.0 roadmap | Per ARCHITECTURE.md §7.2 — shared state is `ohlcv_cache` + indicators; handoff is `ta_analysis_cache.probabilities` JSONB placeholder shape |
 | TA-INFRA-02 implicitly closes v1.0 R1 | Phase 13 | Dispatcher cron consolidation replaces v1.0 parse-batch + embed-batch crons with single dispatcher using one agreed auth path — vercel.json↔handler mismatch goes away as a side-effect |
+| internal-auth.ts extraction | 13-01 | Extracted triplicated timingSafeStringEq/extractBearer/resolveCandidate from 3 internal routes into src/lib/internal-auth.ts — single source of truth |
+| MACD warmup = 25 not 33 | 13-01 | technicalindicators MACD(12,26,9) outputs first value at warmup=25 (not formula slow+signal-2=33); ground truth fixtures use measured library value |
 
 ### Quick Tasks Completed
 
