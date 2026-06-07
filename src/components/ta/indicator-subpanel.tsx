@@ -53,24 +53,24 @@ export function IndicatorSubpanel({
       height: container.clientHeight,
       layout: {
         background: { color: "transparent" },
-        textColor: "var(--color-muted-foreground)",
+        textColor: "#71717a",
         fontSize: 11,
       },
       grid: {
-        vertLines: { color: "var(--color-border)", visible: true },
-        horzLines: { color: "var(--color-border)", visible: true },
+        vertLines: { color: "#e4e4e7", visible: true },
+        horzLines: { color: "#e4e4e7", visible: true },
       },
       crosshair: {
-        vertLine: { color: "var(--color-muted-foreground)", style: 3 },
-        horzLine: { color: "var(--color-muted-foreground)", style: 3 },
+        vertLine: { color: "#71717a", style: 3 },
+        horzLine: { color: "#71717a", style: 3 },
       },
       rightPriceScale: {
-        borderColor: "var(--color-border)",
-        textColor: "var(--color-muted-foreground)",
+        borderColor: "#e4e4e7",
+        textColor: "#71717a",
         scaleMargins: { top: 0.05, bottom: 0.05 },
       },
       timeScale: {
-        borderColor: "var(--color-border)",
+        borderColor: "#e4e4e7",
         timeVisible: true,
         secondsVisible: false,
         // Hide axis on all subpanels — main chart provides the time labels

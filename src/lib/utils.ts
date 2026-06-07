@@ -37,3 +37,5 @@ export function formatIDRShort(amount: number): string {
   if (abs >= 1_000_000) return `${sign}Rp ${(abs / 1_000_000).toFixed(0)}Jt`;
   return `${sign}Rp ${abs.toLocaleString("id-ID")}`;
 }
+
+
