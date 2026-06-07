@@ -74,6 +74,8 @@ v2.0 phases (13–16) — derived from `seeds/ta-module-standalone.md` T1–T4 d
 | Dispatcher adapter sweep pattern | 13-07 | v1.0 jobs (parse/embed/analyze) wrapped in sweep functions inside dispatch/route.ts; original runParseBatch/runEmbedBatch/runAnalyzeBatch signatures unchanged |
 | outputFileTracingIncludes top-level | 13-07 | Placed at top-level NextConfig (not inside experimental) — ExperimentalConfig does not include this field in Next.js 15 |
 | Vercel CRON_SECRET delivery | 13-07 | vercel.json cron paths have no ?secret=; Vercel injects Authorization: Bearer ${CRON_SECRET} on scheduled calls; resolveCandidate() handles Bearer; CRON_SECRET must equal INTERNAL_PARSE_SECRET in project env |
+| onnxruntime-node not viable on Vercel Hobby | 13-07 | Native binaries ~200 MB exceed 250 MB function limit; outputFileTracingExcludes added; T3 must pre-compute probabilities offline in nightly cron and cache in ta_analysis_cache.probabilities |
+| lightweight-charts CSS vars not resolved | 13-07 | Canvas renderer reads config before React CSS scope; var(--color-*) replaced with hardcoded zinc-500 (#71717a) / zinc-200 (#e4e4e7) in candlestick-chart.tsx and indicator-subpanel.tsx |
 
 ### Quick Tasks Completed
 
