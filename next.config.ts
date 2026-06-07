@@ -19,8 +19,15 @@ const nextConfig: NextConfig = {
   // onnxruntime-node: native module — must not be bundled (same reason as unpdf).
   // runtime="nodejs" on the onnx-smoke route is also required (TA-INFRA-04).
   serverExternalPackages: ["unpdf", "onnxruntime-node"],
-  // Bundle the dummy ONNX model into the onnx-smoke function deployment.
-  // This ensures process.cwd()/public/ta/dummy-model.onnx is available on Vercel.
+  // TA-INFRA-04 finding: onnxruntime-node native binaries (~200 MB) exceed
+  // Vercel Hobby's 250 MB uncompressed function size limit. Excluding from file
+  // tracing on all routes so the build succeeds. The /api/ta/onnx-smoke route
+  // will throw "Cannot find module 'onnxruntime-node'" at runtime — that IS the
+  // measurement: server-side ONNX is not viable on Vercel Hobby. T3 must use
+  // onnxruntime-web (WASM) or an external inference endpoint instead.
+  outputFileTracingExcludes: {
+    "*": ["./node_modules/onnxruntime-node/**/*"],
+  },
   outputFileTracingIncludes: {
     "/api/ta/onnx-smoke": ["./public/ta/dummy-model.onnx"],
   },
