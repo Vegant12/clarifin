@@ -221,7 +221,7 @@ Phase 13 (T1) ─┬─→ Phase 14 (T2) ──┐
 | 10. Chat Interface | v1.0 | 5/5 | Complete (no VERIFICATION.md) | 2026-05-24 |
 | 11. Observability & Reliability | v1.0 | 4/4 | Complete | 2026-05-24 |
 | 12. Polish & Public Launch | v1.0 | 4/4 | Complete (no VERIFICATION.md) | 2026-05-24 |
-| 13. T1 Data & Indicators | v2.0 | 7/7 | Complete   | 2026-06-06 |
+| 13. T1 Data & Indicators | v2.0 | 7/7 | Complete    | 2026-06-07 |
 | 14. T2 Patterns & Explanation | v2.0 | 0/TBD | Not started (gated on Phase 13 VERIFICATION.md) | — |
 | 15. T3 ML Probability Layer | v2.0 | 0/TBD | Not started (gated on Phase 13 VERIFICATION.md + Q1 + Q2; Waves 0–1 may parallelize with T2) | — |
 | 16. T4 Polish | v2.0 | 0/TBD | Not started (gated on Phases 13–15 VERIFICATION.md + Q3) | — |
