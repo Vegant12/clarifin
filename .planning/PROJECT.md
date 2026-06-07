@@ -16,6 +16,8 @@ The fundamentals wedge is live in code: upload PDF → parse → embed → Gemin
 
 **v1.0 launch blockers (R1–R4) explicitly deferred to permanent backlog** at v2.0 milestone start. See ROADMAP backlog 999.6. Future maintenance milestones may pick them up.
 
+**Phase 13 (T1) complete on 2026-06-07.** OHLCV cache + ticker_metadata seeded with IDX top-100 (117k rows), 10 indicators computed and verified, `/ta/{ticker}` page live behind `NEXT_PUBLIC_TA_ENABLED` flag, single dispatcher cron replacing v1.0 pair. Key T3 constraint discovered: `onnxruntime-node` exceeds Vercel Hobby 250 MB function limit — T3 must use pre-compute + cache, not runtime ONNX inference.
+
 ## Current Milestone: v2.0 TA Module
 
 **Goal:** Add a standalone Technical Analysis surface at `/ta/{ticker}` that detects chart patterns, computes indicators, generates probabilistic outlooks (no buy/sell calls), and explains everything in plain English — expanding Clarifin beyond its v1.0 fundamentals wedge into a fundamentals + technicals product.
@@ -145,4 +147,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-06 after v1.0 MVP milestone close (force-closed with documented gaps; see milestones/v1.0-MILESTONE-AUDIT.md)*
+*Last updated: 2026-06-07 after Phase 13 (T1 Data & Indicators) complete*
